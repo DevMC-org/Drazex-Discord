@@ -1,0 +1,24 @@
+server:
+  address: 0.0.0.0
+  port: 8083
+
+spring:
+  rsocket:
+    server:
+      transport: tcp
+      port: 6503
+
+discord:
+  token: ${DISCORD_TOKEN}
+
+  messages-color: "#21f704"
+
+  channel-ids:
+    news: ${NEWS_CHANNEL_ID}
+
+logging:
+  level:
+    root: INFO
+
+  file:
+    name: log.log
