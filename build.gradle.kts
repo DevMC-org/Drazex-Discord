@@ -15,6 +15,7 @@ sourceSets {
     main {
         java.srcDir("src/main/kotlin")
     }
+
     test {
         java.srcDir("src/test/kotlin")
     }
@@ -32,8 +33,8 @@ java {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-webflux:3.0.0")
-    implementation("org.springframework.boot:spring-boot-starter-rsocket:3.0.0")
+    implementation("org.springframework.boot:spring-boot-starter-webflux:3.0.1")
+    implementation("org.springframework.boot:spring-boot-starter-rsocket:3.0.1")
 
     implementation("com.discord4j:discord4j-core:3.2.3")
 
