@@ -2,15 +2,12 @@ package me.xezard.devmc.drazex.discord
 
 import discord4j.core.DiscordClient
 import discord4j.core.GatewayDiscordClient
-import discord4j.core.event.domain.lifecycle.ReadyEvent
-import discord4j.core.`object`.entity.User
 import discord4j.core.`object`.presence.ClientActivity
 import discord4j.core.`object`.presence.ClientPresence
 import jakarta.annotation.PostConstruct
 import me.xezard.devmc.drazex.discord.events.EventsHandler
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
-import reactor.core.publisher.Mono
 
 @Component
 class DrazexBot(
@@ -32,7 +29,7 @@ class DrazexBot(
         this.discord = DiscordClient.create(this.botToken)
 
         this.discord.withGateway { gateway: GatewayDiscordClient ->
-            eventsHandler.registerAll(gateway)
+            eventsHandler.registerAllHandlers(gateway)
         }
 
         this.discord.gateway()

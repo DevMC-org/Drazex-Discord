@@ -6,8 +6,10 @@ import discord4j.core.spec.EmbedCreateSpec
 import discord4j.rest.util.Color
 import me.xezard.devmc.drazex.discord.events.IEventHandler
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 
+@Component
 class MessageCreateEventHandler (
         @Autowired
         private var discord: DiscordClient
