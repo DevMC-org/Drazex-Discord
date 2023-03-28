@@ -3,13 +3,11 @@ package me.xezard.devmc.drazex.discord
 import discord4j.core.DiscordClient
 import discord4j.core.GatewayDiscordClient
 import discord4j.core.event.domain.lifecycle.ReadyEvent
-import discord4j.core.event.domain.message.MessageCreateEvent
 import discord4j.core.`object`.entity.User
-import discord4j.core.`object`.entity.channel.MessageChannel
 import discord4j.core.`object`.presence.ClientActivity
 import discord4j.core.`object`.presence.ClientPresence
 import jakarta.annotation.PostConstruct
-import me.xezard.devmc.drazex.discord.commands.listeners.CommandRegistrator
+import me.xezard.devmc.drazex.discord.events.EventsHandler
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
@@ -27,28 +25,19 @@ class DrazexBot(
 ) {
     lateinit var discord: DiscordClient
 
+    lateinit var eventsHandler: EventsHandler
+
     @PostConstruct
     fun init() {
         this.discord = DiscordClient.create(this.botToken)
-        this.discord.gateway()
-            .setInitialPresence {
-                ClientPresence.online(ClientActivity.playing("Minecraft"))
-            }.login().subscribe()
+
         this.discord.withGateway { gateway: GatewayDiscordClient ->
-            val printOnLogin: Mono<Void> = gateway.on(ReadyEvent::class.java) { event ->
-                    Mono.fromRunnable<Void>() {
-                        val self: User = event.self
-                        System.out.printf(
-                            "Logged in as %s#%s%n",
-                            self.username,
-                            self.discriminator
-                        )
-                    }
-            }
-                .then()
+            eventsHandler.registerAll(gateway)
+        }
 
-            return@withGateway printOnLogin
-        }.subscribe()
-
+        this.discord.gateway()
+                .setInitialPresence { ClientPresence.online(ClientActivity.playing("Minecraft")) }
+                .login()
+                .subscribe()
     }
 }
