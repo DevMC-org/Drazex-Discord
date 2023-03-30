@@ -6,5 +6,5 @@ import reactor.core.publisher.Mono
 interface IEventHandler<T : Event> {
     fun handle(event: T): Mono<Void>
 
-    fun getClass(): Class<T>;
+    fun getEventClass(): Class<T>;
 }

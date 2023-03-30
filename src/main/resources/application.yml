@@ -9,7 +9,7 @@ spring:
       port: 6503
 
 discord:
-  token: "MTA2NTI0MjA5ODM5NzM1NjAzMw.GENmKa.TMW247R8ZvOMdV8oAfQIPhf2Wtc-ry8DJjGrjs"
+  token: "MTA4NDM4MjU2NDg4MzYzMjEyOQ.Gy5JnL.8n1TRetSccZHjLtrZ9UdgUZb0NCQPYXspvN5so"
 
   messages-color: "#21f704"
 

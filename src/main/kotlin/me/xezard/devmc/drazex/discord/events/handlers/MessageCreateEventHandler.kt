@@ -4,25 +4,29 @@ import discord4j.core.DiscordClient
 import discord4j.core.event.domain.message.MessageCreateEvent
 import discord4j.core.spec.EmbedCreateSpec
 import discord4j.rest.util.Color
+import me.xezard.devmc.drazex.discord.DrazexBot
 import me.xezard.devmc.drazex.discord.events.IEventHandler
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 
+@Component
 class MessageCreateEventHandler (
         @Autowired
-        private var discord: DiscordClient
+        private var drazexBot: DrazexBot
 ): IEventHandler<MessageCreateEvent> {
     override fun handle(event: MessageCreateEvent): Mono<Void> {
         val embed: EmbedCreateSpec = EmbedCreateSpec.builder().color(Color.GREEN).title("Привет")
                 .description("Статус: Онлайн")
                 .build()
 
-        return this.discord.getChannelById(event.message.channelId)
+        return this.drazexBot.discord.getChannelById(event.message.channelId)
                 .createMessage(embed.asRequest())
                 .then()
     }
 
-    override fun getClass(): Class<MessageCreateEvent> {
+    override fun getEventClass(): Class<MessageCreateEvent> {
         return MessageCreateEvent::class.java
     }
 }

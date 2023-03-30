@@ -8,6 +8,7 @@ import discord4j.core.`object`.presence.ClientActivity
 import discord4j.core.`object`.presence.ClientPresence
 import jakarta.annotation.PostConstruct
 import me.xezard.devmc.drazex.discord.events.EventsHandler
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
@@ -24,8 +25,9 @@ class DrazexBot(
     var messagesColor: String
 ) {
     lateinit var discord: DiscordClient
-
+    @Autowired
     lateinit var eventsHandler: EventsHandler
+
 
     @PostConstruct
     fun init() {
@@ -33,7 +35,8 @@ class DrazexBot(
 
         this.discord.withGateway { gateway: GatewayDiscordClient ->
             eventsHandler.registerAll(gateway)
-        }
+        }.subscribe()
+
 
         this.discord.gateway()
                 .setInitialPresence { ClientPresence.online(ClientActivity.playing("Minecraft")) }
