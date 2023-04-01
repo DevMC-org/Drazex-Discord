@@ -33,8 +33,8 @@ java {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-webflux:3.0.1")
-    implementation("org.springframework.boot:spring-boot-starter-rsocket:3.0.1")
+    implementation("org.springframework.boot:spring-boot-starter-webflux:3.0.4")
+    implementation("org.springframework.boot:spring-boot-starter-rsocket:3.0.4")
 
     implementation("com.discord4j:discord4j-core:3.2.3")
 
@@ -50,8 +50,8 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
     api("com.google.guava:guava:31.1-jre")
-    api("com.google.code.gson:gson:2.10")
-    api("io.projectreactor:reactor-core:3.4.24")
+    api("com.google.code.gson:gson:2.10.1")
+    api("io.projectreactor:reactor-core:3.5.4")
 
     kapt("org.mapstruct:mapstruct-processor:1.5.3.Final")
 

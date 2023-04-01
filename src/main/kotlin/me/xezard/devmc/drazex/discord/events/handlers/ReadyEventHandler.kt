@@ -20,7 +20,7 @@ class ReadyEventHandler: IEventHandler<ReadyEvent> {
         }
     }
 
-    override fun getClass(): Class<ReadyEvent> {
+    override fun getEvent(): Class<ReadyEvent> {
         return ReadyEvent::class.java
     }
 }
