@@ -4,7 +4,7 @@ import org.springframework.boot.Banner
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
 
-@SpringBootApplication(scanBasePackages = ["me.xezard.devmc.drazex.discord"])
+@SpringBootApplication
 class DrazexApplication
 
 fun main(args: Array<String>) {

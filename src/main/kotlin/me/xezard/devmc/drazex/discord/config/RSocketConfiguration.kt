@@ -1,4 +1,4 @@
-package me.xezard.devmc.drazex.vk.config
+package me.xezard.devmc.drazex.discord.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

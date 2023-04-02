@@ -8,14 +8,6 @@ spring:
       transport: tcp
       port: 6503
 
-discord:
-  token: "MTA2NTI0MjA5ODM5NzM1NjAzMw.GENmKa.TMW247R8ZvOMdV8oAfQIPhf2Wtc-ry8DJjGrjs"
-
-  messages-color: "#21f704"
-
-  channel-ids:
-    news: "1083337542516097074"
-
 logging:
   level:
     root: INFO
