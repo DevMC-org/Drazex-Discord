@@ -1,4 +1,4 @@
-package me.xezard.devmc.drazex.vk.config
+package me.xezard.devmc.drazex.discord.config
 
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean
 import org.springframework.core.env.PropertiesPropertySource

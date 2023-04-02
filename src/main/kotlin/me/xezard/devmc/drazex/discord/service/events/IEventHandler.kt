@@ -1,4 +1,4 @@
-package me.xezard.devmc.drazex.discord.events
+package me.xezard.devmc.drazex.discord.service.events
 
 import discord4j.core.event.domain.Event
 import reactor.core.publisher.Mono

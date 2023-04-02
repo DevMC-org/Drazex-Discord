@@ -1,10 +1,11 @@
-package me.xezard.devmc.drazex.discord.events.handlers
+package me.xezard.devmc.drazex.discord.service.events.handlers
 
 import discord4j.core.event.domain.lifecycle.ReadyEvent
 import discord4j.core.`object`.entity.User
-import me.xezard.devmc.drazex.discord.events.IEventHandler
+import me.xezard.devmc.drazex.discord.service.events.IEventHandler
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
+import java.util.logging.Logger
 
 @Component
 class ReadyEventHandler: IEventHandler<ReadyEvent> {
@@ -12,11 +13,7 @@ class ReadyEventHandler: IEventHandler<ReadyEvent> {
         return Mono.fromRunnable {
             val self: User = event.self
 
-            System.out.printf(
-                    "Logged in as %s#%s%n",
-                    self.username,
-                    self.discriminator
-            )
+            Logger.getLogger("[REH]").info("Logged in as ${self.username}#${self.discriminator}")
         }
     }
 

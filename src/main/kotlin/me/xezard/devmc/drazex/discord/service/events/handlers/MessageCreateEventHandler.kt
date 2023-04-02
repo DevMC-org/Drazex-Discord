@@ -1,9 +1,9 @@
-package me.xezard.devmc.drazex.discord.events.handlers
+package me.xezard.devmc.drazex.discord.service.events.handlers
 
 import discord4j.core.event.domain.message.MessageCreateEvent
 import discord4j.core.spec.EmbedCreateSpec
 import discord4j.rest.util.Color
-import me.xezard.devmc.drazex.discord.events.IEventHandler
+import me.xezard.devmc.drazex.discord.service.events.IEventHandler
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 
