@@ -1,19 +1,21 @@
 package me.xezard.devmc.drazex.discord.service.channels
 
-import org.springframework.beans.factory.annotation.Autowired
+import discord4j.core.`object`.entity.Message
+import org.springframework.stereotype.Service
+import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 
-class ChannelsHandler {
-    @Autowired
-    private lateinit var handlers: List<IChannelHandler>
-
-    /*fun handle(message: Message): Mono<Void> {
-        return Mono.justOrEmpty(this.getHandlerByChannelId(message.channelId.asString()))
+@Service
+class ChannelsHandler (
+        var handlers: List<IChannelHandler>
+) {
+    fun handle(message: Message): Mono<Void> {
+        return Flux.fromIterable(this.findHandlersByChannelId(message.channelId.asString()))
                 .flatMap { handler -> handler.handle(message) }
+                .then()
     }
 
-    private fun getHandlerByChannelId(channelId: String): Optional<IChannelHandler> {
-        return this.handlers.stream()
-                .filter { handler -> handler.getChannelIds().contains(channelId) }
-                .findFirst()
-    }*/
+    private fun findHandlersByChannelId(channelId: String): List<IChannelHandler> {
+        return this.handlers.filter { handler -> handler.getHandledChannelIds().contains(channelId) }
+    }
 }

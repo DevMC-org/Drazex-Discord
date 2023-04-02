@@ -38,7 +38,6 @@ dependencies {
 
     implementation("com.discord4j:discord4j-core:3.2.3")
 
-    implementation("com.vk.api:sdk:1.0.14")
     implementation("io.rsocket:rsocket-core:1.1.3")
     implementation("io.rsocket:rsocket-transport-netty:1.1.3")
     implementation("org.mapstruct:mapstruct:1.5.3.Final")

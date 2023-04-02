@@ -6,12 +6,17 @@ import discord4j.core.spec.EmbedCreateSpec
 import discord4j.discordjson.json.MessageCreateRequest
 import discord4j.discordjson.json.MessageData
 import discord4j.rest.util.Color
+import me.xezard.devmc.drazex.discord.config.DiscordConfiguration
+import me.xezard.devmc.drazex.discord.config.NewsChannelsProperties
 import me.xezard.devmc.drazex.discord.service.channels.IChannelHandler
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 
 @Component
-class NewsChannelHandler: IChannelHandler {
+class NewsChannelHandler (
+        var discordConfiguration: DiscordConfiguration,
+        var newsChannelsProperties: NewsChannelsProperties
+): IChannelHandler {
     companion object {
         val DISCORD_EMOJI_PATTERN = Regex("<:\\w+:\\d+>")
 
@@ -38,14 +43,18 @@ class NewsChannelHandler: IChannelHandler {
 
         messageData.attachments().firstOrNull()?.url()?.let { embedBuilder.image(it) }
 
+        val consumerId = Snowflake.of(this.discordConfiguration.newsConsumerChannelId)
         val messageRequest = MessageCreateRequest.builder()
                 .addEmbed(embedBuilder.build().asRequest())
 
         messageRequest.addAllEmbeds(message.embeds.map { embed -> embed.data })
 
-        return Mono.empty()
-        /*return client!!.getChannelById(Snowflake.of(configuration.communityNews()))
-                .createMessage(messageRequest.build())
-                .then()*/
+        return message.guild.flatMap { guild -> guild.getChannelById(consumerId) }
+                .flatMap { channel -> channel.restChannel.createMessage(messageRequest.build()) }
+                .then()
+    }
+
+    override fun getHandledChannelIds(): List<String> {
+        return this.newsChannelsProperties.publishers
     }
 }

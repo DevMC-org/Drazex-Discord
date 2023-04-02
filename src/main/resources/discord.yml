@@ -10,5 +10,5 @@ channels:
   ids:
     news:
       consumer: ""
-      publishers: |
-        1083332342424247074
+      publishers:
+      - ""
