@@ -10,7 +10,7 @@ import java.util.logging.Logger
 
 @Service
 class EventsHandler (
-        private val handlers: List<IEventHandler<Event>>
+    private val handlers: List<IEventHandler<Event>>
 ) {
     fun registerAllHandlers(gateway: GatewayDiscordClient): Mono<Void> {
         return Flux.fromIterable(this.handlers).doOnNext { handler ->

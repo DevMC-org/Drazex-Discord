@@ -14,8 +14,8 @@ import reactor.core.publisher.Mono
 
 @Component
 class NewsChannelHandler (
-        private val discordConfiguration: DiscordConfiguration,
-        private val newsChannelsProperties: NewsChannelsProperties
+    private val discordConfiguration: DiscordConfiguration,
+    private val newsChannelsProperties: NewsChannelsProperties
 ): IChannelHandler {
     companion object {
         val DISCORD_EMOJI_PATTERN = Regex("<:\\w+:\\d+>")

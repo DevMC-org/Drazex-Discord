@@ -10,6 +10,9 @@ class DiscordConfiguration {
     @Value("\${token}")
     lateinit var token: String
 
+    @Value("\${baseUrl}")
+    lateinit var baseUrl: String
+
     @Value("\${messages.color}")
     lateinit var messagesColor: String
 

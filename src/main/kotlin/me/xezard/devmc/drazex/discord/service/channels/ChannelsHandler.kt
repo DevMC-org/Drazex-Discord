@@ -7,7 +7,7 @@ import reactor.core.publisher.Mono
 
 @Service
 class ChannelsHandler (
-        private val handlers: List<IChannelHandler>
+    private val handlers: List<IChannelHandler>
 ) {
     fun handle(message: Message): Mono<Void> {
         return Flux.fromIterable(this.findHandlersByChannelId(message.channelId.asString()))
