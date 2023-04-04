@@ -10,6 +10,6 @@ class ArticleDiscordPost (
 ) : DiscordPost(
     DiscordPostType.ARTICLE,
     title, description,
-"article/$slug.$id",
+    "article/$slug.$id",
     imageUrl
 )
