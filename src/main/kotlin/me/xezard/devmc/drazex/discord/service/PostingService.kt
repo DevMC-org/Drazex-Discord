@@ -13,10 +13,10 @@ import java.awt.Color
 
 @Service
 class PostingService (
-    var bot: DrazexBot,
+    private val bot: DrazexBot,
 
-    val discordConfiguration: DiscordConfiguration,
-    val messagesConfiguration: MessagesConfiguration
+    private val discordConfiguration: DiscordConfiguration,
+    private val messagesConfiguration: MessagesConfiguration
 ) {
     // <post type, post template>
     private val postTemplates = mutableMapOf<DiscordPostType, Array<String>?>().apply {

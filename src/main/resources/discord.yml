@@ -1,4 +1,5 @@
 token: ""
+baseUrl: ""
 
 messages:
   color: "#21f704"
@@ -12,3 +13,5 @@ channels:
       consumer: ""
       publishers:
       - ""
+    showcase:
+    - ""
