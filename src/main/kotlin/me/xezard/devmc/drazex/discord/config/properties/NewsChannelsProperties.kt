@@ -1,9 +1,9 @@
-package me.xezard.devmc.drazex.discord.config
+package me.xezard.devmc.drazex.discord.config.properties
 
 import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.context.annotation.Configuration
+import org.springframework.stereotype.Component
 
-@Configuration
+@Component
 @ConfigurationProperties("channels.ids.news")
 class NewsChannelsProperties {
     lateinit var publishers: List<String>

@@ -5,6 +5,11 @@ class ArticleDiscordPost (
     description: String,
     slug: String,
     imageUrl: String,
+
     id: Long
-) : DiscordPost(DiscordPostType.ARTICLE, title, description,
-    "article/$slug.$id", imageUrl) {}
+) : DiscordPost(
+    DiscordPostType.ARTICLE,
+    title, description,
+"article/$slug.$id",
+    imageUrl
+)

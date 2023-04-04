@@ -2,27 +2,27 @@ package me.xezard.devmc.drazex.discord.domain.model.post
 
 open class DiscordPost (
     var type: DiscordPostType,
-    private var title: String,
-    private var description: String,
-    var url: String,
+
+    title: String,
+    description: String,
+    url: String,
     var imageUrl: String
 ) {
-    protected open val replaces: MutableMap<String, Any?>
-        get() {
-            val replaces: MutableMap<String, Any?> = HashMap()
+    private companion object {
+        const val URL_PREFIX = "https://devmc.org/"
+    }
 
-            replaces["{url}"] = "https://devmc.org/${this.url}"
-            replaces["{title}"] = this.title
-            replaces["{description}"] = this.description
-
-            return replaces
-        }
+    open val replaces: MutableMap<String, Any?> = mapOf(
+            "{url}" to "$URL_PREFIX$url",
+            "{title}" to title,
+            "{description}" to description
+    ).toMutableMap()
 
     fun toMessage(template: Array<String>): String {
         var message = template.joinToString(separator = "\n")
 
-        for (entry in this.replaces.entries.iterator()) {
-            message = message.replace(entry.key, entry.value.toString())
+        for ((key, value) in replaces) {
+            message = message.replace(key, value.toString())
         }
 
         return message

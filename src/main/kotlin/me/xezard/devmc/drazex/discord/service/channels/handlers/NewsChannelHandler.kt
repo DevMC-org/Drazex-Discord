@@ -7,15 +7,15 @@ import discord4j.discordjson.json.MessageCreateRequest
 import discord4j.discordjson.json.MessageData
 import discord4j.rest.util.Color
 import me.xezard.devmc.drazex.discord.config.DiscordConfiguration
-import me.xezard.devmc.drazex.discord.config.NewsChannelsProperties
+import me.xezard.devmc.drazex.discord.config.properties.NewsChannelsProperties
 import me.xezard.devmc.drazex.discord.service.channels.IChannelHandler
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 
 @Component
 class NewsChannelHandler (
-        var discordConfiguration: DiscordConfiguration,
-        var newsChannelsProperties: NewsChannelsProperties
+        private val discordConfiguration: DiscordConfiguration,
+        private val newsChannelsProperties: NewsChannelsProperties
 ): IChannelHandler {
     companion object {
         val DISCORD_EMOJI_PATTERN = Regex("<:\\w+:\\d+>")
@@ -31,7 +31,9 @@ class NewsChannelHandler (
         val avatar = DISCORD_AVATARS_URL
                 .replace("{user_id}", author.id().asString())
                 .replace("{avatar}", author.avatar().orElse("1"))
-        val guildId = message.messageReference.flatMap { ref -> ref.guildId }.orElse(Snowflake.of(23423)).asString()
+        val guildId = message.messageReference.flatMap { ref -> ref.guildId }
+                .orElse(Snowflake.of(23423))
+                .asString()
         val channelUrl = DISCORD_CHANNELS_URL.replace("{id}", guildId)
         val embedBuilder: EmbedCreateSpec.Builder = EmbedCreateSpec.builder()
                 .author(author.username().replace(CHANNEL_NAME_PATTERN.toRegex(), ""),
