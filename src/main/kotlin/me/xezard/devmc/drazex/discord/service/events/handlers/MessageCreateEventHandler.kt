@@ -12,7 +12,7 @@ import java.util.logging.Logger
 
 @Component
 class MessageCreateEventHandler (
-        private val channelsHandler: ChannelsHandler
+    private val channelsHandler: ChannelsHandler
 ): IEventHandler<MessageCreateEvent> {
     companion object {
         val LOGGER: Logger = Logger.getLogger("[MCE]")

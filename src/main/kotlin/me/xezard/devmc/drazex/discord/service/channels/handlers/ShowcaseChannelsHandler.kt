@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono
 
 @Component
 class ShowcaseChannelsHandler(
-        private val channelsProperties: ChannelsProperties
+    private val channelsProperties: ChannelsProperties
 ): IChannelHandler {
     override fun handle(message: Message): Mono<Void> {
         if (message.author.isEmpty) {
