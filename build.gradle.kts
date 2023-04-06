@@ -33,20 +33,20 @@ java {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-webflux:3.0.4")
-    implementation("org.springframework.boot:spring-boot-starter-rsocket:3.0.4")
+    implementation("org.springframework.boot:spring-boot-starter-webflux:3.0.5")
+    implementation("org.springframework.boot:spring-boot-starter-rsocket:3.0.5")
 
-    implementation("com.discord4j:discord4j-core:3.2.3")
+    implementation("com.discord4j:discord4j-core:3.2.4")
 
     implementation("io.rsocket:rsocket-core:1.1.3")
     implementation("io.rsocket:rsocket-transport-netty:1.1.3")
     implementation("org.mapstruct:mapstruct:1.5.3.Final")
 
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
-    implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.0-RC")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.14.2")
+    implementation("io.projectreactor.kotlin:reactor-kotlin-extensions:1.2.2")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.7.0-Beta")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.8.20-RC")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.20-RC")
 
     api("com.google.guava:guava:31.1-jre")
     api("com.google.code.gson:gson:2.10.1")
@@ -54,7 +54,7 @@ dependencies {
 
     kapt("org.mapstruct:mapstruct-processor:1.5.3.Final")
 
-    testImplementation(kotlin("test"))
+    testImplementation("org.jetbrains.kotlin:kotlin-test:1.8.20-RC")
 }
 
 tasks {
