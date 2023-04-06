@@ -21,9 +21,9 @@ class ResourceVersionDiscordPost (
     imageUrl
 ) {
     private val replacesMap = mapOf(
-            "{platforms}" to platforms.joinToString(", "),
-            "{versions}" to versions.joinToString(", "),
-            "{version}" to version
+        "{platforms}" to platforms.joinToString(", "),
+        "{versions}" to versions.joinToString(", "),
+        "{version}" to version
     ) + super.replaces
 
     override val replaces: MutableMap<String, Any?>
