@@ -27,11 +27,12 @@ import java.lang.management.ManagementFactory
 class AppService (
     private val timeService: TimeService
 ) {
-    val replaces: Map<String, Any> by lazy {
+    val replaces: () -> Map<String, Any> = {
         mapOf(
-            "{uptime}" to getUptime(),
-            "{used_memory}" to getUsedMemory(),
-            "{maximum_memory}" to getMaximumMemory()
+            "{uptime}" to this.getUptime(),
+            "{used_memory}" to this.getUsedMemory(),
+            "{available_memory}" to this.getAvailableMemory(),
+            "{maximum_memory}" to this.getMaximumMemory(),
         )
     }
 
@@ -48,10 +49,14 @@ class AppService (
         return (totalMemory - freeMemory) / 1024 / 1024
     }
 
-    private fun getMaximumMemory(): Long {
+    private fun getAvailableMemory(): Long {
         val maxMemory = Runtime.getRuntime().maxMemory()
-        val usedMemory = getUsedMemory() * 1024 * 1024
+        val usedMemory = this.getUsedMemory() * 1024 * 1024
 
         return (maxMemory - usedMemory) / 1024 / 1024
+    }
+
+    private fun getMaximumMemory(): Long {
+        return Runtime.getRuntime().maxMemory() / 1024 / 1024
     }
 }

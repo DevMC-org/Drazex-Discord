@@ -24,7 +24,6 @@ import discord4j.common.util.Snowflake
 import discord4j.core.`object`.entity.Message
 import discord4j.core.spec.EmbedCreateSpec
 import discord4j.discordjson.json.MessageCreateRequest
-import discord4j.discordjson.json.MessageData
 import discord4j.rest.util.Color
 import me.xezard.devmc.drazex.discord.config.DiscordConfiguration
 import me.xezard.devmc.drazex.discord.config.properties.NewsChannelsProperties
@@ -46,7 +45,7 @@ class NewsChannelHandler (
     }
 
     override fun handle(message: Message): Mono<Void> {
-        val messageData: MessageData = message.data
+        val messageData = message.data
         val author = messageData.author()
         val avatar = DISCORD_AVATARS_URL
                 .replace("{user_id}", author.id().asString())
