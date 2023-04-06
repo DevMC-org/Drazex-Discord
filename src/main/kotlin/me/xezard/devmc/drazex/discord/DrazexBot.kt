@@ -2,45 +2,36 @@ package me.xezard.devmc.drazex.discord
 
 import discord4j.core.DiscordClient
 import discord4j.core.GatewayDiscordClient
-import discord4j.core.event.domain.lifecycle.ReadyEvent
-import discord4j.core.`object`.entity.User
 import discord4j.core.`object`.presence.ClientActivity
 import discord4j.core.`object`.presence.ClientPresence
 import jakarta.annotation.PostConstruct
-import me.xezard.devmc.drazex.discord.events.EventsHandler
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.annotation.Value
+import me.xezard.devmc.drazex.discord.config.DiscordConfiguration
+import me.xezard.devmc.drazex.discord.service.commands.CommandsHandler
+import me.xezard.devmc.drazex.discord.service.events.EventsHandler
 import org.springframework.stereotype.Component
-import reactor.core.publisher.Mono
 
 @Component
 class DrazexBot(
-    @Value("\${discord.token}")
-    private var botToken: String,
+    private val eventsHandler: EventsHandler,
+    private val commandsHandler: CommandsHandler,
 
-    @Value("\${discord.channel-ids.news}")
-    var newsChannelId: String,
-
-    @Value("\${discord.messages-color}")
-    var messagesColor: String
+    private val configuration: DiscordConfiguration
 ) {
     lateinit var discord: DiscordClient
-    @Autowired
-    lateinit var eventsHandler: EventsHandler
-
 
     @PostConstruct
     fun init() {
-        this.discord = DiscordClient.create(this.botToken)
-
-        this.discord.withGateway { gateway: GatewayDiscordClient ->
-            eventsHandler.registerAll(gateway)
-        }.subscribe()
-
+        this.discord = DiscordClient.create(this.configuration.token)
 
         this.discord.gateway()
-                .setInitialPresence { ClientPresence.online(ClientActivity.playing("Minecraft")) }
-                .login()
-                .subscribe()
+                    .setInitialPresence {
+                        ClientPresence.online(ClientActivity.playing("Minecraft"))
+                    }
+                    .withGateway { gateway: GatewayDiscordClient ->
+                        this.eventsHandler.registerAllHandlers(gateway)
+                    }
+                    .subscribe()
+
+        this.commandsHandler.registerAllHandlers(this.discord).subscribe()
     }
 }

@@ -2,8 +2,6 @@ FROM openjdk:18-alpine
 
 RUN apk update && apk upgrade && apk add bash
 
-WORKDIR /devmc
-
 ENV HOST 0.0.0.0
 
 EXPOSE 6503

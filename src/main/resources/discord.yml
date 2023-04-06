@@ -1,0 +1,17 @@
+token: ""
+baseUrl: ""
+
+messages:
+  color: "#21f704"
+
+thumbnail:
+  url: ""
+
+channels:
+  ids:
+    news:
+      consumer: ""
+      publishers:
+      - ""
+    showcase:
+    - ""

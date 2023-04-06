@@ -9,5 +9,10 @@ class ResourceDiscordPost (
     description: String,
     slug: String,
     imageUrl: String
-) : DiscordPost(DiscordPostType.RESOURCE, title,
-    description, "${resourceType.name.lowercase()}/$slug", imageUrl) {}
+) : DiscordPost(
+    DiscordPostType.RESOURCE,
+    title,
+    description,
+    "${resourceType.name.lowercase()}/$slug",
+    imageUrl
+)
