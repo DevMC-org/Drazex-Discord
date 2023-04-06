@@ -7,15 +7,12 @@ import me.xezard.devmc.drazex.discord.service.app.AppService
 import me.xezard.devmc.drazex.discord.service.commands.ICommandHandler
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
-import java.util.logging.Logger
 
 @Component
 class StatsCommand (
     private val appService: AppService
 ): ICommandHandler {
     override fun handle(event: ApplicationCommandInteractionEvent): Mono<Void> {
-        Logger.getLogger("TEst").warning("CALLED HANDLE IN STATS COMMAND!")
-
         val (uptime, usedMemory, maximumMemory) = this.appService.replaces.values.map { it.toString() }
 
         return event.reply {
