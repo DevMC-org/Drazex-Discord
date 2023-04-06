@@ -11,11 +11,11 @@ import java.util.logging.Level
 import java.util.logging.Logger
 
 @Component
-class MessageCreateEventHandler (
+class MessageCreateHandler (
     private val channelsHandler: ChannelsHandler
 ): IEventHandler<MessageCreateEvent> {
     companion object {
-        val LOGGER: Logger = Logger.getLogger("[MCE]")
+        val LOGGER: Logger = Logger.getLogger("[MCH]")
     }
 
     override fun handle(event: MessageCreateEvent): Mono<Void> {
@@ -26,17 +26,15 @@ class MessageCreateEventHandler (
     }
 
     private fun processMessage(message: Message): Mono<Void> {
-        val author = message.author.map { "${it.username}#${it.discriminator}" }.orElse("[unknown user]")
-        val bot = message.author.map { user -> user.isBot }.orElse(false)
-        val command = message.content.startsWith("/") && !bot
+        val author = message.author.map { "${it.username}#${it.discriminator}" }
+                .orElse("[unknown user]")
 
-        LOGGER.info("(command: ${command}, channel id: ${message.channelId}) $author ${message.content}")
-
-        if (command) {
-            // handle command here ???
-            // commandsManager.handle(message)
+        // if author is bot -> skip
+        if (message.author.map { user -> user.isBot }.orElse(false)) {
             return Mono.empty()
         }
+
+        LOGGER.info("(channel id: ${message.channelId}) $author ${message.content}")
 
         return channelsHandler.handle(message)
     }

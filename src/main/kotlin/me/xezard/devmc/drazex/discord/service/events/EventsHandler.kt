@@ -13,11 +13,12 @@ class EventsHandler (
     private val handlers: List<IEventHandler<Event>>
 ) {
     fun registerAllHandlers(gateway: GatewayDiscordClient): Mono<Void> {
-        return Flux.fromIterable(this.handlers).doOnNext { handler ->
-            gateway.on(handler.getEvent()) { event -> handler.handle(event) }
-                   .onErrorResume { error -> Mono.fromRunnable {
-                       Logger.getLogger("[EH]").log(Level.WARNING, "[EH] Error while handling event", error)
-                   }}.subscribe()
+        return Flux.fromIterable(this.handlers).flatMap { handler ->
+            gateway.on(handler.getEvent()) { event ->
+                handler.handle(event)
+            }.onErrorResume { error -> Mono.fromRunnable {
+                Logger.getLogger("[EH]").log(Level.WARNING, "[EH] Error while handling event", error)
+            }}
         }.then()
     }
 }

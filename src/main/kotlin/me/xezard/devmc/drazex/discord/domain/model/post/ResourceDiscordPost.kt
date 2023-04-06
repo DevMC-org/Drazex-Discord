@@ -10,7 +10,8 @@ class ResourceDiscordPost (
     slug: String,
     imageUrl: String
 ) : DiscordPost(
-    DiscordPostType.RESOURCE, title,
+    DiscordPostType.RESOURCE,
+    title,
     description,
     "${resourceType.name.lowercase()}/$slug",
     imageUrl
