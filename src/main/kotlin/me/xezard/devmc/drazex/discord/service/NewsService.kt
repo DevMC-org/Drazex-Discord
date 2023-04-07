@@ -22,18 +22,20 @@ package me.xezard.devmc.drazex.discord.service
 
 import discord4j.common.util.Snowflake
 import discord4j.core.spec.EmbedCreateSpec
-import discord4j.rest.util.Color
 import me.xezard.devmc.drazex.discord.DrazexBot
 import me.xezard.devmc.drazex.discord.config.DiscordConfiguration
 import me.xezard.devmc.drazex.discord.config.MessagesConfiguration
 import me.xezard.devmc.drazex.discord.domain.model.post.DiscordPost
 import me.xezard.devmc.drazex.discord.domain.model.post.DiscordPostType
+import me.xezard.devmc.drazex.discord.service.messages.MessagesService
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 
 @Service
 class NewsService (
     private val bot: DrazexBot,
+
+    private val messagesService: MessagesService,
 
     private val discordConfiguration: DiscordConfiguration,
     private val messagesConfiguration: MessagesConfiguration
@@ -53,7 +55,7 @@ class NewsService (
         val embed = EmbedCreateSpec.builder()
                 .title("DevMC")
                 .url(this.discordConfiguration.baseUrl)
-                .color(Color.of(this.discordConfiguration.messagesColor.toInt(16)))
+                .color(this.messagesService.getColorFromString(this.discordConfiguration.messagesColor))
                 .description(message)
                 .image(imageUrl)
                 .thumbnail(this.discordConfiguration.thumbnailUrl)

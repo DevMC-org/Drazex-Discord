@@ -38,7 +38,7 @@ class MessagesService (
                 map["title"]?.toString()?.let { title(it) }
                 map["description"]?.toString()?.let { description(it) }
                 map["url"]?.toString()?.let { url(it) }
-                map["color"]?.toString()?.let { getColorFromString(it)?.let { color -> color(color) } }
+                map["color"]?.toString()?.let { color(getColorFromString(it)) }
                 map["timestamp"]?.toString()?.let { Instant.parse(it)?.let { instant -> timestamp(instant) }}
 
                 (map["thumbnail"] as? Map<*, *>)?.let { thumbnailMap ->
@@ -74,7 +74,7 @@ class MessagesService (
         }
     }
 
-    fun getColorFromString(colorString: String?): Color? {
-        return colorString?.toIntOrNull(16)?.let { Color.of(it) }
+    fun getColorFromString(colorString: String?): Color {
+        return Color.of(java.awt.Color.decode(colorString).rgb)
     }
 }

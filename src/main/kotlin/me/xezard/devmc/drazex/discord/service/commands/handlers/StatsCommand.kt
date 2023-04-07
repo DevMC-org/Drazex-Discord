@@ -24,11 +24,12 @@ import discord4j.core.event.domain.interaction.ApplicationCommandInteractionEven
 import discord4j.core.spec.EmbedCreateSpec
 import discord4j.core.spec.InteractionApplicationCommandCallbackSpec
 import discord4j.discordjson.json.ApplicationCommandRequest
-import discord4j.rest.util.Color
 import discord4j.rest.util.Permission
+import me.xezard.devmc.drazex.discord.config.DiscordConfiguration
 import me.xezard.devmc.drazex.discord.config.properties.RolesProperties
 import me.xezard.devmc.drazex.discord.service.app.AppService
 import me.xezard.devmc.drazex.discord.service.commands.ICommandHandler
+import me.xezard.devmc.drazex.discord.service.messages.MessagesService
 import me.xezard.devmc.drazex.discord.service.roles.RolesService
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
@@ -36,7 +37,9 @@ import reactor.core.publisher.Mono
 @Component
 class StatsCommand (
     private val appService: AppService,
+    private val messagesService: MessagesService,
     private val rolesService: RolesService,
+    private val discordConfiguration: DiscordConfiguration,
     private val rolesProperties: RolesProperties
 ): ICommandHandler {
     override fun handle(event: ApplicationCommandInteractionEvent): Mono<Void> {
@@ -62,7 +65,7 @@ class StatsCommand (
 
                     val embed = EmbedCreateSpec.builder()
                             .title("Статистика")
-                            .color(Color.of(33, 247, 4))
+                            .color(this.messagesService.getColorFromString(this.discordConfiguration.messagesColor))
                             .addField("Аптайм", uptime, false)
                             .addField("Память", memoryInfo, false).build()
 

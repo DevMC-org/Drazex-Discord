@@ -24,15 +24,17 @@ import discord4j.common.util.Snowflake
 import discord4j.core.`object`.entity.Message
 import discord4j.core.spec.EmbedCreateSpec
 import discord4j.discordjson.json.MessageCreateRequest
-import discord4j.rest.util.Color
 import me.xezard.devmc.drazex.discord.config.DiscordConfiguration
 import me.xezard.devmc.drazex.discord.config.properties.NewsChannelsProperties
 import me.xezard.devmc.drazex.discord.service.channels.IChannelHandler
+import me.xezard.devmc.drazex.discord.service.messages.MessagesService
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 
 @Component
 class NewsChannelHandler (
+    private val messagesService: MessagesService,
+
     private val discordConfiguration: DiscordConfiguration,
     private val newsChannelsProperties: NewsChannelsProperties
 ): IChannelHandler {
@@ -57,7 +59,7 @@ class NewsChannelHandler (
         val embedBuilder: EmbedCreateSpec.Builder = EmbedCreateSpec.builder()
                 .author(author.username().replace(CHANNEL_NAME_PATTERN.toRegex(), ""),
                         channelUrl, avatar)
-                .color(Color.of(33, 247, 4))
+                .color(this.messagesService.getColorFromString(this.discordConfiguration.messagesColor))
                 .description(message.content.replace(DISCORD_EMOJI_PATTERN, ""))
                 .thumbnail(avatar)
                 .footer("• Лента новостей сообщества", "")
