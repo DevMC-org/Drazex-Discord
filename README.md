@@ -12,6 +12,15 @@ Discord-bot for the project community [devmc.org](https://devmc.org/),
 designed to automate administrative tasks, notifications 
 and other functionality related to the functioning of the community
 
+## Used stack 
+- **Kotlin** 
+- **Spring Boot** 
+- **Spring Webflux**
+- **Discord4J**
+- **RSocket**
+
+RSocket is used to exchange messages between the bot and DevMC services 
+
 ## Bugs and Feedback
 
 For bugs, questions and discussions please use the [Github Issues](https://github.com/DevMC-org/Drazex-Discord/issues).
