@@ -2,7 +2,7 @@ token: ""
 baseUrl: ""
 
 messages:
-  color: "#21f704"
+  color: ""
 
 thumbnail:
   url: ""
@@ -12,6 +12,12 @@ channels:
     news:
       consumer: ""
       publishers:
-      - ""
+        - ""
+        - ""
+        - ""
     showcase:
-    - ""
+      - ""
+
+roles:
+  ids:
+    admin: ""

@@ -18,13 +18,15 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package me.xezard.devmc.drazex.discord.config.properties
+package me.xezard.devmc.drazex.discord.service.roles
 
-import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.stereotype.Component
+import discord4j.core.`object`.entity.Member
+import org.springframework.stereotype.Service
+import reactor.core.publisher.Mono
 
-@Component
-@ConfigurationProperties("channels.ids.news")
-class NewsChannelsProperties {
-    lateinit var publishers: List<String>
+@Service
+class RolesService {
+    fun hasRole(member: Member, roleId: String): Mono<Boolean> {
+        return member.roles.any { it.id.asString() == roleId }
+    }
 }
