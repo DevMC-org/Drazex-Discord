@@ -1,0 +1,63 @@
+!!me.xezard.devmc.drazex.discord.service.Serializers.EmbedSerializer
+#
+# Embed example:
+#
+#newsEmbed:
+#  title: "best title in the world"
+#  author:
+#    name: "me, for sure!"
+#    url: "https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?cs=srgb&dl=pexels-pixabay-268533.jpg&fm=jpg"
+#    iconUrl: "https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?cs=srgb&dl=pexels-pixabay-268533.jpg&fm=jpg"
+#  description: "its fully useless description of body"
+#  url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+#  color: "#ff5050"
+#  fields:
+#    - name: "its first field"
+#      value: "best field in my opinion"
+#    - name: "its second field"
+#      value: "worst field ever"
+#  image:
+#    url: "https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?cs=srgb&dl=pexels-pixabay-268533.jpg&fm=jpg"
+#    thumbnailUrl: "https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?cs=srgb&dl=pexels-pixabay-268533.jpg&fm=jpg"
+#  footer:
+#    text: "dumbest footer"
+embeds:
+  newsEmbed:
+    title: "best title in the world"
+    author:
+      name: "me, for sure!"
+      url: "https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?cs=srgb&dl=pexels-pixabay-268533.jpg&fm=jpg"
+      iconUrl: "https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?cs=srgb&dl=pexels-pixabay-268533.jpg&fm=jpg"
+    description: "its fully useless description of body"
+    url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    color: "255,15,44"
+    fields:
+      - name: "its first field"
+        value: "best field in my opinion"
+      - name: "its second field"
+        value: "worst field ever"
+    image:
+      url: "https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?cs=srgb&dl=pexels-pixabay-268533.jpg&fm=jpg"
+      thumbnailUrl: "https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?cs=srgb&dl=pexels-pixabay-268533.jpg&fm=jpg"
+    footer:
+      text: "dumbest footer"
+
+  otherEmbed:
+    title: "best title in the world"
+    author:
+      name: "me, for sure!"
+      url: "https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?cs=srgb&dl=pexels-pixabay-268533.jpg&fm=jpg"
+      iconUrl: "https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?cs=srgb&dl=pexels-pixabay-268533.jpg&fm=jpg"
+    description: "its fully useless description of body"
+    url: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+    color: "255,15,44"
+    fields:
+      - name: "its first field"
+        value: "best field in my opinion"
+      - name: "its second field"
+        value: "worst field ever"
+    image:
+      url: "https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?cs=srgb&dl=pexels-pixabay-268533.jpg&fm=jpg"
+      thumbnailUrl: "https://images.pexels.com/photos/268533/pexels-photo-268533.jpeg?cs=srgb&dl=pexels-pixabay-268533.jpg&fm=jpg"
+    footer:
+      text: "dumbest footer"
