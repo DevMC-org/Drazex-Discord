@@ -1,8 +1,8 @@
-token: ""
+token: "MTA4NDM4MjU2NDg4MzYzMjEyOQ.GFgsKF.iexBlg9XBwf5ITAn8W0Isrd1kiUBwMjVIcY7t8"
 baseUrl: ""
 
 messages:
-  color: ""
+  color: "#21f704"
 
 thumbnail:
   url: ""
@@ -12,12 +12,6 @@ channels:
     news:
       consumer: ""
       publishers:
-        - ""
-        - ""
-        - ""
-    showcase:
       - ""
-
-roles:
-  ids:
-    admin: ""
+    showcase:
+    - ""
