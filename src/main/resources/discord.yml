@@ -6,18 +6,3 @@ messages:
 
 thumbnail:
   url: ""
-
-channels:
-  ids:
-    news:
-      consumer: ""
-      publishers:
-        - ""
-        - ""
-        - ""
-    showcase:
-      - ""
-
-roles:
-  ids:
-    admin: ""

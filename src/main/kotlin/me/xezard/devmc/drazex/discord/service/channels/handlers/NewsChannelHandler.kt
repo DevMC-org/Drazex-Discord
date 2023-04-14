@@ -26,6 +26,10 @@ import discord4j.core.spec.EmbedCreateSpec
 import discord4j.discordjson.json.MessageCreateRequest
 import me.xezard.devmc.drazex.discord.config.DiscordConfiguration
 import me.xezard.devmc.drazex.discord.config.properties.NewsChannelsProperties
+import me.xezard.devmc.drazex.discord.service.app.DiscordService.Companion.CHANNEL_NAME_PATTERN
+import me.xezard.devmc.drazex.discord.service.app.DiscordService.Companion.DISCORD_AVATAR_URL
+import me.xezard.devmc.drazex.discord.service.app.DiscordService.Companion.DISCORD_CHANNEL_URL
+import me.xezard.devmc.drazex.discord.service.app.DiscordService.Companion.DISCORD_EMOJI_PATTERN
 import me.xezard.devmc.drazex.discord.service.channels.IChannelHandler
 import me.xezard.devmc.drazex.discord.service.messages.MessagesService
 import org.springframework.stereotype.Component
@@ -36,27 +40,20 @@ class NewsChannelHandler (
     private val messagesService: MessagesService,
 
     private val discordConfiguration: DiscordConfiguration,
+    private val channelsProperties: NewsChannelsProperties,
     private val newsChannelsProperties: NewsChannelsProperties
 ): IChannelHandler {
-    companion object {
-        val DISCORD_EMOJI_PATTERN = Regex("<:\\w+:\\d+>")
-
-        const val DISCORD_AVATARS_URL = "https://cdn.discordapp.com/avatars/{user_id}/{avatar}.png"
-        const val DISCORD_CHANNELS_URL = "https://discordapp.com/channels/{id}"
-        const val CHANNEL_NAME_PATTERN = " #\\w+"
-    }
-
     override fun handle(message: Message): Mono<Void> {
         val messageData = message.data
         val author = messageData.author()
-        val avatar = DISCORD_AVATARS_URL
+        val avatar = DISCORD_AVATAR_URL
                 .replace("{user_id}", author.id().asString())
                 .replace("{avatar}", author.avatar().orElse("1"))
         val guildId = message.messageReference.flatMap { ref -> ref.guildId }
                 .orElse(Snowflake.of(23423))
                 .asString()
-        val channelUrl = DISCORD_CHANNELS_URL.replace("{id}", guildId)
-        val embedBuilder: EmbedCreateSpec.Builder = EmbedCreateSpec.builder()
+        val channelUrl = DISCORD_CHANNEL_URL.replace("{id}", guildId)
+        val embedBuilder = EmbedCreateSpec.builder()
                 .author(author.username().replace(CHANNEL_NAME_PATTERN.toRegex(), ""),
                         channelUrl, avatar)
                 .color(this.messagesService.getColorFromString(this.discordConfiguration.messagesColor))
@@ -66,7 +63,7 @@ class NewsChannelHandler (
 
         messageData.attachments().firstOrNull()?.url()?.let { embedBuilder.image(it) }
 
-        val consumerId = Snowflake.of(this.discordConfiguration.newsConsumerChannelId)
+        val consumerId = Snowflake.of(this.channelsProperties.consumer)
         val messageRequest = MessageCreateRequest.builder()
                 .addEmbed(embedBuilder.build().asRequest())
 

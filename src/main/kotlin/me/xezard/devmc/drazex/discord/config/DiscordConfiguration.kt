@@ -38,7 +38,4 @@ class DiscordConfiguration {
 
     @Value("\${thumbnail.url}")
     lateinit var thumbnailUrl: String
-
-    @Value("\${channels.ids.news.consumer}")
-    lateinit var newsConsumerChannelId: String
 }

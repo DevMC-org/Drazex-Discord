@@ -18,15 +18,16 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package me.xezard.devmc.drazex.discord.config.properties
+package me.xezard.devmc.drazex.discord.service.modals
 
-import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.stereotype.Component
+import discord4j.core.event.domain.interaction.ModalSubmitInteractionEvent
+import discord4j.core.spec.InteractionPresentModalSpec
+import reactor.core.publisher.Mono
 
-@Component
-@ConfigurationProperties("ids.news")
-class NewsChannelsProperties {
-    lateinit var publishers: List<String>
+interface IModalHandler {
+    fun handle(event: ModalSubmitInteractionEvent): Mono<Void>
 
-    lateinit var consumer: String
+    fun create(): InteractionPresentModalSpec
+
+    fun id(): String
 }

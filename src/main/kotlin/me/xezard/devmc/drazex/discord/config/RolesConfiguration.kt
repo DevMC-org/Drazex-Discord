@@ -18,15 +18,15 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package me.xezard.devmc.drazex.discord.config.properties
+package me.xezard.devmc.drazex.discord.config
 
 import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.stereotype.Component
+import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.PropertySource
 
-@Component
-@ConfigurationProperties("ids.news")
-class NewsChannelsProperties {
-    lateinit var publishers: List<String>
-
-    lateinit var consumer: String
+@Configuration
+@ConfigurationProperties
+@PropertySource(value = ["classpath:roles.yml"], factory = YamlPropertySourceFactory::class)
+class RolesConfiguration {
+    lateinit var ids: List<String>
 }

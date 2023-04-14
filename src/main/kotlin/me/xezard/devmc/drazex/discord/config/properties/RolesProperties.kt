@@ -24,7 +24,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Component
 
 @Component
-@ConfigurationProperties("roles.ids")
+@ConfigurationProperties("ids")
 class RolesProperties {
     lateinit var admin: String
+    lateinit var moderator: String
 }

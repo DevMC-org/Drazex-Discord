@@ -47,14 +47,14 @@ class MessageCreateHandler (
 
     private fun processMessage(message: Message): Mono<Void> {
         val author = message.author.map { "${it.username}#${it.discriminator}" }
-                .orElse("[unknown user]")
+                .orElse("[?]")
 
         // if author is bot -> skip
         if (message.author.map { user -> user.isBot }.orElse(false)) {
             return Mono.empty()
         }
 
-        LOGGER.info("(channel id: ${message.channelId}) $author ${message.content}")
+        LOGGER.info("(channel id: ${message.channelId.asString()}) $author ${message.content}")
 
         return channelsHandler.handle(message)
     }
