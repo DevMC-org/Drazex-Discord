@@ -112,7 +112,8 @@ class EmbedCommand (
         return ApplicationCommandRequest.builder()
                 .name(NAME)
                 .description(DESCRIPTION)
-                .defaultMemberPermissions(Permission.ADMINISTRATOR.value.toString())
+                .defaultMemberPermissions(Permission.MANAGE_WEBHOOKS.value.toString())
+//                .defaultMemberPermissions(Permission.ADMINISTRATOR.value.toString())
                 .addAllOptions(listOf(
                         ApplicationCommandOptionData.builder()
                                 .name(JSON_OPTION_NAME)
