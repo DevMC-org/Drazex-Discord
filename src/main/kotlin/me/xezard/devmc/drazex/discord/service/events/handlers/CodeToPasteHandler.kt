@@ -4,6 +4,7 @@ import com.google.common.io.CharStreams
 import discord4j.core.event.domain.message.MessageCreateEvent
 import discord4j.core.`object`.entity.Attachment
 import discord4j.core.`object`.entity.Message
+import discord4j.core.spec.EmbedCreateSpec
 import me.xezard.devmc.drazex.discord.domain.model.web.requests.File
 import me.xezard.devmc.drazex.discord.domain.model.web.requests.FileContent
 import me.xezard.devmc.drazex.discord.domain.model.web.requests.PastePost
@@ -22,9 +23,9 @@ import java.util.logging.Level
 
 @Component
 class CodeToPasteHandler(
-    private val channelsHandler: ChannelsHandler,
-    private val client: WebClient
+    private val channelsHandler: ChannelsHandler
 ): IEventHandler<MessageCreateEvent> {
+    private val client = WebClient.create()
     override fun handle(event: MessageCreateEvent): Mono<Void> {
         return Mono.justOrEmpty(event.message)
             .flatMap(::processMessage)
@@ -36,13 +37,19 @@ class CodeToPasteHandler(
         val client = WebClient.create()
 
         return message.attachments.takeIf { it.isNotEmpty() }?.let { attachments ->
-            processAttachments(client, attachments)
-                    .flatMap { result -> message.channel.flatMap { it.createMessage(result) }}
+            processAttachments(attachments)
+                    .flatMap { result -> message.channel.flatMap {
+                        message.delete().subscribe()
+                        val embed: EmbedCreateSpec = EmbedCreateSpec.builder()
+                            .title("Твой текст залит на paste.gg")
+                            .description("[Нажми, чтобы открыть!](https://paste.gg/p/anonymous/$result)")
+                            .build()
+                        it.createMessage(embed) }}
                     .then()
         } ?: Mono.empty()
     }
 
-    private fun processAttachments(client: WebClient, attachments: List<Attachment>): Mono<String> {
+    private fun processAttachments(attachments: List<Attachment>): Mono<String> {
         return Flux.fromIterable(attachments)
                 .flatMap { attachment ->
                     client.get()
@@ -61,10 +68,7 @@ class CodeToPasteHandler(
                             .retrieve()
                             .bodyToMono(PasteResponse::class.java)
                 }
-                .map { pasteResponse -> pasteResponse.result.files.map { file -> file.id } }
-                .flatMap { list ->
-                    Mono.just(list.joinToString("\n"))
-                }
+                .map { pasteResponse -> pasteResponse.result.id }
     }
 
     private fun handleError(exception: Throwable): Mono<Void> {

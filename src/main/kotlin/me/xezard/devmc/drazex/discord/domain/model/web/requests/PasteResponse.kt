@@ -6,7 +6,7 @@ class PasteResponse (
         var result: Result
 )
 class Result (
-    var files: List<FileResponse>
+    var id: String
 )
 class FileResponse (
     var id: String
