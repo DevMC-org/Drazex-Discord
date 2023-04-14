@@ -18,15 +18,15 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package me.xezard.devmc.drazex.discord.config.properties
+package me.xezard.devmc.drazex.discord.service.modals
 
-import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.stereotype.Component
+import org.springframework.stereotype.Service
 
-@Component
-@ConfigurationProperties("ids.news")
-class NewsChannelsProperties {
-    lateinit var publishers: List<String>
-
-    lateinit var consumer: String
+@Service
+class ModalsHandler (
+    private val handlers: List<IModalHandler>
+) {
+    fun findModalById(id: String): IModalHandler? {
+        return this.handlers.find { it.id() == id }
+    }
 }

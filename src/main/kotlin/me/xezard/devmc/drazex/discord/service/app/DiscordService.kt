@@ -18,15 +18,15 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package me.xezard.devmc.drazex.discord.config.properties
+package me.xezard.devmc.drazex.discord.service.app
 
-import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.stereotype.Component
+class DiscordService {
+    companion object {
+        val DISCORD_EMOJI_PATTERN = Regex("<:\\w+:\\d+>")
 
-@Component
-@ConfigurationProperties("ids.news")
-class NewsChannelsProperties {
-    lateinit var publishers: List<String>
-
-    lateinit var consumer: String
+        const val DISCORD_AVATAR_URL = "https://cdn.discordapp.com/avatars/{user_id}/{avatar}.png"
+        const val DISCORD_CHANNEL_URL = "https://discordapp.com/channels/{id}"
+        const val DISCORD_USER_URL = "https://discordapp.com/users/{id}"
+        const val CHANNEL_NAME_PATTERN = " #\\w+"
+    }
 }

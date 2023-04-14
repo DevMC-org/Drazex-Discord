@@ -25,6 +25,7 @@ import discord4j.core.spec.EmbedCreateSpec
 import me.xezard.devmc.drazex.discord.DrazexBot
 import me.xezard.devmc.drazex.discord.config.DiscordConfiguration
 import me.xezard.devmc.drazex.discord.config.MessagesConfiguration
+import me.xezard.devmc.drazex.discord.config.properties.NewsChannelsProperties
 import me.xezard.devmc.drazex.discord.domain.model.post.DiscordPost
 import me.xezard.devmc.drazex.discord.domain.model.post.DiscordPostType
 import me.xezard.devmc.drazex.discord.service.messages.MessagesService
@@ -38,6 +39,7 @@ class NewsService (
     private val messagesService: MessagesService,
 
     private val discordConfiguration: DiscordConfiguration,
+    private val channelsProperties: NewsChannelsProperties,
     private val messagesConfiguration: MessagesConfiguration
 ) {
     // <post type, post template>
@@ -62,7 +64,7 @@ class NewsService (
                 .build()
                 .asRequest()
 
-        return this.bot.discord.getChannelById(Snowflake.of(this.discordConfiguration.newsConsumerChannelId))
+        return this.bot.discord.getChannelById(Snowflake.of(this.channelsProperties.consumer))
                 .createMessage(embed)
                 .then()
     }

@@ -24,9 +24,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Component
 
 @Component
-@ConfigurationProperties("ids.news")
-class NewsChannelsProperties {
-    lateinit var publishers: List<String>
-
-    lateinit var consumer: String
+@ConfigurationProperties("ids.requests")
+class DevelopmentRequestChannelsProperties {
+    lateinit var development: List<String>
 }
