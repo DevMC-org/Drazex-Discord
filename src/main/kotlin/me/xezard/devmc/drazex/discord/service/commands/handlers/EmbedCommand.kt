@@ -21,20 +21,23 @@
 package me.xezard.devmc.drazex.discord.service.commands.handlers
 
 import discord4j.common.util.Snowflake
+import discord4j.core.DiscordClient
+import discord4j.core.GatewayDiscordClient
 import discord4j.core.event.domain.interaction.ApplicationCommandInteractionEvent
 import discord4j.core.`object`.command.ApplicationCommandInteractionOption
 import discord4j.core.`object`.command.ApplicationCommandInteractionOptionValue
 import discord4j.core.`object`.command.ApplicationCommandOption
+import discord4j.core.`object`.command.ApplicationCommandPermission
 import discord4j.core.`object`.entity.channel.GuildChannel
 import discord4j.core.spec.InteractionApplicationCommandCallbackSpec
-import discord4j.discordjson.json.ApplicationCommandOptionData
-import discord4j.discordjson.json.ApplicationCommandRequest
-import discord4j.discordjson.json.MessageEditRequest
+import discord4j.discordjson.json.*
 import discord4j.rest.util.Permission
+import me.xezard.devmc.drazex.discord.DrazexBot
 import me.xezard.devmc.drazex.discord.service.commands.ICommandHandler
 import me.xezard.devmc.drazex.discord.service.messages.MessagesService
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
+
 
 @Component
 class EmbedCommand (
@@ -108,12 +111,23 @@ class EmbedCommand (
         }).then(successMessage)
     }
 
-    override fun register(): ApplicationCommandRequest {
-        return ApplicationCommandRequest.builder()
+    override fun register(
+        discordClient: DiscordClient,
+        guild: UserGuildData,
+        gateway: GatewayDiscordClient
+    ): ApplicationCommandRequest {
+        val role = discordClient.getRoleById(Snowflake.of(guild.id()), Snowflake.of("1096507938434195596"))
+        val moder = ApplicationCommandPermissionsData.builder()
+            .id("775683419073150988")
+            .type(ApplicationCommandPermission.Type.ROLE.value)
+            .permission(true)
+            .build()
+        val mmm = ApplicationCommandPermission(gateway, Snowflake.of(guild.id()),moder)
+            return ApplicationCommandRequest.builder()
                 .name(NAME)
                 .description(DESCRIPTION)
-                .defaultMemberPermissions(Permission.MANAGE_WEBHOOKS.value.toString())
-//                .defaultMemberPermissions(Permission.ADMINISTRATOR.value.toString())
+            .defaultPermission(false)
+                .defaultMemberPermissions(Permission.ADMINISTRATOR.value.toString())
                 .addAllOptions(listOf(
                         ApplicationCommandOptionData.builder()
                                 .name(JSON_OPTION_NAME)

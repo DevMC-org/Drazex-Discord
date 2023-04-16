@@ -12,6 +12,7 @@ import me.xezard.devmc.drazex.discord.domain.model.web.requests.PasteResponse
 import me.xezard.devmc.drazex.discord.service.channels.ChannelsHandler
 import me.xezard.devmc.drazex.discord.service.events.IEventHandler
 import org.springframework.core.io.buffer.DataBuffer
+import org.springframework.core.io.buffer.DataBufferUtils
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
@@ -52,10 +53,12 @@ class CodeToPasteHandler(
     private fun processAttachments(attachments: List<Attachment>): Mono<String> {
         return Flux.fromIterable(attachments)
                 .flatMap { attachment ->
-                    client.get()
-                            .uri(attachment.url)
-                            .retrieve()
-                            .bodyToFlux(DataBuffer::class.java)
+                    DataBufferUtils.join(client.get()
+                        .uri(attachment.url)
+                        .retrieve()
+                        .bodyToFlux(DataBuffer::class.java)
+                    )
+
                 }
                 .map { buffer -> CharStreams.toString(InputStreamReader(buffer.asInputStream())) }
                 .map { File(FileContent("text", it)) }
