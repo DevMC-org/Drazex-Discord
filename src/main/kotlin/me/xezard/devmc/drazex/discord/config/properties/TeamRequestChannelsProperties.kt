@@ -24,7 +24,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Component
 
 @Component
-@ConfigurationProperties("channels.ids.requests.team")
+@ConfigurationProperties("ids.requests.team")
 class TeamRequestChannelsProperties {
     lateinit var search: List<String>
     lateinit var recruitment: List<String>

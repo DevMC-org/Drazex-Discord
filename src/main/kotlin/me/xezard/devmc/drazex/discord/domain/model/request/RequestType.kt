@@ -22,13 +22,21 @@ package me.xezard.devmc.drazex.discord.domain.model.request
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
-enum class RequestType {
+enum class RequestType (
+    private val property: String
+) {
     @JsonProperty("executor-search")
-    EXECUTOR_SEARCH,
+    EXECUTOR_SEARCH("executor-search"),
 
     @JsonProperty("team-recruitment")
-    TEAM_RECRUITMENT,
+    TEAM_RECRUITMENT("team-recruitment"),
 
     @JsonProperty("team-search")
-    TEAM_SEARCH
+    TEAM_SEARCH("team-search");
+
+    companion object {
+        fun findByProperty(value: String): RequestType? = values().firstOrNull {
+            it.property == value
+        }
+    }
 }

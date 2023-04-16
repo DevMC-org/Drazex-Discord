@@ -18,27 +18,14 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package me.xezard.devmc.drazex.discord.config
+package me.xezard.devmc.drazex.discord.service.modals
 
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.PropertySource
+import discord4j.core.`object`.component.TextInput
+import org.springframework.stereotype.Service
 
-@Configuration
-@PropertySource(value = ["classpath:discord.yml"], factory = YamlPropertySourceFactory::class)
-class DiscordConfiguration {
-    @Value("\${token}")
-    lateinit var token: String
-
-    @Value("\${baseUrl}")
-    lateinit var baseUrl: String
-
-    @Value("\${messages.color}")
-    lateinit var messagesColor: String
-
-    @Value("\${messages.requests.color}")
-    lateinit var requestsMessageColor: String
-
-    @Value("\${thumbnail.url}")
-    lateinit var thumbnailUrl: String
+@Service
+class ModalsService {
+    fun getInputValue(inputs: List<TextInput>, id: String): String {
+        return inputs.find { input -> input.customId == id }?.data?.value()?.get() ?: ""
+    }
 }
