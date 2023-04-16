@@ -68,6 +68,13 @@ class MessagesService (
                         addField(name, value, inline)
                     }
                 }
+
+                (map["footer"] as Map<*, *>)?.let { footer ->
+                    val text = footer["text"]?.toString() ?: ""
+                    val iconUrl = footer["icon_url"]?.toString()
+
+                    footer(text, iconUrl)
+                }
             }.build()
         } catch (ex: Exception) {
             null

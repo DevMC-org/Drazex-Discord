@@ -53,7 +53,7 @@ class RequestsScheduler (
                 .flatMap { Mono.just(this.bot.discord.getChannelById(Snowflake.of(it))) }
                 .flatMap { channel ->
                     channel.getMessagesBefore(Snowflake.of(Instant.now()))
-                            .filter { isOutdated(it.timestamp()) && !it.author().bot().toOptional().orElse(false) }
+                            .filter { isOutdated(it.timestamp()) }
                             .flatMap { channel.getRestMessage(Snowflake.of(it.id().asString())).delete(null) }
                 }.subscribe()
     }
