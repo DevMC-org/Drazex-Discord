@@ -18,27 +18,23 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package me.xezard.devmc.drazex.discord.config
+package me.xezard.devmc.drazex.discord.service.events.handlers
 
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.PropertySource
+import discord4j.core.event.domain.interaction.ModalSubmitInteractionEvent
+import me.xezard.devmc.drazex.discord.service.events.IEventHandler
+import me.xezard.devmc.drazex.discord.service.modals.ModalsHandler
+import org.springframework.stereotype.Component
+import reactor.core.publisher.Mono
 
-@Configuration
-@PropertySource(value = ["classpath:discord.yml"], factory = YamlPropertySourceFactory::class)
-class DiscordConfiguration {
-    @Value("\${token}")
-    lateinit var token: String
+@Component
+class ModalSubmitInteractionHandler (
+    private val modalsHandler: ModalsHandler
+): IEventHandler<ModalSubmitInteractionEvent> {
+    override fun handle(event: ModalSubmitInteractionEvent): Mono<Void> {
+        return this.modalsHandler.findModalById(event.customId)?.handle(event) ?: Mono.empty()
+    }
 
-    @Value("\${baseUrl}")
-    lateinit var baseUrl: String
-
-    @Value("\${messages.color}")
-    lateinit var messagesColor: String
-
-    @Value("\${messages.requests.color}")
-    lateinit var requestsMessageColor: String
-
-    @Value("\${thumbnail.url}")
-    lateinit var thumbnailUrl: String
+    override fun getEvent(): Class<ModalSubmitInteractionEvent> {
+        return ModalSubmitInteractionEvent::class.java
+    }
 }
