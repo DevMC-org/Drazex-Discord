@@ -20,10 +20,13 @@
  */
 package me.xezard.devmc.drazex.discord.service.commands.handlers
 
+import discord4j.core.DiscordClient
+import discord4j.core.GatewayDiscordClient
 import discord4j.core.event.domain.interaction.ApplicationCommandInteractionEvent
 import discord4j.core.spec.EmbedCreateSpec
 import discord4j.core.spec.InteractionApplicationCommandCallbackSpec
 import discord4j.discordjson.json.ApplicationCommandRequest
+import discord4j.discordjson.json.UserGuildData
 import discord4j.rest.util.Permission
 import me.xezard.devmc.drazex.discord.config.DiscordConfiguration
 import me.xezard.devmc.drazex.discord.config.properties.RolesProperties
@@ -76,7 +79,11 @@ class StatsCommand (
                 }
     }
 
-    override fun register(): ApplicationCommandRequest {
+    override fun register(
+        discordClient: DiscordClient,
+        guild: UserGuildData,
+        gateway: GatewayDiscordClient
+    ): ApplicationCommandRequest {
         return ApplicationCommandRequest.builder()
                 .name(this.name())
                 .description("Display the overall statistics of the bot")

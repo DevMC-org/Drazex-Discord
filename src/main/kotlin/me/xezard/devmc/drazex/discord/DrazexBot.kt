@@ -49,9 +49,10 @@ class DrazexBot(
                     }
                     .withGateway { gateway: GatewayDiscordClient ->
                         this.eventsHandler.registerAllHandlers(gateway)
+                        this.commandsHandler.registerAllHandlers(this.discord, gateway)
                     }
                     .subscribe()
 
-        this.commandsHandler.registerAllHandlers(this.discord).subscribe()
+        
     }
 }

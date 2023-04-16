@@ -21,6 +21,7 @@
 package me.xezard.devmc.drazex.discord.service.commands
 
 import discord4j.core.DiscordClient
+import discord4j.core.GatewayDiscordClient
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
@@ -29,14 +30,14 @@ import reactor.core.publisher.Mono
 class CommandsHandler (
     private val handlers: List<ICommandHandler>
 ) {
-    fun registerAllHandlers(discordClient: DiscordClient): Mono<Void> {
+    fun registerAllHandlers(discordClient: DiscordClient, gateway: GatewayDiscordClient): Mono<Void> {
         return discordClient.applicationId.flatMapMany { appId ->
             discordClient.guilds.flatMap { guild ->
                 Flux.fromIterable(this.handlers).flatMap { handler ->
                     discordClient.applicationService.createGuildApplicationCommand(
                             appId,
                             guild.id().asLong(),
-                            handler.register()
+                            handler.register(discordClient, guild, gateway)
                     )
                 }
             }
