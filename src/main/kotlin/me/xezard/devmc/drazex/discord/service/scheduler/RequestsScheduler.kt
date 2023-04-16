@@ -1,0 +1,69 @@
+/*
+ *  Drazex-Discord
+ *  Discord-bot for the project community devmc.org,
+ *  designed to automate administrative tasks, notifications
+ *  and other functionality related to the functioning of the community
+ *  Copyright (C) 2023 Ivan `Xezard` Zotov
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program. If not, see <https://www.gnu.org/licenses/>.
+ */
+package me.xezard.devmc.drazex.discord.service.scheduler
+
+import discord4j.common.util.Snowflake
+import me.xezard.devmc.drazex.discord.DrazexBot
+import me.xezard.devmc.drazex.discord.config.properties.DevelopmentRequestChannelsProperties
+import me.xezard.devmc.drazex.discord.config.properties.TeamRequestChannelsProperties
+import org.springframework.scheduling.annotation.Scheduled
+import org.springframework.stereotype.Component
+import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.concurrent.TimeUnit
+
+@Component
+class RequestsScheduler (
+    private val bot: DrazexBot,
+    private val developmentRequestChannelsProperties: DevelopmentRequestChannelsProperties,
+    private val channelsProperties: TeamRequestChannelsProperties
+) {
+    companion object {
+        val FORMATTER: DateTimeFormatter = DateTimeFormatter.ISO_INSTANT
+    }
+
+    @Scheduled(fixedDelay = 1, timeUnit = TimeUnit.HOURS)
+    fun deleteOutdatedMessages() {
+        val channelsIds: List<String> = this.developmentRequestChannelsProperties.development +
+                this.channelsProperties.search + this.channelsProperties.recruitment
+
+        Flux.fromIterable(channelsIds)
+                .flatMap { Mono.just(this.bot.discord.getChannelById(Snowflake.of(it))) }
+                .flatMap { channel ->
+                    channel.getMessagesBefore(Snowflake.of(Instant.now()))
+                            .filter { isOutdated(it.timestamp()) && !it.author().bot().toOptional().orElse(false) }
+                            .flatMap { channel.getRestMessage(Snowflake.of(it.id().asString())).delete(null) }
+                }.subscribe()
+    }
+
+    private fun isOutdated(timestamp: String): Boolean {
+        val monthAgo = LocalDateTime.now().minusMonths(1)
+        val instant = Instant.from(FORMATTER.parse(timestamp))
+
+        val thresholdInstant = monthAgo.atZone(ZoneId.systemDefault()).toInstant()
+
+        return instant.isBefore(thresholdInstant)
+    }
+}

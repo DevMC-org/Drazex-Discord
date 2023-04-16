@@ -59,10 +59,7 @@ class RequestCommand (
         RequestType.TEAM_SEARCH to Pair(TEAM_SEARCH_LABEL, teamSearchModalHandler),
     )
 
-    /*
-     * TODO: create a sсheduler that deletes messages in the request channels a month after they are published
-     * TODO: add a limit on the number of requests created per user?
-     */
+    // TODO: add a limit on the number of requests created per user?
     override fun handle(event: ApplicationCommandInteractionEvent): Mono<Void> {
         val exception = IllegalArgumentException("Invalid request type")
         val requestType = event.interaction.commandInteraction
