@@ -34,6 +34,10 @@ class RequestDeleteButtonHandler (
     private val developmentRequestChannelsProperties: DevelopmentRequestChannelsProperties,
     private val channelsProperties: TeamRequestChannelsProperties
 ): IButtonHandler {
+    companion object {
+        const val BUTTON_ID = "request-button:"
+    }
+
     override fun handle(event: ButtonInteractionEvent, buttonId: String): Mono<Void> {
         val channelsIds = this.developmentRequestChannelsProperties.development +
                 this.channelsProperties.search + this.channelsProperties.recruitment
@@ -58,6 +62,6 @@ class RequestDeleteButtonHandler (
     }
 
     override fun tracks(id: String): Boolean {
-        return true
+        return id.startsWith(BUTTON_ID)
     }
 }
