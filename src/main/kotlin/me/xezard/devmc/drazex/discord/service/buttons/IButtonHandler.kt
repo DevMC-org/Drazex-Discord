@@ -18,27 +18,13 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package me.xezard.devmc.drazex.discord.service.events.handlers
+package me.xezard.devmc.drazex.discord.service.buttons
 
 import discord4j.core.event.domain.interaction.ButtonInteractionEvent
-import me.xezard.devmc.drazex.discord.service.buttons.ButtonsHandler
-import me.xezard.devmc.drazex.discord.service.events.IEventHandler
-import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 
-@Component
-class ButtonInteractionHandler (
-    private val buttonsHandler: ButtonsHandler
-): IEventHandler<ButtonInteractionEvent> {
-    override fun handle(event: ButtonInteractionEvent): Mono<Void> {
-        val buttonId = event.interaction.data.data().toOptional().flatMap { data ->
-            data.customId().toOptional().map { customId -> customId }}
-                .orElse(null)
+interface IButtonHandler {
+    fun handle(event: ButtonInteractionEvent, buttonId: String): Mono<Void>
 
-        return this.buttonsHandler.findButtonById(buttonId)?.handle(event, buttonId) ?: Mono.empty()
-    }
-
-    override fun getEvent(): Class<ButtonInteractionEvent> {
-        return ButtonInteractionEvent::class.java
-    }
+    fun tracks(id: String): Boolean
 }
