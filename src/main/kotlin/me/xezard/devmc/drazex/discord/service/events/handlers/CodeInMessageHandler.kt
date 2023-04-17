@@ -5,10 +5,10 @@ import discord4j.core.event.domain.message.MessageCreateEvent
 import discord4j.core.`object`.entity.Attachment
 import discord4j.core.`object`.entity.Message
 import discord4j.core.spec.EmbedCreateSpec
-import me.xezard.devmc.drazex.discord.domain.model.web.requests.File
-import me.xezard.devmc.drazex.discord.domain.model.web.requests.FileContent
-import me.xezard.devmc.drazex.discord.domain.model.web.requests.PastePost
-import me.xezard.devmc.drazex.discord.domain.model.web.requests.PasteResponse
+import me.xezard.devmc.drazex.discord.domain.model.web.requests.paste.CodePasteFileContent
+import me.xezard.devmc.drazex.discord.domain.model.web.requests.paste.CodePasteFileRequest
+import me.xezard.devmc.drazex.discord.domain.model.web.requests.paste.CodePasteRequest
+import me.xezard.devmc.drazex.discord.domain.model.web.responses.paste.CodePasteResponse
 import me.xezard.devmc.drazex.discord.service.events.IEventHandler
 import org.springframework.core.io.buffer.DataBuffer
 import org.springframework.core.io.buffer.DataBufferUtils
@@ -21,6 +21,10 @@ import java.io.InputStreamReader
 
 @Component
 class CodeInMessageHandler: IEventHandler<MessageCreateEvent> {
+    companion object {
+        const val PASTE_API_URL = "https://api.paste.gg/v1/pastes"
+    }
+
     private val client = WebClient.create()
 
     override fun handle(event: MessageCreateEvent): Mono<Void> {
@@ -48,26 +52,28 @@ class CodeInMessageHandler: IEventHandler<MessageCreateEvent> {
 
     private fun processAttachments(attachments: List<Attachment>): Mono<String> {
         return Flux.fromIterable(attachments)
-                .flatMap { attachment ->
-                    DataBufferUtils.join(client.get()
-                        .uri(attachment.url)
-                        .retrieve()
-                        .bodyToFlux(DataBuffer::class.java)
-                    )
-
-                }
-                .map { buffer -> CharStreams.toString(InputStreamReader(buffer.asInputStream())) }
-                .map { File(FileContent("text", it)) }
+                .flatMap { this.retrieveFile(it.url) }
+                .map { CodePasteFileRequest(CodePasteFileContent("text",
+                       CharStreams.toString(InputStreamReader(it.asInputStream())))) }
                 .collectList()
-                .map { PastePost(it) }
-                .flatMap { pastePost ->
-                    client.post()
-                            .uri("https://api.paste.gg/v1/pastes")
-                            .body(BodyInserters.fromValue(pastePost))
-                            .retrieve()
-                            .bodyToMono(PasteResponse::class.java)
-                }
-                .map { pasteResponse -> pasteResponse.result.id }
+                .map { CodePasteRequest(it) }
+                .flatMap { this.sendToPasteService(it) }
+                .map { it.result.id }
+    }
+
+    private fun sendToPasteService(post: CodePasteRequest): Mono<CodePasteResponse> {
+        return this.client.post()
+                .uri(PASTE_API_URL)
+                .body(BodyInserters.fromValue(post))
+                .retrieve()
+                .bodyToMono(CodePasteResponse::class.java)
+    }
+
+    private fun retrieveFile(url: String): Mono<DataBuffer> {
+        return DataBufferUtils.join(this.client.get()
+                .uri(url)
+                .retrieve()
+                .bodyToFlux(DataBuffer::class.java))
     }
 
     override fun getEvent(): Class<out MessageCreateEvent> {
