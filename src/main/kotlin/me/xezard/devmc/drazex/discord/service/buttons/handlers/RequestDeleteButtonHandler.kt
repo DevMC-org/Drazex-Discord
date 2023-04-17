@@ -18,52 +18,46 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package me.xezard.devmc.drazex.discord.service.scheduler
+package me.xezard.devmc.drazex.discord.service.buttons.handlers
 
-import discord4j.common.util.Snowflake
-import me.xezard.devmc.drazex.discord.DrazexBot
+import discord4j.core.event.domain.interaction.ButtonInteractionEvent
 import me.xezard.devmc.drazex.discord.config.properties.DevelopmentRequestChannelsProperties
+import me.xezard.devmc.drazex.discord.config.properties.RolesProperties
 import me.xezard.devmc.drazex.discord.config.properties.TeamRequestChannelsProperties
-import org.springframework.scheduling.annotation.Scheduled
+import me.xezard.devmc.drazex.discord.service.buttons.IButtonHandler
 import org.springframework.stereotype.Component
-import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.format.DateTimeFormatter
-import java.util.concurrent.TimeUnit
 
 @Component
-class RequestsScheduler (
-    private val bot: DrazexBot,
+class RequestDeleteButtonHandler (
+    private val rolesProperties: RolesProperties,
     private val developmentRequestChannelsProperties: DevelopmentRequestChannelsProperties,
     private val channelsProperties: TeamRequestChannelsProperties
-) {
-    companion object {
-        val FORMATTER: DateTimeFormatter = DateTimeFormatter.ISO_INSTANT
-    }
-
-    @Scheduled(fixedDelay = 1, timeUnit = TimeUnit.HOURS)
-    fun deleteOutdatedMessages() {
+): IButtonHandler {
+    override fun handle(event: ButtonInteractionEvent, buttonId: String): Mono<Void> {
         val channelsIds = this.developmentRequestChannelsProperties.development +
                 this.channelsProperties.search + this.channelsProperties.recruitment
+        val member = event.interaction.member
+        val userId = event.interaction.user.id
 
-        Flux.fromIterable(channelsIds)
-                .flatMap { Mono.just(this.bot.discord.getChannelById(Snowflake.of(it))) }
-                .flatMap { channel ->
-                    channel.getMessagesBefore(Snowflake.of(Instant.now()))
-                            .filter { this.isOutdated(it.timestamp()) }
-                            .flatMap { channel.getRestMessage(Snowflake.of(it.id().asString())).delete(null) }
-                }.subscribe()
+        val hasPermission = Mono.zip(Mono.justOrEmpty(member).flatMap {
+            it.roles.any { role ->
+                role.id.asString() == rolesProperties.admin ||
+                role.id.asString() == rolesProperties.moderator
+            }
+        }, Mono.just(userId.asString() == buttonId)) { permission, owner -> permission || owner }
+
+        return event.interaction.channel.filter {
+            channelsIds.contains(it.id.asString())
+        }.then(hasPermission).filter { it }
+         .switchIfEmpty(event.reply("Вы не можете удалить запрос, созданный другим пользователем.")
+                 .withEphemeral(true)
+                 .thenReturn(false))
+         .then(Mono.justOrEmpty(event.message))
+         .flatMap { it.delete() }
     }
 
-    private fun isOutdated(timestamp: String): Boolean {
-        val monthAgo = LocalDateTime.now().minusMonths(1)
-        val instant = Instant.from(FORMATTER.parse(timestamp))
-
-        val thresholdInstant = monthAgo.atZone(ZoneId.systemDefault()).toInstant()
-
-        return instant.isBefore(thresholdInstant)
+    override fun tracks(id: String): Boolean {
+        return true
     }
 }
