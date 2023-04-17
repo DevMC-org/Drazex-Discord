@@ -31,8 +31,8 @@ import reactor.core.publisher.Mono
 
 @Controller
 class RSocketController(
-    private var newsService: NewsService,
-    private var telegramPostMapper: DiscordPostMapper
+    private val newsService: NewsService,
+    private val telegramPostMapper: DiscordPostMapper
 ) {
     @MessageMapping("resource")
     fun onNewResource(request: ResourceRequest): Mono<Void> {

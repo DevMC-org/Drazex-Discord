@@ -37,7 +37,7 @@ class CommandsHandler (
                     discordClient.applicationService.createGuildApplicationCommand(
                             appId,
                             guild.id().asLong(),
-                            handler.register(discordClient, guild, gateway)
+                            handler.register()
                     )
                 }
             }
