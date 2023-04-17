@@ -37,14 +37,15 @@ class CodeInMessageHandler: IEventHandler<MessageCreateEvent> {
         return if (attachments.isNotEmpty()) {
             val pasteId = this.processAttachments(attachments)
 
-            val embed = EmbedCreateSpec.builder()
-                    .title("Твой текст залит на paste.gg")
-                    .description("[Нажми, чтобы открыть!](https://paste.gg/p/anonymous/$pasteId)")
-                    .build()
+            pasteId.flatMap {
+                val embed = EmbedCreateSpec.builder()
+                        .title("Твой текст залит на paste.gg")
+                        .description("[Нажми, чтобы открыть!](https://paste.gg/p/anonymous/$it)")
+                        .build()
 
-            message.channel.flatMap {
-                it.createMessage(embed)
-            }.then(message.delete())
+                message.channel.flatMap { message -> message.createMessage(embed) }
+                               .then(message.delete())
+            }
         } else {
             Mono.empty()
         }
