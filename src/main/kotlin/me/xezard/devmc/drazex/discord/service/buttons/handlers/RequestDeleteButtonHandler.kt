@@ -21,26 +21,20 @@
 package me.xezard.devmc.drazex.discord.service.buttons.handlers
 
 import discord4j.core.event.domain.interaction.ButtonInteractionEvent
-import me.xezard.devmc.drazex.discord.config.properties.DevelopmentRequestChannelsProperties
 import me.xezard.devmc.drazex.discord.config.properties.RolesProperties
-import me.xezard.devmc.drazex.discord.config.properties.TeamRequestChannelsProperties
 import me.xezard.devmc.drazex.discord.service.buttons.IButtonHandler
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 
 @Component
 class RequestDeleteButtonHandler (
-    private val rolesProperties: RolesProperties,
-    private val developmentRequestChannelsProperties: DevelopmentRequestChannelsProperties,
-    private val channelsProperties: TeamRequestChannelsProperties
+    private val rolesProperties: RolesProperties
 ): IButtonHandler {
     companion object {
         const val BUTTON_ID = "request-button:"
     }
 
     override fun handle(event: ButtonInteractionEvent, buttonId: String): Mono<Void> {
-        val channelsIds = this.developmentRequestChannelsProperties.development +
-                this.channelsProperties.search + this.channelsProperties.recruitment
         val member = event.interaction.member
         val userId = event.interaction.user.id
 
@@ -51,14 +45,12 @@ class RequestDeleteButtonHandler (
             }
         }, Mono.just(userId.asString() == buttonId)) { permission, owner -> permission || owner }
 
-        return event.interaction.channel.filter {
-            channelsIds.contains(it.id.asString())
-        }.then(hasPermission).filter { it }
-         .switchIfEmpty(event.reply("Вы не можете удалить запрос, созданный другим пользователем.")
-                 .withEphemeral(true)
-                 .thenReturn(false))
-         .then(Mono.justOrEmpty(event.message))
-         .flatMap { it.delete() }
+        return hasPermission.filter { it }
+                .then(Mono.justOrEmpty(event.message))
+                .flatMap { it.delete() }
+                .switchIfEmpty(event.reply("Вы не можете удалить запрос, созданный другим пользователем.")
+                        .withEphemeral(true))
+
     }
 
     override fun tracks(id: String): Boolean {
