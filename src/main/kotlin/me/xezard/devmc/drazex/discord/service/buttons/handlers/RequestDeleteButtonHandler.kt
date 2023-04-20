@@ -42,11 +42,16 @@ class RequestDeleteButtonHandler (
             it.roles.any { role -> role.id.asString() == rolesProperties.admin }
         }, Mono.just(userId.asString() == buttonId)) { permission, owner -> permission || owner }
 
-        return hasPermission.filter { it }
-                .flatMap { Mono.justOrEmpty(event.message) }
-                .flatMap { it.delete() }
-                .switchIfEmpty(event.reply("Вы не можете удалить запрос, созданный другим пользователем.")
-                        .withEphemeral(true))
+        return hasPermission.flatMap {
+            if (it) {
+                Mono.justOrEmpty(event.message).flatMap {
+                    message -> message.delete()
+                }
+            } else {
+                event.reply("Вы не можете удалить запрос, созданный другим пользователем.")
+                        .withEphemeral(true)
+            }
+        }
     }
 
     override fun tracks(id: String): Boolean {
