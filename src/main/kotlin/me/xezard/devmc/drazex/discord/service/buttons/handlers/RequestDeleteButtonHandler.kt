@@ -39,18 +39,14 @@ class RequestDeleteButtonHandler (
         val userId = event.interaction.user.id
 
         val hasPermission = Mono.zip(Mono.justOrEmpty(member).flatMap {
-            it.roles.any { role ->
-                role.id.asString() == rolesProperties.admin ||
-                role.id.asString() == rolesProperties.moderator
-            }
+            it.roles.any { role -> role.id.asString() == rolesProperties.admin }
         }, Mono.just(userId.asString() == buttonId)) { permission, owner -> permission || owner }
 
         return hasPermission.filter { it }
-                .then(Mono.justOrEmpty(event.message))
+                .flatMap { Mono.justOrEmpty(event.message) }
                 .flatMap { it.delete() }
                 .switchIfEmpty(event.reply("Вы не можете удалить запрос, созданный другим пользователем.")
                         .withEphemeral(true))
-
     }
 
     override fun tracks(id: String): Boolean {
