@@ -72,10 +72,10 @@ abstract class RequestModalHandler (
 
         inputsMapping.forEach { (field, inputId) ->
             this.modalsService.getInputValue(inputs, inputId)?.let {
-                embedBuilder.addField(field, it, false)
-
                 if (field == title) {
                     embedBuilder.title("$field: $it")
+                } else {
+                    embedBuilder.addField(field, it, false)
                 }
             }
         }
