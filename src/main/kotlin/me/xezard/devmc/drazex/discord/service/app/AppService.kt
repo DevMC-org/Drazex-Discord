@@ -48,7 +48,7 @@ class AppService (
     private fun getUptime(): String {
         val uptime = ManagementFactory.getRuntimeMXBean().uptime
 
-        return timeService.formatTime(uptime)
+        return this.timeService.formatTime(uptime)
     }
 
     private fun getUsedMemory(): DataSize {

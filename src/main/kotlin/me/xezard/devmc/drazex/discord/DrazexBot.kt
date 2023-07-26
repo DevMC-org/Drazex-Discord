@@ -36,6 +36,10 @@ class DrazexBot(
 
     private val configuration: DiscordConfiguration
 ) {
+    companion object {
+        const val PRESENCE_PLAYING = "Minecraft"
+    }
+
     lateinit var discord: DiscordClient
 
     @PostConstruct
@@ -43,7 +47,7 @@ class DrazexBot(
         this.discord = DiscordClient.create(this.configuration.token)
 
         this.discord.gateway()
-            .setInitialPresence { ClientPresence.online(ClientActivity.playing("Minecraft")) }
+            .setInitialPresence { ClientPresence.online(ClientActivity.playing(PRESENCE_PLAYING)) }
             .withGateway { this.eventsHandler.registerAllHandlers(it) }
             .subscribe()
 

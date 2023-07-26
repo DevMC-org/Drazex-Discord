@@ -18,17 +18,11 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package me.xezard.devmc.drazex.discord
+package me.xezard.devmc.drazex.discord.config
 
-import org.springframework.boot.Banner
-import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.boot.runApplication
+import org.springframework.context.annotation.Configuration
+import org.springframework.scheduling.annotation.EnableScheduling
 
-@SpringBootApplication
-class DrazexApplication
-
-fun main(args: Array<String>) {
-    runApplication<DrazexApplication>(*args) {
-        setBannerMode(Banner.Mode.OFF)
-    }
-}
+@Configuration
+@EnableScheduling
+class CoreConfiguration

@@ -24,9 +24,10 @@ class DiscordService {
     companion object {
         val DISCORD_EMOJI_PATTERN = Regex("<:\\w+:\\d+>")
 
-        const val DISCORD_AVATAR_URL = "https://cdn.discordapp.com/avatars/{user_id}/{avatar}.png"
-        const val DISCORD_CHANNEL_URL = "https://discordapp.com/channels/{id}"
-        const val DISCORD_USER_URL = "https://discordapp.com/users/{id}"
+        const val DISCORD_DOMAIN = "discordapp.com"
+        const val DISCORD_AVATAR_URL = "https://cdn.$DISCORD_DOMAIN/avatars/{user_id}/{avatar}.png"
+        const val DISCORD_CHANNEL_URL = "https://$DISCORD_DOMAIN/channels/{id}"
+        const val DISCORD_USER_URL = "https://$DISCORD_DOMAIN/users/{id}"
         const val CHANNEL_NAME_PATTERN = " #\\w+"
     }
 }
