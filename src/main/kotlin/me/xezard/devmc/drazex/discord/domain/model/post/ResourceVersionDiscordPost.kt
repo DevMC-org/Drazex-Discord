@@ -40,12 +40,19 @@ class ResourceVersionDiscordPost (
     "${resourceType.name.lowercase()}/$slug/versions",
     imageUrl
 ) {
+    companion object {
+        private const val PLATFORMS_REPLACE_PLACEHOLDER = "{platforms}"
+        private const val VERSIONS_REPLACE_PLACEHOLDER = "{versions}"
+        private const val VERSION_REPLACE_PLACEHOLDER = "{version}"
+        private const val VALUES_SEPARATOR = ", "
+    }
+
     private val replacesMap = mapOf(
-        "{platforms}" to platforms.joinToString(", "),
-        "{versions}" to versions.joinToString(", "),
-        "{version}" to version
+        PLATFORMS_REPLACE_PLACEHOLDER to platforms.joinToString(VALUES_SEPARATOR),
+        VERSIONS_REPLACE_PLACEHOLDER to versions.joinToString(VALUES_SEPARATOR),
+        VERSION_REPLACE_PLACEHOLDER to version
     ) + super.replaces
 
     override val replaces
-        get() = replacesMap.toMutableMap()
+        get() = this.replacesMap.toMutableMap()
 }

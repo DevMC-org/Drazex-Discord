@@ -35,17 +35,14 @@ class RSocketController(
     private var telegramPostMapper: DiscordPostMapper
 ) {
     @MessageMapping("resource")
-    fun onNewResource(request: ResourceRequest): Mono<Void> {
-        return this.newsService.publishNews(this.telegramPostMapper.fromResourceRequest(request))
-    }
+    fun onNewResource(request: ResourceRequest): Mono<Void> =
+        this.newsService.publishNews(this.telegramPostMapper.fromResourceRequest(request))
 
     @MessageMapping("resource-version")
-    fun onNewResourceVersion(request: ResourceVersionRequest): Mono<Void> {
-        return this.newsService.publishNews(this.telegramPostMapper.fromResourceVersionRequest(request))
-    }
+    fun onNewResourceVersion(request: ResourceVersionRequest): Mono<Void> =
+        this.newsService.publishNews(this.telegramPostMapper.fromResourceVersionRequest(request))
 
     @MessageMapping("article")
-    fun onNewArticle(request: ArticleRequest): Mono<Void> {
-        return this.newsService.publishNews(this.telegramPostMapper.fromArticleRequest(request))
-    }
+    fun onNewArticle(request: ArticleRequest): Mono<Void> =
+        this.newsService.publishNews(this.telegramPostMapper.fromArticleRequest(request))
 }

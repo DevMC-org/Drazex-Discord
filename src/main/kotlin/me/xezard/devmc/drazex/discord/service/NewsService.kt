@@ -27,6 +27,7 @@ import me.xezard.devmc.drazex.discord.config.DiscordConfiguration
 import me.xezard.devmc.drazex.discord.config.MessagesConfiguration
 import me.xezard.devmc.drazex.discord.config.properties.NewsChannelsProperties
 import me.xezard.devmc.drazex.discord.domain.model.post.DiscordPost
+import me.xezard.devmc.drazex.discord.domain.model.post.DiscordPost.Companion.URL_REPLACE_PLACEHOLDER
 import me.xezard.devmc.drazex.discord.domain.model.post.DiscordPostType
 import me.xezard.devmc.drazex.discord.service.messages.MessagesService
 import org.springframework.stereotype.Service
@@ -44,8 +45,6 @@ class NewsService (
 ) {
     companion object {
         private const val EMBED_TITLE = "DevMC"
-
-        private const val URL_REPLACE_PLACEHOLDER = "{url}"
 
         private const val MESSAGE_TEMPLATE_SEPARATOR = "\n"
     }

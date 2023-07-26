@@ -28,9 +28,15 @@ open class DiscordPost(
     url: String,
     var imageUrl: String
 ) {
+    companion object {
+        const val URL_REPLACE_PLACEHOLDER = "{url}"
+        private const val TITLE_REPLACE_PLACEHOLDER = "{title}"
+        private const val DESCRIPTION_REPLACE_PLACEHOLDER = "{description}"
+    }
+
     open val replaces = mapOf(
-        "{url}" to url,
-        "{title}" to title,
-        "{description}" to description
+        URL_REPLACE_PLACEHOLDER to url,
+        TITLE_REPLACE_PLACEHOLDER to title,
+        DESCRIPTION_REPLACE_PLACEHOLDER to description
     ).toMutableMap()
 }
