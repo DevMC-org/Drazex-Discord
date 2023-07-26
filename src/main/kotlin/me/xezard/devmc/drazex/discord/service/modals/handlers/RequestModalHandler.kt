@@ -71,12 +71,12 @@ abstract class RequestModalHandler (
             .color(this.messagesService.getColorFromString(this.discordConfiguration.requestsMessageColor))
 
         inputsMapping.forEach { (field, inputId) ->
-            val value = this.modalsService.getInputValue(inputs, inputId)
+            this.modalsService.getInputValue(inputs, inputId)?.let {
+                embedBuilder.addField(field, it, false)
 
-            embedBuilder.addField(field, value, false)
-
-            if (field == title) {
-                embedBuilder.title("$field: $value")
+                if (field == title) {
+                    embedBuilder.title("$field: $it")
+                }
             }
         }
 

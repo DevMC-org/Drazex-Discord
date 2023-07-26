@@ -35,7 +35,7 @@ class ModalsService {
         return Button.secondary(RequestDeleteButtonHandler.BUTTON_ID + id, DELETE_BUTTON_LABEL)
     }
 
-    fun getInputValue(inputs: List<TextInput>, id: String): String {
-        return inputs.find { it.customId == id }?.data?.value()?.get() ?: ""
+    fun getInputValue(inputs: List<TextInput>, id: String): String? {
+        return inputs.find { it.customId == id }?.data?.value()?.get()
     }
 }

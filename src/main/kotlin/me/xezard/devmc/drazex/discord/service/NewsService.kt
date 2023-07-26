@@ -46,6 +46,8 @@ class NewsService (
         private const val EMBED_TITLE = "DevMC"
 
         private const val URL_REPLACE_PLACEHOLDER = "{url}"
+
+        private const val MESSAGE_TEMPLATE_SEPARATOR = "\n"
     }
 
     // <post type, post template>
@@ -82,7 +84,7 @@ class NewsService (
 
         replaces[URL_REPLACE_PLACEHOLDER] = "${baseUrl}/${replaces[URL_REPLACE_PLACEHOLDER]}"
 
-        return template.joinToString(separator = "\n") {
+        return template.joinToString(separator = MESSAGE_TEMPLATE_SEPARATOR) {
             replaces.entries.fold(it) { entry, (key, value) -> entry.replace(key, value) }
         }
     }

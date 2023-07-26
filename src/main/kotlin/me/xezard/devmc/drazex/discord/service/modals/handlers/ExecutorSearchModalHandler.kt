@@ -65,6 +65,9 @@ class ExecutorSearchModalHandler (
         )
     }
 
+    override val id
+        get() = MODAL_ID
+
     override fun handle(event: ModalSubmitInteractionEvent): Mono<Void> {
         return this.handle(event, INPUTS_MAPPING, this.developmentRequestChannelsProperties.development, EMBED_TITLE)
     }
@@ -91,9 +94,5 @@ class ExecutorSearchModalHandler (
                 .addComponent(ActionRow.of(descriptionInput))
                 .addComponent(ActionRow.of(budgetInput))
                 .build()
-    }
-
-    override fun id(): String {
-        return MODAL_ID
     }
 }

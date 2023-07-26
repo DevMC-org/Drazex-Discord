@@ -69,6 +69,9 @@ class TeamSearchModalHandler (
         )
     }
 
+    override val id
+        get() = MODAL_ID
+
     override fun handle(event: ModalSubmitInteractionEvent): Mono<Void> {
         return this.handle(event, INPUTS_MAPPING, this.teamRequestChannelsProperties.recruitment)
     }
@@ -100,9 +103,5 @@ class TeamSearchModalHandler (
                 .addComponent(ActionRow.of(conditionsInput))
                 .addComponent(ActionRow.of(contactsInput))
                 .build()
-    }
-
-    override fun id(): String {
-        return MODAL_ID
     }
 }

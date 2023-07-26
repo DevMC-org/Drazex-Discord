@@ -27,6 +27,6 @@ class ModalsHandler (
     private val handlers: List<ModalHandler>
 ) {
     fun findModalById(id: String): ModalHandler? {
-        return this.handlers.find { it.id() == id }
+        return this.handlers.find { it.id == id }
     }
 }

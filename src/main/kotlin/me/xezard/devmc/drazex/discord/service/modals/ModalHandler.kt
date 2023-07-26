@@ -25,9 +25,9 @@ import discord4j.core.spec.InteractionPresentModalSpec
 import reactor.core.publisher.Mono
 
 interface ModalHandler {
+    val id: String
+
     fun handle(event: ModalSubmitInteractionEvent): Mono<Void>
 
     fun create(): InteractionPresentModalSpec
-
-    fun id(): String
 }
