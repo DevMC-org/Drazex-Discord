@@ -29,19 +29,14 @@ import reactor.core.publisher.Mono
 class CommandsHandler (
     private val handlers: List<CommandHandler>
 ) {
-    fun registerAllHandlers(discordClient: DiscordClient): Mono<Void> {
-        return discordClient.applicationId.flatMapMany { appId ->
-            discordClient.guilds.flatMap { guild ->
-                Flux.fromIterable(this.handlers).flatMap {
-                    discordClient.applicationService.createGuildApplicationCommand(
-                            appId,
-                            guild.id().asLong(),
-                            it.register()
-                    )
-                }
-            }
+    fun registerAllHandlers(discordClient: DiscordClient): Mono<Void> =
+        discordClient.applicationId.flatMapMany { appId ->
+            discordClient.guilds.flatMap { guild -> Flux.fromIterable(this.handlers).flatMap {
+                discordClient.applicationService.createGuildApplicationCommand(
+                    appId, guild.id().asLong(), it.register()
+                )
+            }}
         }.then()
-    }
 
     fun findHandlerByCommandName(name: String): CommandHandler? =
         this.handlers.find { it.name == name }

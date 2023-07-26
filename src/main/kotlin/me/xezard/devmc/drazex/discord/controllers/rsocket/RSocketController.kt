@@ -32,17 +32,17 @@ import reactor.core.publisher.Mono
 @Controller
 class RSocketController(
     private var newsService: NewsService,
-    private var telegramPostMapper: DiscordPostMapper
+    private var postMapper: DiscordPostMapper
 ) {
     @MessageMapping("resource")
     fun onNewResource(request: ResourceRequest): Mono<Void> =
-        this.newsService.publishNews(this.telegramPostMapper.fromResourceRequest(request))
+        this.newsService.publishNews(this.postMapper.fromResourceRequest(request))
 
     @MessageMapping("resource-version")
     fun onNewResourceVersion(request: ResourceVersionRequest): Mono<Void> =
-        this.newsService.publishNews(this.telegramPostMapper.fromResourceVersionRequest(request))
+        this.newsService.publishNews(this.postMapper.fromResourceVersionRequest(request))
 
     @MessageMapping("article")
     fun onNewArticle(request: ArticleRequest): Mono<Void> =
-        this.newsService.publishNews(this.telegramPostMapper.fromArticleRequest(request))
+        this.newsService.publishNews(this.postMapper.fromArticleRequest(request))
 }

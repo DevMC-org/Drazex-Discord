@@ -118,7 +118,6 @@ class MessagesService (
         }
     }
 
-    fun getColorFromString(colorString: String?): Color {
-        return Color.of(java.awt.Color.decode(colorString).rgb)
-    }
+    fun getColorFromString(colorString: String?): Color =
+        Color.of(java.awt.Color.decode(colorString).rgb)
 }

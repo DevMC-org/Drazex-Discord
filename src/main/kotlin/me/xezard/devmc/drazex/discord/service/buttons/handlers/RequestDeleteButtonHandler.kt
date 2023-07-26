@@ -34,7 +34,8 @@ class RequestDeleteButtonHandler (
     private val rolesProperties: RolesProperties
 ): IButtonHandler {
     companion object {
-        private const val YOU_CANT_DELETE_OTHERS_REQUESTS_ERROR = "Вы не можете удалить запрос, созданный другим пользователем."
+        private const val YOU_CANT_DELETE_OTHERS_REQUESTS_ERROR =
+            "Вы не можете удалить запрос, созданный другим пользователем."
 
         const val BUTTON_ID = "request-button:"
     }
