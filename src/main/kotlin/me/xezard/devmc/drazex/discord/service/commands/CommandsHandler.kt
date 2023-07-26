@@ -27,23 +27,23 @@ import reactor.core.publisher.Mono
 
 @Service
 class CommandsHandler (
-    private val handlers: List<ICommandHandler>
+    private val handlers: List<CommandHandler>
 ) {
     fun registerAllHandlers(discordClient: DiscordClient): Mono<Void> {
         return discordClient.applicationId.flatMapMany { appId ->
             discordClient.guilds.flatMap { guild ->
-                Flux.fromIterable(this.handlers).flatMap { handler ->
+                Flux.fromIterable(this.handlers).flatMap {
                     discordClient.applicationService.createGuildApplicationCommand(
                             appId,
                             guild.id().asLong(),
-                            handler.register()
+                            it.register()
                     )
                 }
             }
         }.then()
     }
 
-    fun findHandlerByCommandName(name: String): ICommandHandler? {
-        return this.handlers.find { handler -> handler.name() == name }
+    fun findHandlerByCommandName(name: String): CommandHandler? {
+        return this.handlers.find { it.name() == name }
     }
 }

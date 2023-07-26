@@ -21,7 +21,6 @@
 package me.xezard.devmc.drazex.discord
 
 import discord4j.core.DiscordClient
-import discord4j.core.GatewayDiscordClient
 import discord4j.core.`object`.presence.ClientActivity
 import discord4j.core.`object`.presence.ClientPresence
 import jakarta.annotation.PostConstruct
@@ -44,13 +43,9 @@ class DrazexBot(
         this.discord = DiscordClient.create(this.configuration.token)
 
         this.discord.gateway()
-                    .setInitialPresence {
-                        ClientPresence.online(ClientActivity.playing("Minecraft"))
-                    }
-                    .withGateway { gateway: GatewayDiscordClient ->
-                        this.eventsHandler.registerAllHandlers(gateway)
-                    }
-                    .subscribe()
+            .setInitialPresence { ClientPresence.online(ClientActivity.playing("Minecraft")) }
+            .withGateway { this.eventsHandler.registerAllHandlers(it) }
+            .subscribe()
 
         this.commandsHandler.registerAllHandlers(this.discord).subscribe()
     }

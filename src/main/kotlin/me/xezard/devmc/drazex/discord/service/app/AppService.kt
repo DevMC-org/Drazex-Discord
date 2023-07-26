@@ -21,18 +21,27 @@
 package me.xezard.devmc.drazex.discord.service.app
 
 import org.springframework.stereotype.Service
+import org.springframework.util.unit.DataSize
+import org.springframework.util.unit.DataUnit
 import java.lang.management.ManagementFactory
 
 @Service
 class AppService (
     private val timeService: TimeService
 ) {
+    companion object {
+        const val UPTIME_REPLACE_PLACEHOLDER = "{uptime}"
+        const val USED_MEMORY_REPLACE_PLACEHOLDER = "{used_memory}"
+        const val AVAILABLE_MEMORY_REPLACE_PLACEHOLDER = "{available_memory}"
+        const val MAXIMUM_MEMORY_REPLACE_PLACEHOLDER = "{maximum_memory}"
+    }
+
     val replaces: () -> Map<String, Any> = {
         mapOf(
-            "{uptime}" to this.getUptime(),
-            "{used_memory}" to this.getUsedMemory(),
-            "{available_memory}" to this.getAvailableMemory(),
-            "{maximum_memory}" to this.getMaximumMemory(),
+            UPTIME_REPLACE_PLACEHOLDER to this.getUptime(),
+            USED_MEMORY_REPLACE_PLACEHOLDER to this.getUsedMemory().toMegabytes(),
+            AVAILABLE_MEMORY_REPLACE_PLACEHOLDER to this.getAvailableMemory().toMegabytes(),
+            MAXIMUM_MEMORY_REPLACE_PLACEHOLDER to this.getMaximumMemory().toMegabytes(),
         )
     }
 
@@ -42,21 +51,21 @@ class AppService (
         return timeService.formatTime(uptime)
     }
 
-    private fun getUsedMemory(): Long {
+    private fun getUsedMemory(): DataSize {
         val totalMemory = Runtime.getRuntime().totalMemory()
         val freeMemory = Runtime.getRuntime().freeMemory()
 
-        return (totalMemory - freeMemory) / 1024 / 1024
+        return DataSize.of(totalMemory - freeMemory, DataUnit.BYTES)
     }
 
-    private fun getAvailableMemory(): Long {
+    private fun getAvailableMemory(): DataSize {
         val maxMemory = Runtime.getRuntime().maxMemory()
-        val usedMemory = this.getUsedMemory() * 1024 * 1024
+        val usedMemory = this.getUsedMemory()
 
-        return (maxMemory - usedMemory) / 1024 / 1024
+        return DataSize.of(maxMemory - usedMemory.toBytes(), DataUnit.BYTES)
     }
 
-    private fun getMaximumMemory(): Long {
-        return Runtime.getRuntime().maxMemory() / 1024 / 1024
+    private fun getMaximumMemory(): DataSize {
+        return DataSize.of(Runtime.getRuntime().maxMemory(), DataUnit.BYTES)
     }
 }

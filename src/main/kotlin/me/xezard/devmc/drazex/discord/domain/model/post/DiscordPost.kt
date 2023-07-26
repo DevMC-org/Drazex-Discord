@@ -28,7 +28,7 @@ open class DiscordPost(
     url: String,
     var imageUrl: String
 ) {
-    open val replaces: MutableMap<String, Any?> = mapOf(
+    open val replaces = mapOf(
         "{url}" to url,
         "{title}" to title,
         "{description}" to description

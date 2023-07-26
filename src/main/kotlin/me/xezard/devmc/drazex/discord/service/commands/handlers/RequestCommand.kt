@@ -28,8 +28,7 @@ import discord4j.discordjson.json.ApplicationCommandOptionData
 import discord4j.discordjson.json.ApplicationCommandPermissionsData
 import discord4j.discordjson.json.ApplicationCommandRequest
 import me.xezard.devmc.drazex.discord.domain.model.request.RequestType
-import me.xezard.devmc.drazex.discord.service.commands.ICommandHandler
-import me.xezard.devmc.drazex.discord.service.modals.IModalHandler
+import me.xezard.devmc.drazex.discord.service.commands.CommandHandler
 import me.xezard.devmc.drazex.discord.service.modals.handlers.ExecutorSearchModalHandler
 import me.xezard.devmc.drazex.discord.service.modals.handlers.TeamRecruitmentModalHandler
 import me.xezard.devmc.drazex.discord.service.modals.handlers.TeamSearchModalHandler
@@ -38,10 +37,10 @@ import reactor.core.publisher.Mono
 
 @Component
 class RequestCommand (
-    executorSearchModalHandler: ExecutorSearchModalHandler,
-    teamSearchModalHandler: TeamSearchModalHandler,
-    teamRecruitmentModalHandler: TeamRecruitmentModalHandler
-): ICommandHandler {
+    private val executorSearchModalHandler: ExecutorSearchModalHandler,
+    private val teamSearchModalHandler: TeamSearchModalHandler,
+    private val teamRecruitmentModalHandler: TeamRecruitmentModalHandler
+): CommandHandler {
     companion object {
         private const val NAME = "request"
         private const val DESCRIPTION = "Create a new request"
@@ -50,25 +49,27 @@ class RequestCommand (
         private const val EXECUTOR_SEARCH_LABEL = "Поиск исполнителя"
         private const val TEAM_RECRUITMENT_LABEL = "Набор команды"
         private const val TEAM_SEARCH_LABEL = "Поиск команды"
+
+        private const val INVALID_REQUEST_TYPE_ERROR = "Invalid request type"
     }
 
     // <request type, <label, modal handler>>
-    private val requestTypesData: Map<RequestType, Pair<String, IModalHandler>> = mutableMapOf(
-        RequestType.EXECUTOR_SEARCH to Pair(EXECUTOR_SEARCH_LABEL, executorSearchModalHandler),
-        RequestType.TEAM_RECRUITMENT to Pair(TEAM_RECRUITMENT_LABEL, teamRecruitmentModalHandler),
-        RequestType.TEAM_SEARCH to Pair(TEAM_SEARCH_LABEL, teamSearchModalHandler),
+    private val requestTypesData = mutableMapOf(
+        RequestType.EXECUTOR_SEARCH to (EXECUTOR_SEARCH_LABEL to this.executorSearchModalHandler),
+        RequestType.TEAM_RECRUITMENT to (TEAM_RECRUITMENT_LABEL to this.teamRecruitmentModalHandler),
+        RequestType.TEAM_SEARCH to (TEAM_SEARCH_LABEL to this.teamSearchModalHandler),
     )
 
     // TODO: add a limit on the number of requests created per user?
     override fun handle(event: ApplicationCommandInteractionEvent): Mono<Void> {
-        val exception = IllegalArgumentException("Invalid request type")
+        val exception = IllegalArgumentException(INVALID_REQUEST_TYPE_ERROR)
         val requestType = event.interaction.commandInteraction
                 .flatMap { it.getOption(SERVICE_TYPE_OPTION_NAME) }
                 .flatMap { it.value }
                 .map { RequestType.findByProperty(it.asString()) }
                 .orElseThrow { exception }
 
-        val requestTypeData = requestTypesData[requestType] ?: throw exception
+        val requestTypeData = this.requestTypesData[requestType] ?: throw exception
 
         return event.presentModal(requestTypeData.second.create())
     }

@@ -42,6 +42,12 @@ class NewsService (
     private val channelsProperties: NewsChannelsProperties,
     private val messagesConfiguration: MessagesConfiguration
 ) {
+    companion object {
+        private const val EMBED_TITLE = "DevMC"
+
+        private const val URL_REPLACE_PLACEHOLDER = "{url}"
+    }
+
     // <post type, post template>
     private val postTemplates = mutableMapOf<DiscordPostType, Array<String>?>().apply {
         this[DiscordPostType.RESOURCE] = messagesConfiguration.newResourcePostTemplate
@@ -55,7 +61,7 @@ class NewsService (
 
     private fun generatePost(message: String, imageUrl: String): Mono<Void> {
         val embed = EmbedCreateSpec.builder()
-                .title("DevMC")
+                .title(EMBED_TITLE)
                 .url(this.discordConfiguration.baseUrl)
                 .color(this.messagesService.getColorFromString(this.discordConfiguration.messagesColor))
                 .description(message)
@@ -74,12 +80,10 @@ class NewsService (
         val baseUrl = this.discordConfiguration.baseUrl
         val replaces = post.replaces
 
-        replaces["{url}"] = "${baseUrl}/${replaces["{url}"]}"
+        replaces[URL_REPLACE_PLACEHOLDER] = "${baseUrl}/${replaces[URL_REPLACE_PLACEHOLDER]}"
 
-        return template.joinToString(separator = "\n") { message ->
-            replaces.entries.fold(message) { entry, (key, value) ->
-                entry.replace(key, value.toString())
-            }
+        return template.joinToString(separator = "\n") {
+            replaces.entries.fold(it) { entry, (key, value) -> entry.replace(key, value) }
         }
     }
 }

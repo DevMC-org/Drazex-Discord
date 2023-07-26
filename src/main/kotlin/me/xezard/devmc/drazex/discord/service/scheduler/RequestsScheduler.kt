@@ -41,15 +41,15 @@ class RequestsScheduler (
     private val channelsProperties: TeamRequestChannelsProperties
 ) {
     companion object {
-        val FORMATTER: DateTimeFormatter = DateTimeFormatter.ISO_INSTANT
+        private val FORMATTER = DateTimeFormatter.ISO_INSTANT
     }
+
+    private val channelIds = this.developmentRequestChannelsProperties.development +
+            this.channelsProperties.search + this.channelsProperties.recruitment
 
     @Scheduled(fixedDelay = 1, timeUnit = TimeUnit.HOURS)
     fun deleteOutdatedMessages() {
-        val channelsIds = this.developmentRequestChannelsProperties.development +
-                this.channelsProperties.search + this.channelsProperties.recruitment
-
-        Flux.fromIterable(channelsIds)
+        Flux.fromIterable(this.channelIds)
                 .flatMap { Mono.just(this.bot.discord.getChannelById(Snowflake.of(it))) }
                 .flatMap { channel ->
                     channel.getMessagesBefore(Snowflake.of(Instant.now()))
@@ -61,7 +61,6 @@ class RequestsScheduler (
     private fun isOutdated(timestamp: String): Boolean {
         val monthAgo = LocalDateTime.now().minusMonths(1)
         val instant = Instant.from(FORMATTER.parse(timestamp))
-
         val thresholdInstant = monthAgo.atZone(ZoneId.systemDefault()).toInstant()
 
         return instant.isBefore(thresholdInstant)

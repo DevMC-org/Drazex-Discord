@@ -20,32 +20,24 @@
  */
 package me.xezard.devmc.drazex.discord.service.modals.handlers
 
-import discord4j.common.util.Snowflake
 import discord4j.core.event.domain.interaction.ModalSubmitInteractionEvent
 import discord4j.core.`object`.component.ActionRow
-import discord4j.core.`object`.component.Button
 import discord4j.core.`object`.component.TextInput
-import discord4j.core.spec.EmbedCreateSpec
 import discord4j.core.spec.InteractionPresentModalSpec
-import discord4j.discordjson.json.MessageCreateRequest
 import me.xezard.devmc.drazex.discord.config.DiscordConfiguration
 import me.xezard.devmc.drazex.discord.config.properties.TeamRequestChannelsProperties
-import me.xezard.devmc.drazex.discord.service.app.DiscordService
-import me.xezard.devmc.drazex.discord.service.buttons.handlers.RequestDeleteButtonHandler.Companion.BUTTON_ID
 import me.xezard.devmc.drazex.discord.service.messages.MessagesService
-import me.xezard.devmc.drazex.discord.service.modals.IModalHandler
 import me.xezard.devmc.drazex.discord.service.modals.ModalsService
 import org.springframework.stereotype.Component
-import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 @Component
 class TeamSearchModalHandler (
-    private val modalsService: ModalsService,
-    private val messagesService: MessagesService,
-    private val discordConfiguration: DiscordConfiguration,
+    modalsService: ModalsService,
+    messagesService: MessagesService,
+    discordConfiguration: DiscordConfiguration,
     private val teamRequestChannelsProperties: TeamRequestChannelsProperties
-): IModalHandler {
+): RequestModalHandler(modalsService, messagesService, discordConfiguration) {
     companion object {
         private const val MODAL_TITLE = "Поиск команды"
         private const val MODAL_ID = "team-search-modal"
@@ -68,51 +60,17 @@ class TeamSearchModalHandler (
         private const val TEAM_SEARCH_AGE_INPUT_MAXIMUM_LENGTH = 10
         private const val TEAM_SEARCH_CONDITIONS_INPUT_MAXIMUM_LENGTH = 512
         private const val TEAM_SEARCH_CONTACTS_INPUT_MAXIMUM_LENGTH = 256
+
+        private val INPUTS_MAPPING = mapOf(
+            EMBED_DESCRIPTION_FIELD to TEAM_SEARCH_DESCRIPTION_INPUT_ID,
+            EMBED_AGE_FIELD to TEAM_SEARCH_AGE_INPUT_ID,
+            EMBED_CONDITIONS_FIELD to TEAM_SEARCH_CONDITIONS_INPUT_ID,
+            EMBED_CONTACTS_FIELD to TEAM_SEARCH_CONTACTS_INPUT_ID
+        )
     }
 
     override fun handle(event: ModalSubmitInteractionEvent): Mono<Void> {
-        val member = event.interaction.member.orElse(null)
-        val fullName = "${member?.displayName}#${member?.discriminator}"
-        val mention = member?.mention ?: ""
-        val avatar = member?.avatarUrl ?: ""
-        val id = member?.id?.asString() ?: ""
-
-        val inputs = event.getComponents(TextInput::class.java)
-
-        val description = this.modalsService.getInputValue(inputs, TEAM_SEARCH_DESCRIPTION_INPUT_ID)
-        val age = this.modalsService.getInputValue(inputs, TEAM_SEARCH_AGE_INPUT_ID)
-        val conditions = this.modalsService.getInputValue(inputs, TEAM_SEARCH_CONDITIONS_INPUT_ID)
-        val contacts = this.modalsService.getInputValue(inputs, TEAM_SEARCH_CONTACTS_INPUT_ID)
-
-        val embed = EmbedCreateSpec.builder()
-                .author(fullName, DiscordService.DISCORD_USER_URL.replace("{id}", id), avatar)
-                .color(this.messagesService.getColorFromString(this.discordConfiguration.requestsMessageColor))
-                .addField("Описание:", description, false)
-                .addField("Возраст:", age, false)
-                .addField("Условия:", conditions, false)
-                .addField("Контакты:", contacts, false)
-                .addField("Опубликовал:", mention, false)
-                .build()
-                .asRequest()
-
-        val deleteButton = Button.secondary(BUTTON_ID + id, "❌")
-        val actionRow = ActionRow.of(deleteButton)
-
-        val message = MessageCreateRequest.builder()
-                .embed(embed)
-                .build()
-                .withComponents(actionRow.data)
-
-        val channelIds = this.teamRequestChannelsProperties.search.map(Snowflake::of)
-        val channels = event.interaction.guild.flatMapMany { guild ->
-            Flux.fromIterable(channelIds).flatMap(guild::getChannelById)
-        }
-
-        val messages = channels.flatMap { it.restChannel.createMessage(message) }
-        val reply = event.reply("Ваш запрос успешно опубликован!")
-                .withEphemeral(true)
-
-        return messages.then(reply)
+        return this.handle(event, INPUTS_MAPPING, this.teamRequestChannelsProperties.recruitment)
     }
 
     override fun create(): InteractionPresentModalSpec {

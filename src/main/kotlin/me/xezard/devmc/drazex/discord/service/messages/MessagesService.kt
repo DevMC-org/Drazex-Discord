@@ -30,54 +30,91 @@ import java.time.Instant
 class MessagesService (
     private val objectMapper: ObjectMapper
 ) {
+    companion object {
+        private const val TITLE_JSON_KEY = "title"
+        private const val DESCRIPTION_JSON_KEY = "description"
+        private const val URL_JSON_KEY = "url"
+        private const val COLOR_JSON_KEY = "color"
+        private const val TIMESTAMP_JSON_KEY = "timestamp"
+        private const val THUMBNAIL_JSON_KEY = "thumbnail"
+        private const val IMAGE_JSON_KEY = "image"
+        private const val AUTHOR_JSON_KEY = "author"
+        private const val NAME_JSON_KEY = "name"
+        private const val ICON_URL_JSON_KEY = "icon_url"
+        private const val FIELDS_JSON_KEY = "fields"
+        private const val VALUE_JSON_KEY = "value"
+        private const val INLINE_JSON_KEY = "inline"
+        private const val FOOTER_JSON_KEY = "footer"
+        private const val TEXT_JSON_KEY = "text"
+    }
+
     fun jsonToEmbed(json: String): EmbedCreateSpec? {
         return try {
-            val map = objectMapper.readValue(json, Map::class.java)
+            val map = this.objectMapper.readValue(json, Map::class.java)
 
             EmbedCreateSpec.builder().apply {
-                map["title"]?.toString()?.let { title(it) }
-                map["description"]?.toString()?.let { description(it) }
-                map["url"]?.toString()?.let { url(it) }
-                map["color"]?.toString()?.let { color(getColorFromString(it)) }
-                map["timestamp"]?.toString()?.let { Instant.parse(it)?.let { instant -> timestamp(instant) }}
-
-                (map["thumbnail"] as? Map<*, *>)?.let { thumbnailMap ->
-                    thumbnailMap["url"]?.toString()?.let { thumbnail(it) }
-                }
-
-                (map["image"] as? Map<*, *>)?.let { imageMap ->
-                    imageMap["url"]?.toString()?.let { image(it) }
-                }
-
-                (map["author"] as? Map<*, *>)?.let { authorMap ->
-                    val name = authorMap["name"]?.toString()
-                    val iconUrl = authorMap["icon_url"]?.toString()
-                    val url = authorMap["url"]?.toString()
-
-                    if (name != null) {
-                        author(name, url, iconUrl)
-                    }
-                }
-
-                (map["fields"] as? List<Map<String, Any>>)?.forEach { field ->
-                    val name = field["name"]?.toString()
-                    val value = field["value"]?.toString()
-                    val inline = field["inline"] as? Boolean ?: false
-
-                    if (name != null && value != null) {
-                        addField(name, value, inline)
-                    }
-                }
-
-                (map["footer"] as Map<*, *>)?.let { footer ->
-                    val text = footer["text"]?.toString() ?: ""
-                    val iconUrl = footer["icon_url"]?.toString()
-
-                    footer(text, iconUrl)
-                }
+                map[TITLE_JSON_KEY]?.toString()?.let { title(it) }
+                map[DESCRIPTION_JSON_KEY]?.toString()?.let { description(it) }
+                map[URL_JSON_KEY]?.toString()?.let { url(it) }
+                map[COLOR_JSON_KEY]?.toString()?.let { color(getColorFromString(it)) }
+                map[TIMESTAMP_JSON_KEY]?.toString()?.let { Instant.parse(it)?.let(::timestamp) }
+                map[THUMBNAIL_JSON_KEY]?.let { this.processThumbnail(it) }
+                map[IMAGE_JSON_KEY]?.let { this.processImage(it) }
+                map[AUTHOR_JSON_KEY]?.let { this.processAuthor(it) }
+                map[FIELDS_JSON_KEY]?.let { this.processFields(it) }
+                map[FOOTER_JSON_KEY]?.let { this.processFooter(it) }
             }.build()
         } catch (ex: Exception) {
             null
+        }
+    }
+
+    private fun EmbedCreateSpec.Builder.processThumbnail(thumbnail: Any) {
+        (thumbnail as? Map<*, *>)?.let { thumbnailMap ->
+            thumbnailMap[URL_JSON_KEY]?.toString()?.let { this.thumbnail(it) }
+        }
+    }
+
+    private fun EmbedCreateSpec.Builder.processImage(image: Any) {
+        (image as? Map<*, *>)?.let { imageMap ->
+            imageMap[URL_JSON_KEY]?.toString()?.let { image(it) }
+        }
+    }
+
+    private fun EmbedCreateSpec.Builder.processAuthor(author: Any) {
+        (author as? Map<*, *>)?.let {
+            val name = it[NAME_JSON_KEY]?.toString()
+            val iconUrl = it[ICON_URL_JSON_KEY]?.toString()
+            val url = it[URL_JSON_KEY]?.toString()
+
+            if (name == null) {
+                return
+            }
+
+            this.author(name, url, iconUrl)
+        }
+    }
+
+    private fun EmbedCreateSpec.Builder.processFields(fields: Any) {
+        (fields as? List<Map<String, Any>>)?.forEach {
+            val name = it[NAME_JSON_KEY]?.toString()
+            val value = it[VALUE_JSON_KEY]?.toString()
+            val inline = it[INLINE_JSON_KEY] as? Boolean ?: false
+
+            if (name == null || value == null) {
+                return
+            }
+
+            this.addField(name, value, inline)
+        }
+    }
+
+    private fun EmbedCreateSpec.Builder.processFooter(footer: Any) {
+        (footer as? Map<*, *>)?.let {
+            val text = it[TEXT_JSON_KEY]?.toString() ?: ""
+            val iconUrl = it[ICON_URL_JSON_KEY]?.toString()
+
+            this.footer(text, iconUrl)
         }
     }
 

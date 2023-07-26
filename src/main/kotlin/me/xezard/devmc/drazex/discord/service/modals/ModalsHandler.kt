@@ -24,9 +24,9 @@ import org.springframework.stereotype.Service
 
 @Service
 class ModalsHandler (
-    private val handlers: List<IModalHandler>
+    private val handlers: List<ModalHandler>
 ) {
-    fun findModalById(id: String): IModalHandler? {
+    fun findModalById(id: String): ModalHandler? {
         return this.handlers.find { it.id() == id }
     }
 }

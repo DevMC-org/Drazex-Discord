@@ -27,15 +27,15 @@ import reactor.core.publisher.Mono
 
 @Service
 class ChannelsHandler (
-    private val handlers: List<IChannelHandler>
+    private val handlers: List<ChannelHandler>
 ) {
     fun handle(message: Message): Mono<Void> {
         return Flux.fromIterable(this.findHandlersByChannelId(message.channelId.asString()))
-                .flatMap { handler -> handler.handle(message) }
+                .flatMap { it.handle(message) }
                 .then()
     }
 
-    private fun findHandlersByChannelId(channelId: String): List<IChannelHandler> {
-        return this.handlers.filter { handler -> handler.getHandledChannelIds().contains(channelId) }
+    private fun findHandlersByChannelId(channelId: String): List<ChannelHandler> {
+        return this.handlers.filter { it.getHandledChannelIds().contains(channelId) }
     }
 }

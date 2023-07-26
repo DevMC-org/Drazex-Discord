@@ -46,6 +46,6 @@ class ResourceVersionDiscordPost (
         "{version}" to version
     ) + super.replaces
 
-    override val replaces: MutableMap<String, Any?>
+    override val replaces
         get() = replacesMap.toMutableMap()
 }

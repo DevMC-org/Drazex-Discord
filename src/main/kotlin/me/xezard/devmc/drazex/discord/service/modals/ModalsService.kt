@@ -20,12 +20,22 @@
  */
 package me.xezard.devmc.drazex.discord.service.modals
 
+import discord4j.core.`object`.component.Button
 import discord4j.core.`object`.component.TextInput
+import me.xezard.devmc.drazex.discord.service.buttons.handlers.RequestDeleteButtonHandler
 import org.springframework.stereotype.Service
 
 @Service
 class ModalsService {
+    companion object {
+        private const val DELETE_BUTTON_LABEL = "❌"
+    }
+
+    fun createDeleteButton(id: String): Button {
+        return Button.secondary(RequestDeleteButtonHandler.BUTTON_ID + id, DELETE_BUTTON_LABEL)
+    }
+
     fun getInputValue(inputs: List<TextInput>, id: String): String {
-        return inputs.find { input -> input.customId == id }?.data?.value()?.get() ?: ""
+        return inputs.find { it.customId == id }?.data?.value()?.get() ?: ""
     }
 }

@@ -34,6 +34,9 @@ class TimeService {
             "минута" to "минуты" to "минут",
             "секунда" to "секунды" to "секунд"
         )
+
+        private const val TIME_VALUES_SEPARATOR = ","
+        private const val TIME_VALUES_LAST_SEPARATOR = " и"
     }
 
     fun formatTime(timeMillis: Long): String {
@@ -56,13 +59,13 @@ class TimeService {
 
         return buildString {
             timeUnits.filter { it.first > 0 }
-                    .joinTo(this, ", ") { "${it.first} ${getCorrectForm(
+                    .joinTo(this, "$TIME_VALUES_SEPARATOR ") { "${it.first} ${getCorrectForm(
                             it.first, 
                             it.second.first.first, 
                             it.second.first.second, 
                             it.second.second
                     )}" }
-                    .replaceLast(",", " и")
+                    .replaceLast(TIME_VALUES_SEPARATOR, TIME_VALUES_LAST_SEPARATOR)
         }
     }
 

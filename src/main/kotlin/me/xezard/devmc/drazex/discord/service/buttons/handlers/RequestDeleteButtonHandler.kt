@@ -21,6 +21,7 @@
 package me.xezard.devmc.drazex.discord.service.buttons.handlers
 
 import discord4j.core.event.domain.interaction.ButtonInteractionEvent
+import discord4j.core.`object`.entity.Message
 import me.xezard.devmc.drazex.discord.config.properties.RolesProperties
 import me.xezard.devmc.drazex.discord.service.buttons.IButtonHandler
 import org.springframework.stereotype.Component
@@ -31,25 +32,25 @@ class RequestDeleteButtonHandler (
     private val rolesProperties: RolesProperties
 ): IButtonHandler {
     companion object {
+        private const val YOU_CANT_DELETE_OTHERS_REQUESTS_ERROR = "Вы не можете удалить запрос, созданный другим пользователем."
+
         const val BUTTON_ID = "request-button:"
     }
 
     override fun handle(event: ButtonInteractionEvent, buttonId: String): Mono<Void> {
         val member = event.interaction.member
         val userId = event.interaction.user.id
+        val isUserButton = Mono.just(userId.asString() == buttonId)
+        val hasPermission = Mono.justOrEmpty(member)
+            .flatMapMany { it.roles }
+            .map { role -> role.id.asString() == this.rolesProperties.admin }
+            .any { it }
+        val hasAccess = Mono.zip(hasPermission, isUserButton) { permission, owner -> permission || owner }
 
-        val hasPermission = Mono.zip(Mono.justOrEmpty(member).flatMap {
-            it.roles.any { role -> role.id.asString() == rolesProperties.admin }
-        }, Mono.just(userId.asString() == buttonId)) { permission, owner -> permission || owner }
-
-        return hasPermission.flatMap {
-            if (it) {
-                Mono.justOrEmpty(event.message).flatMap {
-                    message -> message.delete()
-                }
-            } else {
-                event.reply("Вы не можете удалить запрос, созданный другим пользователем.")
-                        .withEphemeral(true)
+        return hasAccess.flatMap {
+            when (it) {
+                true -> Mono.justOrEmpty(event.message).flatMap(Message::delete)
+                false -> event.reply(YOU_CANT_DELETE_OTHERS_REQUESTS_ERROR).withEphemeral(true)
             }
         }
     }

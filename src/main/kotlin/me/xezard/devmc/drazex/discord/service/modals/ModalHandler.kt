@@ -18,13 +18,16 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package me.xezard.devmc.drazex.discord.service.events
+package me.xezard.devmc.drazex.discord.service.modals
 
-import discord4j.core.event.domain.Event
+import discord4j.core.event.domain.interaction.ModalSubmitInteractionEvent
+import discord4j.core.spec.InteractionPresentModalSpec
 import reactor.core.publisher.Mono
 
-interface IEventHandler<out T : Event> {
-    fun handle(event: @UnsafeVariance T): Mono<Void>
+interface ModalHandler {
+    fun handle(event: ModalSubmitInteractionEvent): Mono<Void>
 
-    fun getEvent(): Class<out T>
+    fun create(): InteractionPresentModalSpec
+
+    fun id(): String
 }

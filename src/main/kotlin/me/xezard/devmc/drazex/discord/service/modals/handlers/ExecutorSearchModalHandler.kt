@@ -20,32 +20,24 @@
  */
 package me.xezard.devmc.drazex.discord.service.modals.handlers
 
-import discord4j.common.util.Snowflake
 import discord4j.core.event.domain.interaction.ModalSubmitInteractionEvent
 import discord4j.core.`object`.component.ActionRow
-import discord4j.core.`object`.component.Button
 import discord4j.core.`object`.component.TextInput
-import discord4j.core.spec.EmbedCreateSpec
 import discord4j.core.spec.InteractionPresentModalSpec
-import discord4j.discordjson.json.MessageCreateRequest
 import me.xezard.devmc.drazex.discord.config.DiscordConfiguration
 import me.xezard.devmc.drazex.discord.config.properties.DevelopmentRequestChannelsProperties
-import me.xezard.devmc.drazex.discord.service.app.DiscordService.Companion.DISCORD_USER_URL
-import me.xezard.devmc.drazex.discord.service.buttons.handlers.RequestDeleteButtonHandler.Companion.BUTTON_ID
 import me.xezard.devmc.drazex.discord.service.messages.MessagesService
-import me.xezard.devmc.drazex.discord.service.modals.IModalHandler
 import me.xezard.devmc.drazex.discord.service.modals.ModalsService
 import org.springframework.stereotype.Component
-import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 @Component
 class ExecutorSearchModalHandler (
-    private val discordConfiguration: DiscordConfiguration,
-    private val messagesService: MessagesService,
-    private val modalsService: ModalsService,
+    discordConfiguration: DiscordConfiguration,
+    messagesService: MessagesService,
+    modalsService: ModalsService,
     private val developmentRequestChannelsProperties: DevelopmentRequestChannelsProperties
-): IModalHandler {
+): RequestModalHandler(modalsService, messagesService, discordConfiguration) {
     companion object {
         private const val SERVICE_TYPE_OPTION_DESCRIPTION = "Тип услуги"
         private const val MODAL_TITLE = "Поиск исполнителя"
@@ -57,6 +49,7 @@ class ExecutorSearchModalHandler (
         private const val SERVICE_BUDGET_INPUT_ID = "service-budget-input"
         private const val SERVICE_BUDGET_INPUT_DESCRIPTION = "Бюджет"
         private const val SERVICE_BUDGET_INPUT_PLACEHOLDER = "100€"
+        private const val EMBED_TITLE = "Запрос"
 
         private const val SERVICE_TYPE_INPUT_MINIMUM_LENGTH = 5
         private const val SERVICE_TYPE_INPUT_MAXIMUM_LENGTH = 100
@@ -64,49 +57,16 @@ class ExecutorSearchModalHandler (
         private const val SERVICE_DESCRIPTION_INPUT_MAXIMUM_LENGTH = 1024
         private const val SERVICE_BUDGET_INPUT_MINIMUM_LENGTH = 3
         private const val SERVICE_BUDGET_INPUT_MAXIMUM_LENGTH = 25
+
+        private val INPUTS_MAPPING = mapOf(
+            EMBED_TITLE to SERVICE_TYPE_INPUT_ID,
+            EMBED_BUDGET_FIELD to SERVICE_BUDGET_INPUT_ID,
+            EMBED_DESCRIPTION_FIELD to SERVICE_DESCRIPTION_INPUT_ID
+        )
     }
 
     override fun handle(event: ModalSubmitInteractionEvent): Mono<Void> {
-        val member = event.interaction.member.orElse(null)
-        val fullName = "${member?.displayName}#${member?.discriminator}"
-        val mention = member?.mention ?: ""
-        val avatar = member?.avatarUrl ?: ""
-        val id = member?.id?.asString() ?: ""
-
-        val inputs = event.getComponents(TextInput::class.java)
-
-        val serviceType = this.modalsService.getInputValue(inputs, SERVICE_TYPE_INPUT_ID)
-        val description = this.modalsService.getInputValue(inputs, SERVICE_DESCRIPTION_INPUT_ID)
-        val budget = this.modalsService.getInputValue(inputs, SERVICE_BUDGET_INPUT_ID)
-
-        val embed = EmbedCreateSpec.builder()
-                .author(fullName, DISCORD_USER_URL.replace("{id}", id), avatar)
-                .title("Запрос: $serviceType")
-                .color(this.messagesService.getColorFromString(this.discordConfiguration.requestsMessageColor))
-                .description(description)
-                .addField("Бюджет:", budget, false)
-                .addField("Опубликовал:", mention, false)
-                .build()
-                .asRequest()
-
-        val deleteButton = Button.secondary(BUTTON_ID + id, "❌")
-        val actionRow = ActionRow.of(deleteButton)
-
-        val message = MessageCreateRequest.builder()
-                .embed(embed)
-                .build()
-                .withComponents(actionRow.data)
-
-        val channelIds = this.developmentRequestChannelsProperties.development.map(Snowflake::of)
-        val channels = event.interaction.guild.flatMapMany { guild ->
-            Flux.fromIterable(channelIds).flatMap(guild::getChannelById)
-        }
-
-        val messages = channels.flatMap { it.restChannel.createMessage(message) }
-        val reply = event.reply("Ваш запрос успешно опубликован!")
-                .withEphemeral(true)
-
-        return messages.then(reply)
+        return this.handle(event, INPUTS_MAPPING, this.developmentRequestChannelsProperties.development, EMBED_TITLE)
     }
 
     override fun create(): InteractionPresentModalSpec {

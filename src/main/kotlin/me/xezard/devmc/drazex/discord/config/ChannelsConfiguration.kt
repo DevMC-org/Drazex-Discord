@@ -27,4 +27,4 @@ import org.springframework.context.annotation.PropertySource
 @Configuration
 @ConfigurationProperties
 @PropertySource(value = ["classpath:channels.yml"], factory = YamlPropertySourceFactory::class)
-class ChannelsConfiguration {}
+class ChannelsConfiguration

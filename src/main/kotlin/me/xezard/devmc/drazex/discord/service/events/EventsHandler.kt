@@ -30,15 +30,20 @@ import java.util.logging.Logger
 
 @Service
 class EventsHandler (
-    private val handlers: List<IEventHandler<Event>>
+    private val handlers: List<EventHandler<Event>>
 ) {
+    companion object {
+        private const val LOGGER_PREFIX = "[EH]"
+
+        private const val EVENT_HANDLING_ERROR_MESSAGE = "Error while handling event"
+
+        private val LOGGER: Logger = Logger.getLogger(LOGGER_PREFIX)
+    }
+
     fun registerAllHandlers(gateway: GatewayDiscordClient): Mono<Void> {
         return Flux.fromIterable(this.handlers).flatMap { handler ->
-            gateway.on(handler.getEvent()) { event ->
-                handler.handle(event)
-            }.onErrorResume { error -> Mono.fromRunnable {
-                Logger.getLogger("[EH]").log(Level.WARNING, "[EH] Error while handling event", error)
-            }}
+            gateway.on(handler.getEvent()) { handler.handle(it) }
+                .onErrorResume { Mono.fromRunnable { LOGGER.log(Level.WARNING, EVENT_HANDLING_ERROR_MESSAGE, it) }}
         }.then()
     }
 }

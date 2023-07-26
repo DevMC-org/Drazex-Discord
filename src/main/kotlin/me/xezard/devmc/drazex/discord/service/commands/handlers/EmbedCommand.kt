@@ -31,7 +31,7 @@ import discord4j.discordjson.json.ApplicationCommandOptionData
 import discord4j.discordjson.json.ApplicationCommandRequest
 import discord4j.discordjson.json.MessageEditRequest
 import discord4j.rest.util.Permission
-import me.xezard.devmc.drazex.discord.service.commands.ICommandHandler
+import me.xezard.devmc.drazex.discord.service.commands.CommandHandler
 import me.xezard.devmc.drazex.discord.service.messages.MessagesService
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
@@ -39,7 +39,7 @@ import reactor.core.publisher.Mono
 @Component
 class EmbedCommand (
     private val messagesService: MessagesService
-): ICommandHandler {
+): CommandHandler {
     companion object {
         private const val NAME = "embed"
         private const val CHANNEL_OPTION_NAME = "channel"

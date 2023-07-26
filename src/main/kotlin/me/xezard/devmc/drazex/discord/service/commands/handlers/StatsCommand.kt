@@ -28,7 +28,11 @@ import discord4j.rest.util.Permission
 import me.xezard.devmc.drazex.discord.config.DiscordConfiguration
 import me.xezard.devmc.drazex.discord.config.properties.RolesProperties
 import me.xezard.devmc.drazex.discord.service.app.AppService
-import me.xezard.devmc.drazex.discord.service.commands.ICommandHandler
+import me.xezard.devmc.drazex.discord.service.app.AppService.Companion.AVAILABLE_MEMORY_REPLACE_PLACEHOLDER
+import me.xezard.devmc.drazex.discord.service.app.AppService.Companion.MAXIMUM_MEMORY_REPLACE_PLACEHOLDER
+import me.xezard.devmc.drazex.discord.service.app.AppService.Companion.UPTIME_REPLACE_PLACEHOLDER
+import me.xezard.devmc.drazex.discord.service.app.AppService.Companion.USED_MEMORY_REPLACE_PLACEHOLDER
+import me.xezard.devmc.drazex.discord.service.commands.CommandHandler
 import me.xezard.devmc.drazex.discord.service.messages.MessagesService
 import me.xezard.devmc.drazex.discord.service.roles.RolesService
 import org.springframework.stereotype.Component
@@ -41,50 +45,62 @@ class StatsCommand (
     private val rolesService: RolesService,
     private val discordConfiguration: DiscordConfiguration,
     private val rolesProperties: RolesProperties
-): ICommandHandler {
+): CommandHandler {
+    companion object {
+        private val MEMORY_INFO_MESSAGE = """
+        Используется: %s МБ
+        Доступная: %s МБ
+        Всего: %s МБ
+        """.trimIndent()
+
+        private const val EMBED_TITLE = "Статистика"
+        private const val EMBED_UPTIME_FIELD = "Аптайм"
+        private const val EMBED_MEMORY_FIELD = "Память"
+
+        private val COMMAND_DEFAULT_PERMISSION = Permission.ADMINISTRATOR.value.toString()
+
+        private const val COMMAND_DESCRIPTION = "Display the overall statistics of the bot"
+        private const val COMMAND = "stats"
+    }
+
     override fun handle(event: ApplicationCommandInteractionEvent): Mono<Void> {
-        val member = event.interaction.member.orElse(null) ?: return Mono.empty()
+        return Mono.justOrEmpty(event.interaction.member)
+            .filterWhen { this.rolesService.hasRole(it, this.rolesProperties.admin) }
+            .flatMap { this.createMemoryInfoEmbed(event) }
+    }
 
-        return this.rolesService.hasRole(member, this.rolesProperties.admin)
-                .filter { it }
-                .switchIfEmpty(Mono.empty())
-                .flatMap {
-                    val replaces = this.appService.replaces.invoke()
+    private fun createMemoryInfoEmbed(event: ApplicationCommandInteractionEvent): Mono<Void> {
+        val replaces = appService.replaces.invoke()
 
-                    val uptime = replaces["{uptime}"].toString()
-                    val usedMemory = replaces["{used_memory}"].toString()
-                    val availableMemory = replaces["{available_memory}"].toString()
-                    val maximumMemory = replaces["{maximum_memory}"].toString()
+        val uptime = replaces[UPTIME_REPLACE_PLACEHOLDER].toString()
+        val memoryInfo = String.format(MEMORY_INFO_MESSAGE,
+            replaces[USED_MEMORY_REPLACE_PLACEHOLDER],
+            replaces[AVAILABLE_MEMORY_REPLACE_PLACEHOLDER],
+            replaces[MAXIMUM_MEMORY_REPLACE_PLACEHOLDER]
+        )
 
-                    val memoryInfo =
-                    """
-                    Используется: $usedMemory МБ
-                    Доступная: $availableMemory МБ
-                    Всего: $maximumMemory МБ
-                    """.trimIndent()
+        val embed = EmbedCreateSpec.builder()
+            .title(EMBED_TITLE)
+            .color(this.messagesService.getColorFromString(this.discordConfiguration.messagesColor))
+            .addField(EMBED_UPTIME_FIELD, uptime, false)
+            .addField(EMBED_MEMORY_FIELD, memoryInfo, false)
+            .build()
 
-                    val embed = EmbedCreateSpec.builder()
-                            .title("Статистика")
-                            .color(this.messagesService.getColorFromString(this.discordConfiguration.messagesColor))
-                            .addField("Аптайм", uptime, false)
-                            .addField("Память", memoryInfo, false).build()
-
-                    event.reply(InteractionApplicationCommandCallbackSpec.builder()
-                            .addEmbed(embed)
-                            .build()
-                            .withEphemeral(true))
-                }
+        return event.reply(InteractionApplicationCommandCallbackSpec.builder()
+            .addEmbed(embed)
+            .build()
+            .withEphemeral(true))
     }
 
     override fun register(): ApplicationCommandRequest {
         return ApplicationCommandRequest.builder()
-                .name(this.name())
-                .description("Display the overall statistics of the bot")
-                .defaultMemberPermissions(Permission.ADMINISTRATOR.value.toString())
+                .name(COMMAND)
+                .description(COMMAND_DESCRIPTION)
+                .defaultMemberPermissions(COMMAND_DEFAULT_PERMISSION)
                 .build()
     }
 
     override fun name(): String {
-        return "stats"
+        return COMMAND
     }
 }

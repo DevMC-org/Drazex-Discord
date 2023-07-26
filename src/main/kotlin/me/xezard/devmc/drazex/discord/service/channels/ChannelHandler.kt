@@ -18,16 +18,13 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package me.xezard.devmc.drazex.discord.service.commands
+package me.xezard.devmc.drazex.discord.service.channels
 
-import discord4j.core.event.domain.interaction.ApplicationCommandInteractionEvent
-import discord4j.discordjson.json.ApplicationCommandRequest
+import discord4j.core.`object`.entity.Message
 import reactor.core.publisher.Mono
 
-interface ICommandHandler {
-    fun handle(event: ApplicationCommandInteractionEvent): Mono<Void>
+interface ChannelHandler {
+    fun handle(message: Message): Mono<Void>
 
-    fun register(): ApplicationCommandRequest
-
-    fun name(): String
+    fun getHandledChannelIds(): List<String>
 }

@@ -30,7 +30,7 @@ import me.xezard.devmc.drazex.discord.service.app.DiscordService.Companion.CHANN
 import me.xezard.devmc.drazex.discord.service.app.DiscordService.Companion.DISCORD_AVATAR_URL
 import me.xezard.devmc.drazex.discord.service.app.DiscordService.Companion.DISCORD_CHANNEL_URL
 import me.xezard.devmc.drazex.discord.service.app.DiscordService.Companion.DISCORD_EMOJI_PATTERN
-import me.xezard.devmc.drazex.discord.service.channels.IChannelHandler
+import me.xezard.devmc.drazex.discord.service.channels.ChannelHandler
 import me.xezard.devmc.drazex.discord.service.messages.MessagesService
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
@@ -42,24 +42,32 @@ class NewsChannelHandler (
     private val discordConfiguration: DiscordConfiguration,
     private val channelsProperties: NewsChannelsProperties,
     private val newsChannelsProperties: NewsChannelsProperties
-): IChannelHandler {
+): ChannelHandler {
+    companion object {
+        private const val USER_ID_PLACEHOLDER = "{user_id}"
+        private const val USER_AVATAR_PLACEHOLDER = "{avatar}"
+        private const val DISCORD_CHANNEL_ID_PLACEHOLDER = "{id}"
+
+        private const val MESSAGE_FOOTER = "• Лента новостей сообщества"
+    }
+
     override fun handle(message: Message): Mono<Void> {
         val messageData = message.data
         val author = messageData.author()
         val avatar = DISCORD_AVATAR_URL
-                .replace("{user_id}", author.id().asString())
-                .replace("{avatar}", author.avatar().orElse("1"))
-        val guildId = message.messageReference.flatMap { ref -> ref.guildId }
+                .replace(USER_ID_PLACEHOLDER, author.id().asString())
+                .replace(USER_AVATAR_PLACEHOLDER, author.avatar().orElse(""))
+        val guildId = message.messageReference.flatMap { it.guildId }
                 .orElse(Snowflake.of(23423))
                 .asString()
-        val channelUrl = DISCORD_CHANNEL_URL.replace("{id}", guildId)
+        val channelUrl = DISCORD_CHANNEL_URL.replace(DISCORD_CHANNEL_ID_PLACEHOLDER, guildId)
         val embedBuilder = EmbedCreateSpec.builder()
                 .author(author.username().replace(CHANNEL_NAME_PATTERN.toRegex(), ""),
                         channelUrl, avatar)
                 .color(this.messagesService.getColorFromString(this.discordConfiguration.messagesColor))
                 .description(message.content.replace(DISCORD_EMOJI_PATTERN, ""))
                 .thumbnail(avatar)
-                .footer("• Лента новостей сообщества", "")
+                .footer(MESSAGE_FOOTER, "")
 
         messageData.attachments().firstOrNull()?.url()?.let { embedBuilder.image(it) }
 
@@ -67,10 +75,10 @@ class NewsChannelHandler (
         val messageRequest = MessageCreateRequest.builder()
                 .addEmbed(embedBuilder.build().asRequest())
 
-        messageRequest.addAllEmbeds(message.embeds.map { embed -> embed.data })
+        messageRequest.addAllEmbeds(message.embeds.map { it.data })
 
-        return message.guild.flatMap { guild -> guild.getChannelById(consumerId) }
-                .flatMap { channel -> channel.restChannel.createMessage(messageRequest.build()) }
+        return message.guild.flatMap { it.getChannelById(consumerId) }
+                .flatMap { it.restChannel.createMessage(messageRequest.build()) }
                 .then()
     }
 

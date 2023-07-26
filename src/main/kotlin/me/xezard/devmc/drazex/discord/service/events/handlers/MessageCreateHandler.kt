@@ -23,7 +23,7 @@ package me.xezard.devmc.drazex.discord.service.events.handlers
 import discord4j.core.event.domain.message.MessageCreateEvent
 import discord4j.core.`object`.entity.Message
 import me.xezard.devmc.drazex.discord.service.channels.ChannelsHandler
-import me.xezard.devmc.drazex.discord.service.events.IEventHandler
+import me.xezard.devmc.drazex.discord.service.events.EventHandler
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 import java.util.*
@@ -33,7 +33,7 @@ import java.util.logging.Logger
 @Component
 class MessageCreateHandler (
     private val channelsHandler: ChannelsHandler
-): IEventHandler<MessageCreateEvent> {
+): EventHandler<MessageCreateEvent> {
     companion object {
         val LOGGER: Logger = Logger.getLogger("[MCH]")
     }
