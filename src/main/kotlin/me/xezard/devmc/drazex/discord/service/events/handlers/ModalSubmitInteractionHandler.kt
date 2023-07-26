@@ -30,9 +30,9 @@ import reactor.core.publisher.Mono
 class ModalSubmitInteractionHandler (
     private val modalsHandler: ModalsHandler
 ): EventHandler<ModalSubmitInteractionEvent> {
-    override fun handle(event: ModalSubmitInteractionEvent): Mono<Void> =
-        this.modalsHandler.findModalById(event.customId)?.handle(event) ?: Mono.empty()
-
     override val event
         get() = ModalSubmitInteractionEvent::class.java
+
+    override fun handle(event: ModalSubmitInteractionEvent): Mono<Void> =
+        this.modalsHandler.findModalById(event.customId)?.handle(event) ?: Mono.empty()
 }

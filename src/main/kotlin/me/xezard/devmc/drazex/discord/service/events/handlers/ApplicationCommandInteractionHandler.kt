@@ -33,7 +33,6 @@ class ApplicationCommandInteractionHandler (
     override val event
         get() = ApplicationCommandInteractionEvent::class.java
 
-    override fun handle(event: ApplicationCommandInteractionEvent): Mono<Void> {
-        return this.commandsHandler.findHandlerByCommandName(event.commandName)?.handle(event) ?: Mono.empty()
-    }
+    override fun handle(event: ApplicationCommandInteractionEvent): Mono<Void> =
+        this.commandsHandler.findHandlerByCommandName(event.commandName)?.handle(event) ?: Mono.empty()
 }

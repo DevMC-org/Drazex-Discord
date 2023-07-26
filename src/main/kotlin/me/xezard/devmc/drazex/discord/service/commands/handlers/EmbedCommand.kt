@@ -105,33 +105,31 @@ class EmbedCommand (
             .map(Snowflake::of)
             .orElse(null)
 
-    override fun register(): ApplicationCommandRequest {
-        return ApplicationCommandRequest.builder()
-                .name(COMMAND)
-                .description(DESCRIPTION)
-                .defaultMemberPermissions(Permission.ADMINISTRATOR.value.toString())
-                .addAllOptions(listOf(
-                        ApplicationCommandOptionData.builder()
-                                .name(JSON_OPTION_NAME)
-                                .description(JSON_OPTION_DESCRIPTION)
-                                .type(ApplicationCommandOption.Type.STRING.value)
-                                .required(true)
-                                .build(),
+    override fun register(): ApplicationCommandRequest =
+        ApplicationCommandRequest.builder()
+            .name(COMMAND)
+            .description(DESCRIPTION)
+            .defaultMemberPermissions(Permission.ADMINISTRATOR.value.toString())
+            .addAllOptions(listOf(
+                ApplicationCommandOptionData.builder()
+                    .name(JSON_OPTION_NAME)
+                    .description(JSON_OPTION_DESCRIPTION)
+                    .type(ApplicationCommandOption.Type.STRING.value)
+                    .required(true)
+                    .build(),
 
-                        ApplicationCommandOptionData.builder()
-                                .name(CHANNEL_OPTION_NAME)
-                                .description(CHANNEL_OPTION_DESCRIPTION)
-                                .type(ApplicationCommandOption.Type.STRING.value)
-                                .required(false)
-                                .build(),
+                ApplicationCommandOptionData.builder()
+                    .name(CHANNEL_OPTION_NAME)
+                    .description(CHANNEL_OPTION_DESCRIPTION)
+                    .type(ApplicationCommandOption.Type.STRING.value)
+                    .required(false)
+                    .build(),
 
-                        ApplicationCommandOptionData.builder()
-                                .name(MESSAGE_ID_OPTION_NAME)
-                                .description(MESSAGE_ID_OPTION_DESCRIPTION)
-                                .type(ApplicationCommandOption.Type.STRING.value)
-                                .required(false)
-                                .build()
-                ))
-                .build()
-    }
+                ApplicationCommandOptionData.builder()
+                    .name(MESSAGE_ID_OPTION_NAME)
+                    .description(MESSAGE_ID_OPTION_DESCRIPTION)
+                    .type(ApplicationCommandOption.Type.STRING.value)
+                    .required(false)
+                    .build()
+            )).build()
 }

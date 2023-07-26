@@ -37,17 +37,23 @@ class TimeService {
 
         private const val TIME_VALUES_SEPARATOR = ","
         private const val TIME_VALUES_LAST_SEPARATOR = " и"
+
+        private const val DAYS_IN_A_YEAR = 365
+        private const val MONTHS_PER_YEAR = 12
+        private const val DAYS_IN_A_MONTH = 30
+        private const val HOURS_IN_A_DAY = 24
+        private const val MINUTES_IN_A_HOUR = 60
+        private const val SECONDS_IN_A_MINUTE = 60
     }
 
     fun formatTime(timeMillis: Long): String {
         val duration = Duration.ofMillis(timeMillis)
-        val years = duration.toDays() / 365
-        val months = duration.toDays() / 30 % 12
-        val days = duration.toDays() % 30
-        val hours = duration.toHours() % 24
-        val minutes = duration.toMinutes() % 60
-        val seconds = duration.seconds % 60
-
+        val years = duration.toDays() / DAYS_IN_A_YEAR
+        val months = duration.toDays() / DAYS_IN_A_MONTH % MONTHS_PER_YEAR
+        val days = duration.toDays() % DAYS_IN_A_MONTH
+        val hours = duration.toHours() % HOURS_IN_A_DAY
+        val minutes = duration.toMinutes() % MINUTES_IN_A_HOUR
+        val seconds = duration.seconds % SECONDS_IN_A_MINUTE
         val timeUnits = listOf(
             years to TIME_UNITS[0],
             months to TIME_UNITS[1],

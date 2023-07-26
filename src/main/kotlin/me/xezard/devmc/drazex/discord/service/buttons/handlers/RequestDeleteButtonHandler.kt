@@ -24,11 +24,13 @@ import discord4j.core.event.domain.interaction.ButtonInteractionEvent
 import discord4j.core.`object`.entity.Message
 import me.xezard.devmc.drazex.discord.config.properties.RolesProperties
 import me.xezard.devmc.drazex.discord.service.buttons.IButtonHandler
+import me.xezard.devmc.drazex.discord.service.roles.RolesService
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 
 @Component
 class RequestDeleteButtonHandler (
+    private val rolesService: RolesService,
     private val rolesProperties: RolesProperties
 ): IButtonHandler {
     companion object {
@@ -38,13 +40,10 @@ class RequestDeleteButtonHandler (
     }
 
     override fun handle(event: ButtonInteractionEvent, buttonId: String): Mono<Void> {
-        val member = event.interaction.member
+        val member = event.interaction.member.orElse(null) ?: return Mono.empty()
         val userId = event.interaction.user.id
         val isUserButton = Mono.just(userId.asString() == buttonId)
-        val hasPermission = Mono.justOrEmpty(member)
-            .flatMapMany { it.roles }
-            .map { role -> role.id.asString() == this.rolesProperties.admin }
-            .any { it }
+        val hasPermission = this.rolesService.hasRole(member, this.rolesProperties.admin)
         val hasAccess = Mono.zip(hasPermission, isUserButton) { permission, owner -> permission || owner }
 
         return hasAccess.flatMap {
@@ -55,7 +54,6 @@ class RequestDeleteButtonHandler (
         }
     }
 
-    override fun tracks(id: String): Boolean {
-        return id.startsWith(BUTTON_ID)
-    }
+    override fun tracks(id: String): Boolean =
+        id.startsWith(BUTTON_ID)
 }

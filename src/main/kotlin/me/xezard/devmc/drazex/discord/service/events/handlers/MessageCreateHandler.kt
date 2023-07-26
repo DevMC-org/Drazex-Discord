@@ -50,12 +50,11 @@ class MessageCreateHandler (
     override val event
         get() = MessageCreateEvent::class.java
 
-    override fun handle(event: MessageCreateEvent): Mono<Void> {
-        return Mono.justOrEmpty(event.message)
-                   .flatMap(::processMessage)
-                   .then()
-                   .onErrorResume(::handleError)
-    }
+    override fun handle(event: MessageCreateEvent): Mono<Void> =
+        Mono.justOrEmpty(event.message)
+            .flatMap(::processMessage)
+            .then()
+            .onErrorResume(::handleError)
 
     private fun processMessage(message: Message): Mono<Void> {
         if (this.authorIsBot(message)) {

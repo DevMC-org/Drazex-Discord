@@ -36,7 +36,7 @@ class ButtonInteractionHandler (
     override fun handle(event: ButtonInteractionEvent): Mono<Void> {
         val buttonId = event.interaction.data.data()
             .toOptional()
-            .flatMap { data -> data.customId().toOptional().map { it }}
+            .flatMap { it.customId().toOptional() }
             .orElse(null)
 
         return this.buttonsHandler.findButtonById(buttonId)?.handle(event, buttonId) ?: Mono.empty()

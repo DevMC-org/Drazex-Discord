@@ -66,11 +66,10 @@ class StatsCommand (
     override val name
         get() = COMMAND
 
-    override fun handle(event: ApplicationCommandInteractionEvent): Mono<Void> {
-        return Mono.justOrEmpty(event.interaction.member)
+    override fun handle(event: ApplicationCommandInteractionEvent): Mono<Void> =
+        Mono.justOrEmpty(event.interaction.member)
             .filterWhen { this.rolesService.hasRole(it, this.rolesProperties.admin) }
             .flatMap { this.createStatsEmbed(event) }
-    }
 
     private fun createStatsEmbed(event: ApplicationCommandInteractionEvent): Mono<Void> {
         val replaces = appService.replaces.invoke()
@@ -95,11 +94,10 @@ class StatsCommand (
             .withEphemeral(true))
     }
 
-    override fun register(): ApplicationCommandRequest {
-        return ApplicationCommandRequest.builder()
+    override fun register(): ApplicationCommandRequest =
+        ApplicationCommandRequest.builder()
                 .name(COMMAND)
                 .description(COMMAND_DESCRIPTION)
                 .defaultMemberPermissions(COMMAND_DEFAULT_PERMISSION)
                 .build()
-    }
 }
