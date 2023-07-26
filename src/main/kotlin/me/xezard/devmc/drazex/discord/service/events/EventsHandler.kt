@@ -42,7 +42,7 @@ class EventsHandler (
 
     fun registerAllHandlers(gateway: GatewayDiscordClient): Mono<Void> {
         return Flux.fromIterable(this.handlers).flatMap { handler ->
-            gateway.on(handler.getEvent()) { handler.handle(it) }
+            gateway.on(handler.event) { handler.handle(it) }
                 .onErrorResume { Mono.fromRunnable { LOGGER.log(Level.WARNING, EVENT_HANDLING_ERROR_MESSAGE, it) }}
         }.then()
     }

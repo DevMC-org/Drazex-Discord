@@ -26,7 +26,6 @@ import reactor.core.publisher.Mono
 
 @Service
 class RolesService {
-    fun hasRole(member: Member, roleId: String): Mono<Boolean> {
-        return member.roles.any { it.id.asString() == roleId }
-    }
+    fun hasRole(member: Member, roleId: String): Mono<Boolean> =
+        member.roles.any { it.id.asString() == roleId }
 }

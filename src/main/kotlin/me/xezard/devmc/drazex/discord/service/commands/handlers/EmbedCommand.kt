@@ -22,6 +22,7 @@ package me.xezard.devmc.drazex.discord.service.commands.handlers
 
 import discord4j.common.util.Snowflake
 import discord4j.core.event.domain.interaction.ApplicationCommandInteractionEvent
+import discord4j.core.`object`.command.ApplicationCommandInteraction
 import discord4j.core.`object`.command.ApplicationCommandInteractionOption
 import discord4j.core.`object`.command.ApplicationCommandInteractionOptionValue
 import discord4j.core.`object`.command.ApplicationCommandOption
@@ -41,7 +42,7 @@ class EmbedCommand (
     private val messagesService: MessagesService
 ): CommandHandler {
     companion object {
-        private const val NAME = "embed"
+        private const val COMMAND = "embed"
         private const val CHANNEL_OPTION_NAME = "channel"
         private const val DESCRIPTION = "Send embed message"
         private const val CHANNEL_OPTION_DESCRIPTION = "The channel in which to edit the message"
@@ -52,6 +53,9 @@ class EmbedCommand (
         private const val EMBED_MESSAGE_SUCCESSFULLY_SENDED = "Embed сообщение успешно отправлено!"
         private const val EMBED_MESSAGE_SUCCESSFULLY_EDITED = "Embed сообщение успешно отредактировано!"
     }
+
+    override val name
+        get() = COMMAND
 
     // '/embed {json}' -> send an embed message to the same channel in which the command was used
     // '/embed {json} {channel id}' -> send an embed message to specified channel
@@ -66,30 +70,17 @@ class EmbedCommand (
                 .orElse(null)
 
         val embed = this.messagesService.jsonToEmbed(jsonOption) ?: return Mono.empty()
+        val channelSnowflake = this.extractSnowflake(CHANNEL_OPTION_NAME, commandInteraction)
+        val messageSnowflake = this.extractSnowflake(MESSAGE_ID_OPTION_NAME, commandInteraction)
+        val targetChannel = channelSnowflake?.let { snowflake ->
+            interaction.guild.flatMap { it.getChannelById(snowflake) }
+        } ?: interaction.channel.cast(GuildChannel::class.java)
+        val targetMessage = messageSnowflake?.let { snowflake -> targetChannel.map {
+            it.restChannel.getRestMessage(snowflake)
+        }} ?: Mono.empty()
 
-        val channelOption = commandInteraction.getOption(CHANNEL_OPTION_NAME)
-                .flatMap(ApplicationCommandInteractionOption::getValue)
-                .map(ApplicationCommandInteractionOptionValue::asString)
-                .map(Snowflake::of)
-        val messageIdOption = commandInteraction.getOption(MESSAGE_ID_OPTION_NAME)
-                .flatMap(ApplicationCommandInteractionOption::getValue)
-                .map(ApplicationCommandInteractionOptionValue::asString)
-                .map(Snowflake::of)
-
-        val targetChannel = channelOption.map { id ->
-            interaction.guild.flatMap { guild ->
-                guild.getChannelById(id)
-            }
-        }.orElse(interaction.channel.cast(GuildChannel::class.java))
-
-        val targetMessage = Mono.justOrEmpty(messageIdOption).flatMap { messageId ->
-            targetChannel.map { channel ->
-                channel.restChannel.getRestMessage(messageId)
-            }
-        }
-
-        val successMessage = targetMessage.hasElement().flatMap { hasMessage ->
-            val content = if (hasMessage) EMBED_MESSAGE_SUCCESSFULLY_EDITED
+        val successMessage = targetMessage.hasElement().flatMap {
+            val content = if (it) EMBED_MESSAGE_SUCCESSFULLY_EDITED
                           else EMBED_MESSAGE_SUCCESSFULLY_SENDED
 
             event.reply(InteractionApplicationCommandCallbackSpec
@@ -99,18 +90,24 @@ class EmbedCommand (
                     .build())
         }
 
-        return targetMessage.flatMap { message ->
-            message.edit(MessageEditRequest.builder()
+        return targetMessage.flatMap {
+            it.edit(MessageEditRequest.builder()
                     .embed(embed.asRequest())
                     .build())
-        }.switchIfEmpty(targetChannel.flatMap { channel ->
-            channel.restChannel.createMessage(embed.asRequest())
-        }).then(successMessage)
+        }.switchIfEmpty(targetChannel.flatMap { it.restChannel.createMessage(embed.asRequest()) })
+         .then(successMessage)
     }
+
+    fun extractSnowflake(optionName: String, commandInteraction: ApplicationCommandInteraction): Snowflake? =
+        commandInteraction.getOption(optionName)
+            .flatMap(ApplicationCommandInteractionOption::getValue)
+            .map(ApplicationCommandInteractionOptionValue::asString)
+            .map(Snowflake::of)
+            .orElse(null)
 
     override fun register(): ApplicationCommandRequest {
         return ApplicationCommandRequest.builder()
-                .name(NAME)
+                .name(COMMAND)
                 .description(DESCRIPTION)
                 .defaultMemberPermissions(Permission.ADMINISTRATOR.value.toString())
                 .addAllOptions(listOf(
@@ -136,9 +133,5 @@ class EmbedCommand (
                                 .build()
                 ))
                 .build()
-    }
-
-    override fun name(): String {
-        return NAME
     }
 }

@@ -71,9 +71,8 @@ class TeamRecruitmentModalHandler (
     override val id
         get() = MODAL_ID
 
-    override fun handle(event: ModalSubmitInteractionEvent): Mono<Void> {
-        return this.handle(event, INPUTS_MAPPING, this.teamRequestChannelsProperties.recruitment)
-    }
+    override fun handle(event: ModalSubmitInteractionEvent): Mono<Void> =
+        this.handle(event, INPUTS_MAPPING, this.teamRequestChannelsProperties.recruitment)
 
     override fun create(): InteractionPresentModalSpec {
         val descriptionInput = TextInput.small(TEAM_RECRUITMENT_DESCRIPTION_INPUT_ID, TEAM_RECRUITMENT_DESCRIPTION_INPUT_DESCRIPTION,

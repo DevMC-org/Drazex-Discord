@@ -51,6 +51,9 @@ class NewsChannelHandler (
         private const val MESSAGE_FOOTER = "• Лента новостей сообщества"
     }
 
+    override val handledChannelIds
+        get() = this.newsChannelsProperties.publishers
+
     override fun handle(message: Message): Mono<Void> {
         val messageData = message.data
         val author = messageData.author()
@@ -80,9 +83,5 @@ class NewsChannelHandler (
         return message.guild.flatMap { it.getChannelById(consumerId) }
                 .flatMap { it.restChannel.createMessage(messageRequest.build()) }
                 .then()
-    }
-
-    override fun getHandledChannelIds(): List<String> {
-        return this.newsChannelsProperties.publishers
     }
 }

@@ -24,7 +24,7 @@ import discord4j.core.`object`.entity.Message
 import reactor.core.publisher.Mono
 
 interface ChannelHandler {
-    fun handle(message: Message): Mono<Void>
+    val handledChannelIds: List<String>
 
-    fun getHandledChannelIds(): List<String>
+    fun handle(message: Message): Mono<Void>
 }

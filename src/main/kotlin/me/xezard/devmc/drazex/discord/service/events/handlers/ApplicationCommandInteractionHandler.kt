@@ -30,11 +30,10 @@ import reactor.core.publisher.Mono
 class ApplicationCommandInteractionHandler (
     private val commandsHandler: CommandsHandler
 ): EventHandler<ApplicationCommandInteractionEvent> {
+    override val event
+        get() = ApplicationCommandInteractionEvent::class.java
+
     override fun handle(event: ApplicationCommandInteractionEvent): Mono<Void> {
         return this.commandsHandler.findHandlerByCommandName(event.commandName)?.handle(event) ?: Mono.empty()
-    }
-
-    override fun getEvent(): Class<ApplicationCommandInteractionEvent> {
-        return ApplicationCommandInteractionEvent::class.java
     }
 }

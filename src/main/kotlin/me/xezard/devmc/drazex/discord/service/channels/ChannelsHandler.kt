@@ -35,7 +35,6 @@ class ChannelsHandler (
                 .then()
     }
 
-    private fun findHandlersByChannelId(channelId: String): List<ChannelHandler> {
-        return this.handlers.filter { it.getHandledChannelIds().contains(channelId) }
-    }
+    private fun findHandlersByChannelId(channelId: String): List<ChannelHandler> =
+        this.handlers.filter { it.handledChannelIds.contains(channelId) }
 }

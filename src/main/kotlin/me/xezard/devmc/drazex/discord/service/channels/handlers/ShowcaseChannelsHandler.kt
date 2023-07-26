@@ -39,6 +39,9 @@ class ShowcaseChannelsHandler(
         private val MESSAGE_EMOJIS = listOf(COOL_EMOJI, NOT_COOL_EMOJI, COOKIE_EMOJI)
     }
 
+    override val handledChannelIds
+        get() = channelsProperties.showcase
+
     override fun handle(message: Message): Mono<Void> {
         if (message.author.isEmpty) {
             return Mono.empty()
@@ -47,9 +50,5 @@ class ShowcaseChannelsHandler(
         return MESSAGE_EMOJIS.fold(Mono.empty()) { mono, emoji ->
             mono.then(message.addReaction(ReactionEmoji.unicode(emoji)))
         }
-    }
-
-    override fun getHandledChannelIds(): List<String> {
-        return channelsProperties.showcase
     }
 }

@@ -25,9 +25,9 @@ import discord4j.discordjson.json.ApplicationCommandRequest
 import reactor.core.publisher.Mono
 
 interface CommandHandler {
+    val name: String
+
     fun handle(event: ApplicationCommandInteractionEvent): Mono<Void>
 
     fun register(): ApplicationCommandRequest
-
-    fun name(): String
 }

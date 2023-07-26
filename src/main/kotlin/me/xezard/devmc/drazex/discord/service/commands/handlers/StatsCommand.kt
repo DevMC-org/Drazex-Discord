@@ -63,13 +63,16 @@ class StatsCommand (
         private const val COMMAND = "stats"
     }
 
+    override val name
+        get() = COMMAND
+
     override fun handle(event: ApplicationCommandInteractionEvent): Mono<Void> {
         return Mono.justOrEmpty(event.interaction.member)
             .filterWhen { this.rolesService.hasRole(it, this.rolesProperties.admin) }
-            .flatMap { this.createMemoryInfoEmbed(event) }
+            .flatMap { this.createStatsEmbed(event) }
     }
 
-    private fun createMemoryInfoEmbed(event: ApplicationCommandInteractionEvent): Mono<Void> {
+    private fun createStatsEmbed(event: ApplicationCommandInteractionEvent): Mono<Void> {
         val replaces = appService.replaces.invoke()
 
         val uptime = replaces[UPTIME_REPLACE_PLACEHOLDER].toString()
@@ -98,9 +101,5 @@ class StatsCommand (
                 .description(COMMAND_DESCRIPTION)
                 .defaultMemberPermissions(COMMAND_DEFAULT_PERMISSION)
                 .build()
-    }
-
-    override fun name(): String {
-        return COMMAND
     }
 }

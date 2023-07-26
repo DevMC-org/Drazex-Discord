@@ -57,9 +57,8 @@ class NewsService (
         this[DiscordPostType.ARTICLE] = messagesConfiguration.newArticlePostTemplate
     }
 
-    fun publishNews(post: DiscordPost): Mono<Void> {
-        return this.generatePost(this.assembleMessage(post), post.imageUrl)
-    }
+    fun publishNews(post: DiscordPost): Mono<Void> =
+        this.generatePost(this.assembleMessage(post), post.imageUrl)
 
     private fun generatePost(message: String, imageUrl: String): Mono<Void> {
         val embed = EmbedCreateSpec.builder()

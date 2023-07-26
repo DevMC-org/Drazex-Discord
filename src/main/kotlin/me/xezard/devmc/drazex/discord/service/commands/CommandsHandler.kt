@@ -43,7 +43,6 @@ class CommandsHandler (
         }.then()
     }
 
-    fun findHandlerByCommandName(name: String): CommandHandler? {
-        return this.handlers.find { it.name() == name }
-    }
+    fun findHandlerByCommandName(name: String): CommandHandler? =
+        this.handlers.find { it.name == name }
 }

@@ -30,6 +30,9 @@ import reactor.core.publisher.Mono
 class ButtonInteractionHandler (
     private val buttonsHandler: ButtonsHandler
 ): EventHandler<ButtonInteractionEvent> {
+    override val event
+        get() = ButtonInteractionEvent::class.java
+
     override fun handle(event: ButtonInteractionEvent): Mono<Void> {
         val buttonId = event.interaction.data.data()
             .toOptional()
@@ -37,9 +40,5 @@ class ButtonInteractionHandler (
             .orElse(null)
 
         return this.buttonsHandler.findButtonById(buttonId)?.handle(event, buttonId) ?: Mono.empty()
-    }
-
-    override fun getEvent(): Class<ButtonInteractionEvent> {
-        return ButtonInteractionEvent::class.java
     }
 }

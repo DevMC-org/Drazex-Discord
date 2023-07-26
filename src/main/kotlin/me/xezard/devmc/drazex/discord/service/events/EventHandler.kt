@@ -24,7 +24,7 @@ import discord4j.core.event.domain.Event
 import reactor.core.publisher.Mono
 
 interface EventHandler<out T : Event> {
-    fun handle(event: @UnsafeVariance T): Mono<Void>
+    val event: Class<out T>
 
-    fun getEvent(): Class<out T>
+    fun handle(event: @UnsafeVariance T): Mono<Void>
 }

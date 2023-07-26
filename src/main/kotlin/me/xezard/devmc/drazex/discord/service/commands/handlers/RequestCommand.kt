@@ -22,10 +22,8 @@ package me.xezard.devmc.drazex.discord.service.commands.handlers
 
 import discord4j.core.event.domain.interaction.ApplicationCommandInteractionEvent
 import discord4j.core.`object`.command.ApplicationCommandOption
-import discord4j.core.`object`.command.ApplicationCommandPermission
 import discord4j.discordjson.json.ApplicationCommandOptionChoiceData
 import discord4j.discordjson.json.ApplicationCommandOptionData
-import discord4j.discordjson.json.ApplicationCommandPermissionsData
 import discord4j.discordjson.json.ApplicationCommandRequest
 import me.xezard.devmc.drazex.discord.domain.model.request.RequestType
 import me.xezard.devmc.drazex.discord.service.commands.CommandHandler
@@ -42,7 +40,7 @@ class RequestCommand (
     private val teamRecruitmentModalHandler: TeamRecruitmentModalHandler
 ): CommandHandler {
     companion object {
-        private const val NAME = "request"
+        private const val COMMAND = "request"
         private const val DESCRIPTION = "Create a new request"
         private const val SERVICE_TYPE_OPTION_NAME = "type"
         private const val REQUEST_TYPE_OPTION_DESCRIPTION = "Тип запроса"
@@ -52,6 +50,9 @@ class RequestCommand (
 
         private const val INVALID_REQUEST_TYPE_ERROR = "Invalid request type"
     }
+
+    override val name
+        get() = COMMAND
 
     // <request type, <label, modal handler>>
     private val requestTypesData = mutableMapOf(
@@ -75,12 +76,6 @@ class RequestCommand (
     }
 
     override fun register(): ApplicationCommandRequest {
-        ApplicationCommandPermissionsData.builder()
-                .id(1)
-                .type(ApplicationCommandPermission.Type.ROLE.value)
-                .permission(true)
-                .build()
-
         val serviceType = ApplicationCommandOptionData.builder()
                 .name(SERVICE_TYPE_OPTION_NAME)
                 .description(REQUEST_TYPE_OPTION_DESCRIPTION)
@@ -97,13 +92,9 @@ class RequestCommand (
         }
 
         return ApplicationCommandRequest.builder()
-                .name(NAME)
+                .name(COMMAND)
                 .description(DESCRIPTION)
                 .addOption(serviceType.build())
                 .build()
-    }
-
-    override fun name(): String {
-        return NAME
     }
 }

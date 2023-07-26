@@ -68,9 +68,8 @@ class ExecutorSearchModalHandler (
     override val id
         get() = MODAL_ID
 
-    override fun handle(event: ModalSubmitInteractionEvent): Mono<Void> {
-        return this.handle(event, INPUTS_MAPPING, this.developmentRequestChannelsProperties.development, EMBED_TITLE)
-    }
+    override fun handle(event: ModalSubmitInteractionEvent): Mono<Void> =
+        this.handle(event, INPUTS_MAPPING, this.developmentRequestChannelsProperties.development, EMBED_TITLE)
 
     override fun create(): InteractionPresentModalSpec {
         val serviceTypeInput = TextInput.small(SERVICE_TYPE_INPUT_ID, SERVICE_TYPE_OPTION_DESCRIPTION,

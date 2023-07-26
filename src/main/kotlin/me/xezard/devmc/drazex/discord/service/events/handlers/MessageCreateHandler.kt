@@ -35,8 +35,20 @@ class MessageCreateHandler (
     private val channelsHandler: ChannelsHandler
 ): EventHandler<MessageCreateEvent> {
     companion object {
-        val LOGGER: Logger = Logger.getLogger("[MCH]")
+        private val LOGGER: Logger = Logger.getLogger("[MCH]")
+
+        private const val CHANNEL_ID_REPLACE_PLACEHOLDER = "{channel-id}"
+        private const val AUTHOR_REPLACE_PLACEHOLDER = "{author}"
+        private const val CONTENT_REPLACE_PLACEHOLDER = "{content}"
+
+        private const val LOG_ERROR_MESSAGE = "An unknown error occurred: "
+
+        private const val LOG_FORMAT = "(channel id: $CHANNEL_ID_REPLACE_PLACEHOLDER) " +
+                "$AUTHOR_REPLACE_PLACEHOLDER $CONTENT_REPLACE_PLACEHOLDER"
     }
+
+    override val event
+        get() = MessageCreateEvent::class.java
 
     override fun handle(event: MessageCreateEvent): Mono<Void> {
         return Mono.justOrEmpty(event.message)
@@ -46,27 +58,26 @@ class MessageCreateHandler (
     }
 
     private fun processMessage(message: Message): Mono<Void> {
-        val author = message.author.map { "${it.username}#${it.discriminator}" }
-                .orElse("[?]")
-
-        // if author is bot -> skip
-        if (message.author.map { user -> user.isBot }.orElse(false)) {
+        if (this.authorIsBot(message)) {
             return Mono.empty()
         }
 
-        LOGGER.info("(channel id: ${message.channelId.asString()}) $author ${message.content}")
+        val author = message.author.map { "${it.username}#${it.discriminator}" }
+                .orElse("[?]")
+
+        LOGGER.info(LOG_FORMAT
+            .replace(CHANNEL_ID_REPLACE_PLACEHOLDER, message.channelId.asString())
+            .replace(AUTHOR_REPLACE_PLACEHOLDER, author)
+            .replace(CONTENT_REPLACE_PLACEHOLDER, message.content))
 
         return channelsHandler.handle(message)
     }
 
-    private fun handleError(exception: Throwable): Mono<Void> {
-        return Mono.fromRunnable {
-            LOGGER.log(Level.WARNING, "An unknown error occurred: " +
-                    Objects.requireNonNullElse(exception.message, ""), exception)
-        }
-    }
+    private fun authorIsBot(message: Message) =
+        message.author.map { it.isBot }.orElse(false)
 
-    override fun getEvent(): Class<MessageCreateEvent> {
-        return MessageCreateEvent::class.java
+    private fun handleError(exception: Throwable): Mono<Void> = Mono.fromRunnable {
+        LOGGER.log(Level.WARNING,
+            "$LOG_ERROR_MESSAGE ${Objects.requireNonNullElse(exception.message, "")}", exception)
     }
 }
