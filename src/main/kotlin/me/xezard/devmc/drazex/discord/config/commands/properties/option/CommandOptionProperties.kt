@@ -18,14 +18,11 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package me.xezard.devmc.drazex.discord.config.properties
+package me.xezard.devmc.drazex.discord.config.commands.properties.option
 
-import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.stereotype.Component
-
-@Component
-@ConfigurationProperties("ids.requests.team")
-class TeamRequestChannelsProperties {
-    lateinit var search: List<String>
-    lateinit var recruitment: List<String>
+class CommandOptionProperties {
+    var choices: List<CommandOptionChoiceProperties>? = null
+    lateinit var description: String
+    lateinit var type: String
+    var required: Boolean? = false
 }

@@ -18,14 +18,17 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package me.xezard.devmc.drazex.discord.service.roles
+package me.xezard.devmc.drazex.discord.config.modals
 
-import discord4j.core.`object`.entity.Member
-import org.springframework.stereotype.Service
-import reactor.core.publisher.Mono
+import me.xezard.devmc.drazex.discord.config.YamlPropertySourceFactory
+import me.xezard.devmc.drazex.discord.config.modals.properties.ModalProperties
+import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.PropertySource
 
-@Service
-class RolesService {
-    fun hasRole(member: Member, roleId: String) =
-        member.roles.any { it.id.asString() == roleId }
+@Configuration
+@ConfigurationProperties
+@PropertySource(value = ["classpath:modals.yml"], factory = YamlPropertySourceFactory::class)
+class ModalsConfiguration {
+    lateinit var modals: Map<String, ModalProperties>
 }

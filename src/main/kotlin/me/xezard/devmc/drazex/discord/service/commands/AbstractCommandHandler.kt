@@ -18,14 +18,18 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package me.xezard.devmc.drazex.discord.service.roles
+package me.xezard.devmc.drazex.discord.service.commands
 
-import discord4j.core.`object`.entity.Member
-import org.springframework.stereotype.Service
-import reactor.core.publisher.Mono
+import discord4j.discordjson.json.ApplicationCommandRequest
+import me.xezard.devmc.drazex.discord.config.commands.properties.CommandProperties
 
-@Service
-class RolesService {
-    fun hasRole(member: Member, roleId: String) =
-        member.roles.any { it.id.asString() == roleId }
+abstract class AbstractCommandHandler (
+    private val commandsService: CommandsService,
+    private val properties: CommandProperties
+) : CommandHandler {
+    override val name
+        get() = this.properties.name
+
+    override fun register(): ApplicationCommandRequest =
+        this.commandsService.createCommand(this.properties)
 }

@@ -23,16 +23,16 @@ package me.xezard.devmc.drazex.discord.service.commands.handlers
 import discord4j.core.event.domain.interaction.ApplicationCommandInteractionEvent
 import discord4j.core.spec.EmbedCreateSpec
 import discord4j.core.spec.InteractionApplicationCommandCallbackSpec
-import discord4j.discordjson.json.ApplicationCommandRequest
-import discord4j.rest.util.Permission
 import me.xezard.devmc.drazex.discord.config.DiscordConfiguration
-import me.xezard.devmc.drazex.discord.config.properties.RolesProperties
+import me.xezard.devmc.drazex.discord.config.commands.CommandsConfiguration
+import me.xezard.devmc.drazex.discord.config.roles.properties.RolesProperties
 import me.xezard.devmc.drazex.discord.service.app.AppService
 import me.xezard.devmc.drazex.discord.service.app.AppService.Companion.AVAILABLE_MEMORY_REPLACE_PLACEHOLDER
 import me.xezard.devmc.drazex.discord.service.app.AppService.Companion.MAXIMUM_MEMORY_REPLACE_PLACEHOLDER
 import me.xezard.devmc.drazex.discord.service.app.AppService.Companion.UPTIME_REPLACE_PLACEHOLDER
 import me.xezard.devmc.drazex.discord.service.app.AppService.Companion.USED_MEMORY_REPLACE_PLACEHOLDER
-import me.xezard.devmc.drazex.discord.service.commands.CommandHandler
+import me.xezard.devmc.drazex.discord.service.commands.AbstractCommandHandler
+import me.xezard.devmc.drazex.discord.service.commands.CommandsService
 import me.xezard.devmc.drazex.discord.service.messages.MessagesService
 import me.xezard.devmc.drazex.discord.service.roles.RolesService
 import org.springframework.stereotype.Component
@@ -40,12 +40,14 @@ import reactor.core.publisher.Mono
 
 @Component
 class StatsCommand (
+    commandsService: CommandsService,
     private val appService: AppService,
     private val messagesService: MessagesService,
     private val rolesService: RolesService,
     private val discordConfiguration: DiscordConfiguration,
+    commandsConfiguration: CommandsConfiguration,
     private val rolesProperties: RolesProperties
-): CommandHandler {
+): AbstractCommandHandler(commandsService, commandsConfiguration.commands["stats"]!!) {
     companion object {
         private val MEMORY_INFO_MESSAGE = """
         Используется: %s МБ
@@ -56,23 +58,15 @@ class StatsCommand (
         private const val EMBED_TITLE = "Статистика"
         private const val EMBED_UPTIME_FIELD = "Аптайм"
         private const val EMBED_MEMORY_FIELD = "Память"
-
-        private val COMMAND_DEFAULT_PERMISSION = Permission.ADMINISTRATOR.value.toString()
-
-        private const val COMMAND_DESCRIPTION = "Display the overall statistics of the bot"
-        private const val COMMAND = "stats"
     }
 
-    override val name
-        get() = COMMAND
-
-    override fun handle(event: ApplicationCommandInteractionEvent): Mono<Void> =
+    override fun handle(event: ApplicationCommandInteractionEvent) =
         Mono.justOrEmpty(event.interaction.member)
             .filterWhen { this.rolesService.hasRole(it, this.rolesProperties.admin) }
             .flatMap { this.createStatsEmbed(event) }
 
     private fun createStatsEmbed(event: ApplicationCommandInteractionEvent): Mono<Void> {
-        val replaces = appService.replaces.invoke()
+        val replaces = this.appService.replaces.invoke()
 
         val uptime = replaces[UPTIME_REPLACE_PLACEHOLDER].toString()
         val memoryInfo = String.format(MEMORY_INFO_MESSAGE,
@@ -93,11 +87,4 @@ class StatsCommand (
             .build()
             .withEphemeral(true))
     }
-
-    override fun register(): ApplicationCommandRequest =
-        ApplicationCommandRequest.builder()
-                .name(COMMAND)
-                .description(COMMAND_DESCRIPTION)
-                .defaultMemberPermissions(COMMAND_DEFAULT_PERMISSION)
-                .build()
 }

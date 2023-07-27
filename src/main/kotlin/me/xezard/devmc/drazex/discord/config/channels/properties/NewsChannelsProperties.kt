@@ -18,14 +18,15 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package me.xezard.devmc.drazex.discord.config.properties
+package me.xezard.devmc.drazex.discord.config.channels.properties
 
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.stereotype.Component
 
 @Component
-@ConfigurationProperties("ids")
-class RolesProperties {
-    lateinit var admin: String
-    lateinit var moderator: String
+@ConfigurationProperties("ids.news")
+class NewsChannelsProperties {
+    lateinit var publishers: List<String>
+
+    lateinit var consumer: String
 }

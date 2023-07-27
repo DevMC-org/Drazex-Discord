@@ -18,14 +18,9 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package me.xezard.devmc.drazex.discord.service.roles
+package me.xezard.devmc.drazex.discord.config.modals.properties.limits
 
-import discord4j.core.`object`.entity.Member
-import org.springframework.stereotype.Service
-import reactor.core.publisher.Mono
-
-@Service
-class RolesService {
-    fun hasRole(member: Member, roleId: String) =
-        member.roles.any { it.id.asString() == roleId }
+class ModalInputLengthLimitsProperties {
+    var minimum: Int = 0
+    var maximum: Int = 0
 }

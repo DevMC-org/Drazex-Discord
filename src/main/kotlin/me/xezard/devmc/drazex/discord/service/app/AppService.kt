@@ -34,6 +34,8 @@ class AppService (
         const val USED_MEMORY_REPLACE_PLACEHOLDER = "{used_memory}"
         const val AVAILABLE_MEMORY_REPLACE_PLACEHOLDER = "{available_memory}"
         const val MAXIMUM_MEMORY_REPLACE_PLACEHOLDER = "{maximum_memory}"
+
+        val RUNTIME: Runtime = Runtime.getRuntime()
     }
 
     val replaces: () -> Map<String, Any> = {
@@ -52,20 +54,20 @@ class AppService (
     }
 
     private fun getUsedMemory(): DataSize {
-        val totalMemory = Runtime.getRuntime().totalMemory()
-        val freeMemory = Runtime.getRuntime().freeMemory()
+        val totalMemory = RUNTIME.totalMemory()
+        val freeMemory = RUNTIME.freeMemory()
 
         return DataSize.of(totalMemory - freeMemory, DataUnit.BYTES)
     }
 
     private fun getAvailableMemory(): DataSize {
-        val maxMemory = Runtime.getRuntime().maxMemory()
+        val maxMemory = RUNTIME.maxMemory()
         val usedMemory = this.getUsedMemory()
 
         return DataSize.of(maxMemory - usedMemory.toBytes(), DataUnit.BYTES)
     }
 
     private fun getMaximumMemory(): DataSize {
-        return DataSize.of(Runtime.getRuntime().maxMemory(), DataUnit.BYTES)
+        return DataSize.of(RUNTIME.maxMemory(), DataUnit.BYTES)
     }
 }

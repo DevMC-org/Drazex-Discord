@@ -20,21 +20,48 @@
  */
 package me.xezard.devmc.drazex.discord.service.modals
 
-import discord4j.core.`object`.component.Button
+import discord4j.core.`object`.component.ActionRow
 import discord4j.core.`object`.component.TextInput
-import me.xezard.devmc.drazex.discord.service.buttons.handlers.RequestDeleteButtonHandler
+import discord4j.core.spec.InteractionPresentModalSpec
+import me.xezard.devmc.drazex.discord.config.modals.properties.ModalInputProperties
+import me.xezard.devmc.drazex.discord.config.modals.properties.ModalProperties
 import org.springframework.stereotype.Service
 
 @Service
 class ModalsService {
-    companion object {
-        private const val DELETE_BUTTON_LABEL = "❌"
+    fun createModal(properties: ModalProperties): InteractionPresentModalSpec {
+        val id = properties.id
+        val actions = this.createActionRows(properties.inputs, id)
+
+        return InteractionPresentModalSpec.builder()
+            .customId(id)
+            .title(properties.title)
+            .components(actions)
+            .build()
     }
 
-    fun createDeleteButton(id: String): Button {
-        return Button.secondary(RequestDeleteButtonHandler.BUTTON_ID + id, DELETE_BUTTON_LABEL)
-    }
+    fun createActionRows(inputs: Map<String, ModalInputProperties>, id: String) =
+        inputs.map { (name, config) ->
+            val input = if (config.limits != null) {
+                val lengthLimits = config.limits!!.length!!
+                TextInput.small(
+                    "$id-$name",
+                    config.description,
+                    lengthLimits.minimum,
+                    lengthLimits.maximum
+                ).required()
+            } else {
+                TextInput.small(
+                    "$id-$name",
+                    config.description
+                ).required()
+            }
 
-    fun getInputValue(inputs: List<TextInput>, id: String): String? =
+            config.placeholder?.let { input.placeholder(it) }
+
+            ActionRow.of(input)
+        }
+
+    fun getInputValue(inputs: List<TextInput>, id: String) =
         inputs.find { it.customId == id }?.data?.value()?.get()
 }

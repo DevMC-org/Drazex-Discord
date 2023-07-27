@@ -46,8 +46,8 @@ class TimeService {
         private const val SECONDS_IN_A_MINUTE = 60
     }
 
-    fun formatTime(timeMillis: Long): String {
-        val duration = Duration.ofMillis(timeMillis)
+    fun formatTime(millis: Long): String {
+        val duration = Duration.ofMillis(millis)
         val years = duration.toDays() / DAYS_IN_A_YEAR
         val months = duration.toDays() / DAYS_IN_A_MONTH % MONTHS_PER_YEAR
         val days = duration.toDays() % DAYS_IN_A_MONTH

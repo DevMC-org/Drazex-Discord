@@ -22,17 +22,14 @@ package me.xezard.devmc.drazex.discord.service.events.handlers
 
 import discord4j.core.event.domain.interaction.ButtonInteractionEvent
 import me.xezard.devmc.drazex.discord.service.buttons.ButtonsHandler
-import me.xezard.devmc.drazex.discord.service.events.EventHandler
+import me.xezard.devmc.drazex.discord.service.events.AbstractEventHandler
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 
 @Component
 class ButtonInteractionHandler (
     private val buttonsHandler: ButtonsHandler
-): EventHandler<ButtonInteractionEvent> {
-    override val event
-        get() = ButtonInteractionEvent::class.java
-
+): AbstractEventHandler<ButtonInteractionEvent>() {
     override fun handle(event: ButtonInteractionEvent): Mono<Void> {
         val buttonId = event.interaction.data.data()
             .toOptional()

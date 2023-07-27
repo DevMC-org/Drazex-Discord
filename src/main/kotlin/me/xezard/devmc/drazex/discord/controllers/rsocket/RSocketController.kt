@@ -27,7 +27,6 @@ import me.xezard.devmc.drazex.discord.domain.model.web.requests.ResourceVersionR
 import me.xezard.devmc.drazex.discord.service.NewsService
 import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.stereotype.Controller
-import reactor.core.publisher.Mono
 
 @Controller
 class RSocketController(
@@ -35,14 +34,14 @@ class RSocketController(
     private val postMapper: DiscordPostMapper
 ) {
     @MessageMapping("resource")
-    fun onNewResource(request: ResourceRequest): Mono<Void> =
+    fun onNewResource(request: ResourceRequest) =
         this.newsService.publishNews(this.postMapper.fromResourceRequest(request))
 
     @MessageMapping("resource-version")
-    fun onNewResourceVersion(request: ResourceVersionRequest): Mono<Void> =
+    fun onNewResourceVersion(request: ResourceVersionRequest) =
         this.newsService.publishNews(this.postMapper.fromResourceVersionRequest(request))
 
     @MessageMapping("article")
-    fun onNewArticle(request: ArticleRequest): Mono<Void> =
+    fun onNewArticle(request: ArticleRequest) =
         this.newsService.publishNews(this.postMapper.fromArticleRequest(request))
 }

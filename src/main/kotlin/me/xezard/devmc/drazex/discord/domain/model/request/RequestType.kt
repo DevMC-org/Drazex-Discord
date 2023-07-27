@@ -35,7 +35,7 @@ enum class RequestType (
     TEAM_SEARCH("team-search");
 
     companion object {
-        fun findByProperty(value: String): RequestType? =
+        fun findByProperty(value: String) =
             values().firstOrNull { it.property == value }
     }
 }

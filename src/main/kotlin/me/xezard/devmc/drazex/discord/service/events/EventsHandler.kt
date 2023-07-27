@@ -40,7 +40,7 @@ class EventsHandler (
         private val LOGGER: Logger = Logger.getLogger(LOGGER_PREFIX)
     }
 
-    fun registerAllHandlers(gateway: GatewayDiscordClient): Mono<Void> =
+    fun registerAllHandlers(gateway: GatewayDiscordClient) =
         Flux.fromIterable(this.handlers).flatMap { handler ->
             gateway.on(handler.event) { handler.handle(it) }
                 .onErrorResume { Mono.fromRunnable { LOGGER.log(Level.WARNING, EVENT_HANDLING_ERROR_MESSAGE, it) }}

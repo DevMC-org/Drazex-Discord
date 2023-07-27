@@ -18,13 +18,17 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package me.xezard.devmc.drazex.discord.config.properties
+package me.xezard.devmc.drazex.discord.config.commands
 
+import me.xezard.devmc.drazex.discord.config.YamlPropertySourceFactory
+import me.xezard.devmc.drazex.discord.config.commands.properties.CommandProperties
 import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.stereotype.Component
+import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.PropertySource
 
-@Component
-@ConfigurationProperties("ids")
-class ChannelsProperties {
-    lateinit var showcase: List<String>
+@Configuration
+@ConfigurationProperties
+@PropertySource(value = ["classpath:commands.yml"], factory = YamlPropertySourceFactory::class)
+class CommandsConfiguration {
+    lateinit var commands: Map<String, CommandProperties>
 }

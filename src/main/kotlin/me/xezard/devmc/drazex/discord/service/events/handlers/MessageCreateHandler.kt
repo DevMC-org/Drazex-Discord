@@ -23,7 +23,7 @@ package me.xezard.devmc.drazex.discord.service.events.handlers
 import discord4j.core.event.domain.message.MessageCreateEvent
 import discord4j.core.`object`.entity.Message
 import me.xezard.devmc.drazex.discord.service.channels.ChannelsHandler
-import me.xezard.devmc.drazex.discord.service.events.EventHandler
+import me.xezard.devmc.drazex.discord.service.events.AbstractEventHandler
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 import java.util.*
@@ -33,7 +33,7 @@ import java.util.logging.Logger
 @Component
 class MessageCreateHandler (
     private val channelsHandler: ChannelsHandler
-): EventHandler<MessageCreateEvent> {
+): AbstractEventHandler<MessageCreateEvent>() {
     companion object {
         private val LOGGER: Logger = Logger.getLogger("[MCH]")
 
@@ -47,10 +47,7 @@ class MessageCreateHandler (
                 "$AUTHOR_REPLACE_PLACEHOLDER $CONTENT_REPLACE_PLACEHOLDER"
     }
 
-    override val event
-        get() = MessageCreateEvent::class.java
-
-    override fun handle(event: MessageCreateEvent): Mono<Void> =
+    override fun handle(event: MessageCreateEvent) =
         Mono.justOrEmpty(event.message)
             .flatMap(::processMessage)
             .then()

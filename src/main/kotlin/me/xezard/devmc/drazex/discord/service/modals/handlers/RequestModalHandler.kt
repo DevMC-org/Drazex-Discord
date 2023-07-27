@@ -23,13 +23,16 @@ package me.xezard.devmc.drazex.discord.service.modals.handlers
 import discord4j.common.util.Snowflake
 import discord4j.core.event.domain.interaction.ModalSubmitInteractionEvent
 import discord4j.core.`object`.component.ActionRow
+import discord4j.core.`object`.component.Button
 import discord4j.core.`object`.component.TextInput
 import discord4j.core.spec.EmbedCreateSpec
 import discord4j.discordjson.json.MessageCreateRequest
 import me.xezard.devmc.drazex.discord.config.DiscordConfiguration
+import me.xezard.devmc.drazex.discord.config.modals.properties.ModalProperties
 import me.xezard.devmc.drazex.discord.service.app.DiscordService.Companion.DISCORD_USER_URL
+import me.xezard.devmc.drazex.discord.service.buttons.handlers.RequestDeleteButtonHandler
 import me.xezard.devmc.drazex.discord.service.messages.MessagesService
-import me.xezard.devmc.drazex.discord.service.modals.ModalHandler
+import me.xezard.devmc.drazex.discord.service.modals.AbstractModalHandler
 import me.xezard.devmc.drazex.discord.service.modals.ModalsService
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
@@ -38,52 +41,44 @@ abstract class RequestModalHandler (
     private val modalsService: ModalsService,
     private val messagesService: MessagesService,
     private val discordConfiguration: DiscordConfiguration,
-) : ModalHandler {
+    private val properties: ModalProperties
+) : AbstractModalHandler(modalsService, properties) {
     companion object {
         private const val ID_REPLACE_PLACEHOLDER = "{id}"
-
         private const val EMBED_PUBLISHED_BY_FIELD = "Опубликовал:"
-
-        const val EMBED_DESCRIPTION_FIELD = "Описание:"
-        const val EMBED_AGE_FIELD = "Возраст:"
-        const val EMBED_VACANCIES_FIELD = "Вакансии:"
-        const val EMBED_BUDGET_FIELD = "Бюджет:"
-        const val EMBED_CONDITIONS_FIELD = "Условия:"
-        const val EMBED_CONTACTS_FIELD = "Контакты:"
-
         private const val REQUEST_SUCCESSFULLY_PUBLISHED_MESSAGE = "Ваш запрос успешно опубликован!"
+        private const val DELETE_BUTTON_LABEL = "❌"
     }
 
     fun handle(
         event: ModalSubmitInteractionEvent,
-        inputsMapping: Map<String, String>,
         channelsIds: List<String>,
         title: String? = null
     ): Mono<Void> {
         val member = event.interaction.member.orElse(null) ?: return Mono.empty()
-        val fullName = "${member.displayName}#${member.discriminator}"
-        val mention = member.mention
-        val avatar = member.avatarUrl
         val id = member.id.asString()
         val inputs = event.getComponents(TextInput::class.java)
         val embedBuilder = EmbedCreateSpec.builder()
-            .author(fullName, DISCORD_USER_URL.replace(ID_REPLACE_PLACEHOLDER, id), avatar)
+            .author(member.displayName, DISCORD_USER_URL.replace(ID_REPLACE_PLACEHOLDER, id), member.avatarUrl)
             .color(this.messagesService.getColorFromString(this.discordConfiguration.requestsMessageColor))
 
-        inputsMapping.forEach { (field, inputId) ->
+        this.getInputsMapping(this.properties).forEach { (field, inputId) ->
             this.modalsService.getInputValue(inputs, inputId)?.let {
-                if (field == title) {
-                    embedBuilder.title("$field: $it")
+                if (field == "Тип услуги:") {
+                    embedBuilder.title("$title: $it")
                 } else {
                     embedBuilder.addField(field, it, false)
                 }
             }
         }
 
-        embedBuilder.addField(EMBED_PUBLISHED_BY_FIELD, mention, false)
+        embedBuilder.addField(EMBED_PUBLISHED_BY_FIELD, member.mention, false)
 
         val embed = embedBuilder.build().asRequest()
-        val actionRow = ActionRow.of(this.modalsService.createDeleteButton(id))
+        val actionRow = ActionRow.of(Button.secondary(
+            RequestDeleteButtonHandler.BUTTON_ID + id,
+                DELETE_BUTTON_LABEL
+        ))
         val message = MessageCreateRequest.builder()
             .embed(embed)
             .build()
@@ -96,4 +91,7 @@ abstract class RequestModalHandler (
 
         return messages.then(reply)
     }
+
+    private fun getInputsMapping(properties: ModalProperties) =
+        properties.inputs.map { (name, data) -> data.description to "${properties.id}-$name" }.toMap()
 }

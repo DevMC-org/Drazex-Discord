@@ -18,13 +18,14 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package me.xezard.devmc.drazex.discord.config
+package me.xezard.devmc.drazex.discord.config.channels.properties
 
 import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.PropertySource
+import org.springframework.stereotype.Component
 
-@Configuration
-@ConfigurationProperties
-@PropertySource(value = ["classpath:channels.yml"], factory = YamlPropertySourceFactory::class)
-class ChannelsConfiguration
+@Component
+@ConfigurationProperties("ids.requests.team")
+class TeamRequestChannelsProperties {
+    lateinit var search: List<String>
+    lateinit var recruitment: List<String>
+}

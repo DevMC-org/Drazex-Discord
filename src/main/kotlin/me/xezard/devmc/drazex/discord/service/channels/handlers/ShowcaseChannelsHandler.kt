@@ -22,7 +22,7 @@ package me.xezard.devmc.drazex.discord.service.channels.handlers
 
 import discord4j.core.`object`.entity.Message
 import discord4j.core.`object`.reaction.ReactionEmoji
-import me.xezard.devmc.drazex.discord.config.properties.ChannelsProperties
+import me.xezard.devmc.drazex.discord.config.channels.properties.ChannelsProperties
 import me.xezard.devmc.drazex.discord.service.channels.ChannelHandler
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono

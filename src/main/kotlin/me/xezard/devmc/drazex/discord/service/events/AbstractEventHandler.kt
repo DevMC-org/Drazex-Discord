@@ -18,14 +18,15 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package me.xezard.devmc.drazex.discord.service.roles
+package me.xezard.devmc.drazex.discord.service.events
 
-import discord4j.core.`object`.entity.Member
-import org.springframework.stereotype.Service
-import reactor.core.publisher.Mono
+import discord4j.core.event.domain.Event
+import java.lang.reflect.ParameterizedType
 
-@Service
-class RolesService {
-    fun hasRole(member: Member, roleId: String) =
-        member.roles.any { it.id.asString() == roleId }
+abstract class AbstractEventHandler<out T : Event> : EventHandler<T> {
+    override val event: Class<out T>
+        get() {
+            val superClass = javaClass.genericSuperclass as ParameterizedType
+            return superClass.actualTypeArguments[0] as Class<T>
+        }
 }

@@ -25,7 +25,7 @@ import discord4j.core.`object`.entity.Message
 import discord4j.core.spec.EmbedCreateSpec
 import discord4j.discordjson.json.MessageCreateRequest
 import me.xezard.devmc.drazex.discord.config.DiscordConfiguration
-import me.xezard.devmc.drazex.discord.config.properties.NewsChannelsProperties
+import me.xezard.devmc.drazex.discord.config.channels.properties.NewsChannelsProperties
 import me.xezard.devmc.drazex.discord.service.app.DiscordService.Companion.CHANNEL_NAME_PATTERN
 import me.xezard.devmc.drazex.discord.service.app.DiscordService.Companion.DISCORD_AVATAR_URL
 import me.xezard.devmc.drazex.discord.service.app.DiscordService.Companion.DISCORD_CHANNEL_URL

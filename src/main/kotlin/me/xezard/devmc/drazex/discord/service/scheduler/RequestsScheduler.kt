@@ -21,9 +21,10 @@
 package me.xezard.devmc.drazex.discord.service.scheduler
 
 import discord4j.common.util.Snowflake
+import discord4j.rest.entity.RestChannel
 import me.xezard.devmc.drazex.discord.DrazexBot
-import me.xezard.devmc.drazex.discord.config.properties.DevelopmentRequestChannelsProperties
-import me.xezard.devmc.drazex.discord.config.properties.TeamRequestChannelsProperties
+import me.xezard.devmc.drazex.discord.config.channels.properties.DevelopmentRequestChannelsProperties
+import me.xezard.devmc.drazex.discord.config.channels.properties.TeamRequestChannelsProperties
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Flux
@@ -51,12 +52,14 @@ class RequestsScheduler (
     fun deleteOutdatedMessages() {
         Flux.fromIterable(this.channelIds)
                 .flatMap { Mono.just(this.bot.discord.getChannelById(Snowflake.of(it))) }
-                .flatMap { channel ->
-                    channel.getMessagesBefore(Snowflake.of(Instant.now()))
-                            .filter { this.isOutdated(it.timestamp()) }
-                            .flatMap { channel.getRestMessage(Snowflake.of(it.id().asString())).delete(null) }
-                }.subscribe()
+                .flatMap { this.deleteOldMessages(it) }
+                .subscribe()
     }
+
+    private fun deleteOldMessages(channel: RestChannel) =
+        channel.getMessagesBefore(Snowflake.of(Instant.now()))
+            .filter { this.isOutdated(it.timestamp()) }
+            .flatMap { channel.getRestMessage(Snowflake.of(it.id().asString())).delete(null) }
 
     private fun isOutdated(timestamp: String): Boolean {
         val monthAgo = LocalDateTime.now().minusMonths(1)

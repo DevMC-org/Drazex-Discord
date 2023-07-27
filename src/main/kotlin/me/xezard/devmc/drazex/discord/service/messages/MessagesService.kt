@@ -48,8 +48,8 @@ class MessagesService (
         private const val TEXT_JSON_KEY = "text"
     }
 
-    fun jsonToEmbed(json: String): EmbedCreateSpec? {
-        return try {
+    fun jsonToEmbed(json: String): EmbedCreateSpec? =
+        try {
             val map = this.objectMapper.readValue(json, Map::class.java)
 
             EmbedCreateSpec.builder().apply {
@@ -67,7 +67,6 @@ class MessagesService (
         } catch (ex: Exception) {
             null
         }
-    }
 
     private fun EmbedCreateSpec.Builder.processThumbnail(thumbnail: Any) {
         (thumbnail as? Map<*, *>)?.let { thumbnailMap ->

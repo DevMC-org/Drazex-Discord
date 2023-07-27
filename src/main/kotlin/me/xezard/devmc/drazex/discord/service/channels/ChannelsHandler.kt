@@ -23,18 +23,16 @@ package me.xezard.devmc.drazex.discord.service.channels
 import discord4j.core.`object`.entity.Message
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
-import reactor.core.publisher.Mono
 
 @Service
 class ChannelsHandler (
     private val handlers: List<ChannelHandler>
 ) {
-    fun handle(message: Message): Mono<Void> {
-        return Flux.fromIterable(this.findHandlersByChannelId(message.channelId.asString()))
+    fun handle(message: Message) =
+        Flux.fromIterable(this.findHandlersByChannelId(message.channelId.asString()))
                 .flatMap { it.handle(message) }
                 .then()
-    }
 
-    private fun findHandlersByChannelId(channelId: String): List<ChannelHandler> =
+    private fun findHandlersByChannelId(channelId: String) =
         this.handlers.filter { it.handledChannelIds.contains(channelId) }
 }

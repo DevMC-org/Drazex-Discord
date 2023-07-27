@@ -18,14 +18,17 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package me.xezard.devmc.drazex.discord.service.roles
+package me.xezard.devmc.drazex.discord.service.modals
 
-import discord4j.core.`object`.entity.Member
-import org.springframework.stereotype.Service
-import reactor.core.publisher.Mono
+import me.xezard.devmc.drazex.discord.config.modals.properties.ModalProperties
 
-@Service
-class RolesService {
-    fun hasRole(member: Member, roleId: String) =
-        member.roles.any { it.id.asString() == roleId }
+abstract class AbstractModalHandler (
+    private val modalsService: ModalsService,
+    private val properties: ModalProperties
+) : ModalHandler {
+    override val id
+        get() = this.properties.id
+
+    override fun create() =
+        this.modalsService.createModal(this.properties)
 }

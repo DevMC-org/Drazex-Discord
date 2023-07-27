@@ -18,13 +18,8 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package me.xezard.devmc.drazex.discord.config.properties
+package me.xezard.devmc.drazex.discord.config.modals.properties.limits
 
-import org.springframework.boot.context.properties.ConfigurationProperties
-import org.springframework.stereotype.Component
-
-@Component
-@ConfigurationProperties("ids.requests")
-class DevelopmentRequestChannelsProperties {
-    lateinit var development: List<String>
+class ModalInputLimitsProperties {
+    var length: ModalInputLengthLimitsProperties? = null
 }

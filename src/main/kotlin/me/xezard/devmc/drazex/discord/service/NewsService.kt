@@ -25,7 +25,7 @@ import discord4j.core.spec.EmbedCreateSpec
 import me.xezard.devmc.drazex.discord.DrazexBot
 import me.xezard.devmc.drazex.discord.config.DiscordConfiguration
 import me.xezard.devmc.drazex.discord.config.MessagesConfiguration
-import me.xezard.devmc.drazex.discord.config.properties.NewsChannelsProperties
+import me.xezard.devmc.drazex.discord.config.channels.properties.NewsChannelsProperties
 import me.xezard.devmc.drazex.discord.domain.model.post.DiscordPost
 import me.xezard.devmc.drazex.discord.domain.model.post.DiscordPost.Companion.URL_REPLACE_PLACEHOLDER
 import me.xezard.devmc.drazex.discord.domain.model.post.DiscordPostType
@@ -50,13 +50,13 @@ class NewsService (
     }
 
     // <post type, post template>
-    private val postTemplates = mutableMapOf<DiscordPostType, Array<String>?>().apply {
-        this[DiscordPostType.RESOURCE] = messagesConfiguration.newResourcePostTemplate
-        this[DiscordPostType.RESOURCE_VERSION] = messagesConfiguration.newResourceVersionPostTemplate
-        this[DiscordPostType.ARTICLE] = messagesConfiguration.newArticlePostTemplate
-    }
+    private val postTemplates = mapOf(
+        DiscordPostType.RESOURCE to this.messagesConfiguration.newResourcePostTemplate,
+        DiscordPostType.RESOURCE_VERSION to this.messagesConfiguration.newResourceVersionPostTemplate,
+        DiscordPostType.ARTICLE to this.messagesConfiguration.newArticlePostTemplate
+    )
 
-    fun publishNews(post: DiscordPost): Mono<Void> =
+    fun publishNews(post: DiscordPost) =
         this.generatePost(this.assembleMessage(post), post.imageUrl)
 
     private fun generatePost(message: String, imageUrl: String): Mono<Void> {

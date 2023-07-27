@@ -22,7 +22,7 @@ package me.xezard.devmc.drazex.discord.service.buttons.handlers
 
 import discord4j.core.event.domain.interaction.ButtonInteractionEvent
 import discord4j.core.`object`.entity.Message
-import me.xezard.devmc.drazex.discord.config.properties.RolesProperties
+import me.xezard.devmc.drazex.discord.config.roles.properties.RolesProperties
 import me.xezard.devmc.drazex.discord.service.buttons.IButtonHandler
 import me.xezard.devmc.drazex.discord.service.roles.RolesService
 import org.springframework.stereotype.Component

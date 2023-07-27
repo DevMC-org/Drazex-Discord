@@ -22,17 +22,14 @@ package me.xezard.devmc.drazex.discord.service.events.handlers
 
 import discord4j.core.event.domain.interaction.ApplicationCommandInteractionEvent
 import me.xezard.devmc.drazex.discord.service.commands.CommandsHandler
-import me.xezard.devmc.drazex.discord.service.events.EventHandler
+import me.xezard.devmc.drazex.discord.service.events.AbstractEventHandler
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 
 @Component
 class ApplicationCommandInteractionHandler (
     private val commandsHandler: CommandsHandler
-): EventHandler<ApplicationCommandInteractionEvent> {
-    override val event
-        get() = ApplicationCommandInteractionEvent::class.java
-
-    override fun handle(event: ApplicationCommandInteractionEvent): Mono<Void> =
+): AbstractEventHandler<ApplicationCommandInteractionEvent>() {
+    override fun handle(event: ApplicationCommandInteractionEvent) =
         this.commandsHandler.findHandlerByCommandName(event.commandName)?.handle(event) ?: Mono.empty()
 }

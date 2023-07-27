@@ -1,0 +1,37 @@
+commands:
+  embed:
+    name: "embed"
+    description: "Send embed message"
+    permission: "ADMINISTRATOR"
+    options:
+      channel:
+        description: "The channel in which to edit the message"
+        type: "STRING"
+        required: true
+      message-id:
+        description: "The message to edit"
+        type: "STRING"
+      json:
+        description: "Serialized in json embed message"
+        type: "STRING"
+
+  request:
+    name: "request"
+    description: "Create a new request"
+    options:
+      type:
+        description: "Тип запроса"
+        type: "STRING"
+        required: true
+        choices:
+          - name: "Поиск исполнителя"
+            value: "EXECUTOR_SEARCH"
+          - name: "Набор команды"
+            value: "TEAM_RECRUITMENT"
+          - name: "Поиск команды"
+            value: "TEAM_SEARCH"
+
+  stats:
+    name: "stats"
+    description: "Display the overall statistics of the bot"
+    permission: "ADMINISTRATOR"

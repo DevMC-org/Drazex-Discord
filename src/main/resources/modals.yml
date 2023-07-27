@@ -1,0 +1,86 @@
+modals:
+  executor-search:
+    title: "Поиск исполнителя"
+    id: "executor-search-modal"
+    inputs:
+      service-type:
+        description: "Тип услуги:"
+        placeholder: "Разработка плагина"
+        limits:
+          length:
+            minimum: 5
+            maximum: 100
+      description:
+        description: "Описание:"
+        limits:
+          length:
+            minimum: 10
+            maximum: 1024
+      budget:
+        description: "Бюджет:"
+        placeholder: "100€"
+        limits:
+          length:
+            minimum: 3
+            maximum: 25
+
+  team-recruitment:
+    title: "Набор команды"
+    id: "team-recruitment-modal"
+    inputs:
+      description:
+        description: "Описание:"
+        limits:
+          length:
+            minimum: 10
+            maximum: 1024
+      age:
+        description: "Возраст:"
+        placeholder: "от 16 лет"
+        limits:
+          length:
+            minimum: 2
+            maximum: 10
+      vacancies:
+        description: "Вакансии:"
+        limits:
+          length:
+            minimum: 10
+            maximum: 1024
+      contacts:
+        description: "Контакты:"
+        limits:
+          length:
+            minimum: 10
+            maximum: 256
+
+  team-search:
+    title: "Поиск команды"
+    id: "team-search-modal"
+    inputs:
+      description:
+        description: "Описание:"
+        limits:
+          length:
+            minimum: 10
+            maximum: 1024
+      age:
+        description: "Возраст:"
+        placeholder: от 16 лет
+        limits:
+          length:
+            minimum: 2
+            maximum: 10
+      conditions:
+        description: "Условия:"
+        placeholder: "15к в месяц"
+        limits:
+          length:
+            minimum: 10
+            maximum: 512
+      contacts:
+        description: "Контакты:"
+        limits:
+          length:
+            minimum: 10
+            maximum: 256
