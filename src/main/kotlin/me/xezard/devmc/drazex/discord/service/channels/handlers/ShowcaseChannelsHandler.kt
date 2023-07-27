@@ -40,7 +40,7 @@ class ShowcaseChannelsHandler(
     }
 
     override val handledChannelIds
-        get() = channelsProperties.showcase
+        get() = this.channelsProperties.showcase
 
     override fun handle(message: Message): Mono<Void> {
         if (message.author.isEmpty) {
