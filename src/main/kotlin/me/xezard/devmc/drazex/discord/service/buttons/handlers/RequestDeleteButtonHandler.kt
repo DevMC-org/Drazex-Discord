@@ -23,7 +23,7 @@ package me.xezard.devmc.drazex.discord.service.buttons.handlers
 import discord4j.core.event.domain.interaction.ButtonInteractionEvent
 import discord4j.core.`object`.entity.Message
 import me.xezard.devmc.drazex.discord.config.roles.properties.RolesProperties
-import me.xezard.devmc.drazex.discord.service.buttons.IButtonHandler
+import me.xezard.devmc.drazex.discord.service.buttons.ButtonHandler
 import me.xezard.devmc.drazex.discord.service.roles.RolesService
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
@@ -32,7 +32,7 @@ import reactor.core.publisher.Mono
 class RequestDeleteButtonHandler (
     private val rolesService: RolesService,
     private val rolesProperties: RolesProperties
-): IButtonHandler {
+): ButtonHandler {
     companion object {
         private const val YOU_CANT_DELETE_OTHERS_REQUESTS_ERROR =
             "Вы не можете удалить запрос, созданный другим пользователем."
@@ -55,6 +55,6 @@ class RequestDeleteButtonHandler (
         }
     }
 
-    override fun tracks(id: String): Boolean =
+    override fun tracks(id: String) =
         id.startsWith(BUTTON_ID)
 }

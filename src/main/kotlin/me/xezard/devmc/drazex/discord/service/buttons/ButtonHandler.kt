@@ -23,7 +23,7 @@ package me.xezard.devmc.drazex.discord.service.buttons
 import discord4j.core.event.domain.interaction.ButtonInteractionEvent
 import reactor.core.publisher.Mono
 
-interface IButtonHandler {
+interface ButtonHandler {
     fun handle(event: ButtonInteractionEvent, buttonId: String): Mono<Void>
 
     fun tracks(id: String): Boolean
