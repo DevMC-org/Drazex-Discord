@@ -33,6 +33,6 @@ class CommandsHandler (
             discordClient.applicationService.createGlobalApplicationCommand(appId, it.register())
         }}.then()
 
-    fun findHandlerByCommandName(name: String): CommandHandler? =
+    fun findHandlerByCommandName(name: String) =
         this.handlers.find { it.name == name }
 }

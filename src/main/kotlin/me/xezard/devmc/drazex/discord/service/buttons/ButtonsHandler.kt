@@ -26,6 +26,6 @@ import org.springframework.stereotype.Service
 class ButtonsHandler (
     private val handlers: List<ButtonHandler>
 ) {
-    fun findButtonById(id: String): ButtonHandler? =
+    fun findButtonById(id: String) =
         this.handlers.find { it.tracks(id) }
 }

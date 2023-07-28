@@ -48,7 +48,7 @@ class MessagesService (
         private const val TEXT_JSON_KEY = "text"
     }
 
-    fun jsonToEmbed(json: String): EmbedCreateSpec? =
+    fun jsonToEmbed(json: String) =
         try {
             val map = this.objectMapper.readValue(json, Map::class.java)
 
@@ -117,6 +117,6 @@ class MessagesService (
         }
     }
 
-    fun getColorFromString(colorString: String?): Color =
+    fun getColorFromString(colorString: String?) =
         Color.of(java.awt.Color.decode(colorString).rgb)
 }

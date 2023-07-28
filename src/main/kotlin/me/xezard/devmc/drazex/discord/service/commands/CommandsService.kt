@@ -35,7 +35,7 @@ import org.springframework.stereotype.Service
 
 @Service
 class CommandsService {
-    fun createCommand(properties: CommandProperties): ApplicationCommandRequest =
+    fun createCommand(properties: CommandProperties) =
         ApplicationCommandRequest.builder()
             .name(properties.name)
             .description(properties.description)

@@ -43,7 +43,7 @@ class RequestCommand (
         private const val SERVICE_TYPE_OPTION_NAME = "type"
     }
 
-    // <request type, <label, modal handler>>
+    // <request type, modal handler>
     private val requestTypesData = mapOf(
         RequestType.EXECUTOR_SEARCH to this.executorSearchModalHandler,
         RequestType.TEAM_RECRUITMENT to this.teamRecruitmentModalHandler,
