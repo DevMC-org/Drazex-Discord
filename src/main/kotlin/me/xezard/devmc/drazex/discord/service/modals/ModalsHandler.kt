@@ -20,12 +20,17 @@
  */
 package me.xezard.devmc.drazex.discord.service.modals
 
+import discord4j.core.event.domain.interaction.ModalSubmitInteractionEvent
 import org.springframework.stereotype.Service
+import reactor.core.publisher.Mono
 
 @Service
 class ModalsHandler (
     private val handlers: List<ModalHandler>
 ) {
+    fun handle(event: ModalSubmitInteractionEvent) =
+        this.findModalById(event.customId)?.handle(event) ?: Mono.empty()
+
     fun findModalById(id: String) =
         this.handlers.find { it.id == id }
 }

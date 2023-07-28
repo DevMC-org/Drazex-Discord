@@ -21,8 +21,10 @@
 package me.xezard.devmc.drazex.discord.service.commands
 
 import discord4j.core.DiscordClient
+import discord4j.core.event.domain.interaction.ApplicationCommandInteractionEvent
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 
 @Service
 class CommandsHandler (
@@ -32,6 +34,9 @@ class CommandsHandler (
         discordClient.applicationId.flatMapMany { appId -> Flux.fromIterable(this.handlers).flatMap {
             discordClient.applicationService.createGlobalApplicationCommand(appId, it.register())
         }}.then()
+
+    fun handle(event: ApplicationCommandInteractionEvent) =
+        this.findHandlerByCommandName(event.commandName)?.handle(event) ?: Mono.empty()
 
     fun findHandlerByCommandName(name: String) =
         this.handlers.find { it.name == name }

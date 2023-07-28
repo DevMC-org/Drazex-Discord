@@ -24,18 +24,11 @@ import discord4j.core.event.domain.interaction.ButtonInteractionEvent
 import me.xezard.devmc.drazex.discord.service.buttons.ButtonsHandler
 import me.xezard.devmc.drazex.discord.service.events.AbstractEventHandler
 import org.springframework.stereotype.Component
-import reactor.core.publisher.Mono
 
 @Component
 class ButtonInteractionHandler (
     private val buttonsHandler: ButtonsHandler
 ): AbstractEventHandler<ButtonInteractionEvent>() {
-    override fun handle(event: ButtonInteractionEvent): Mono<Void> {
-        val buttonId = event.interaction.data.data()
-            .toOptional()
-            .flatMap { it.customId().toOptional() }
-            .orElse(null)
-
-        return this.buttonsHandler.findButtonById(buttonId)?.handle(event, buttonId) ?: Mono.empty()
-    }
+    override fun handle(event: ButtonInteractionEvent) =
+        this.buttonsHandler.handle(event)
 }
