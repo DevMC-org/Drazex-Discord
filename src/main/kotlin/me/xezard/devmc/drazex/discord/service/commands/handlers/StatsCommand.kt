@@ -21,16 +21,11 @@
 package me.xezard.devmc.drazex.discord.service.commands.handlers
 
 import discord4j.core.event.domain.interaction.ApplicationCommandInteractionEvent
-import discord4j.core.spec.EmbedCreateSpec
 import discord4j.core.spec.InteractionApplicationCommandCallbackSpec
-import me.xezard.devmc.drazex.discord.config.DiscordConfiguration
-import me.xezard.devmc.drazex.discord.config.commands.CommandsConfiguration
-import me.xezard.devmc.drazex.discord.config.roles.properties.RolesProperties
+import me.xezard.devmc.drazex.discord.config.discord.commands.CommandsProperties
+import me.xezard.devmc.drazex.discord.config.discord.messages.MessagesProperties
+import me.xezard.devmc.drazex.discord.config.discord.roles.RolesProperties
 import me.xezard.devmc.drazex.discord.service.app.AppService
-import me.xezard.devmc.drazex.discord.service.app.AppService.Companion.AVAILABLE_MEMORY_REPLACE_PLACEHOLDER
-import me.xezard.devmc.drazex.discord.service.app.AppService.Companion.MAXIMUM_MEMORY_REPLACE_PLACEHOLDER
-import me.xezard.devmc.drazex.discord.service.app.AppService.Companion.UPTIME_REPLACE_PLACEHOLDER
-import me.xezard.devmc.drazex.discord.service.app.AppService.Companion.USED_MEMORY_REPLACE_PLACEHOLDER
 import me.xezard.devmc.drazex.discord.service.commands.AbstractCommandHandler
 import me.xezard.devmc.drazex.discord.service.commands.CommandsService
 import me.xezard.devmc.drazex.discord.service.messages.MessagesService
@@ -44,22 +39,10 @@ class StatsCommand (
     private val appService: AppService,
     private val messagesService: MessagesService,
     private val rolesService: RolesService,
-    private val discordConfiguration: DiscordConfiguration,
-    commandsConfiguration: CommandsConfiguration,
-    private val rolesProperties: RolesProperties
-): AbstractCommandHandler(commandsService, commandsConfiguration.commands["stats"]!!) {
-    companion object {
-        private val MEMORY_INFO_MESSAGE = """
-        Используется: %s МБ
-        Доступная: %s МБ
-        Всего: %s МБ
-        """.trimIndent()
-
-        private const val EMBED_TITLE = "Статистика"
-        private const val EMBED_UPTIME_FIELD = "Аптайм"
-        private const val EMBED_MEMORY_FIELD = "Память"
-    }
-
+    commandsProperties: CommandsProperties,
+    private val messagesProperties: MessagesProperties,
+    private val rolesProperties: RolesProperties,
+): AbstractCommandHandler(commandsService, commandsProperties.stats) {
     override fun handle(event: ApplicationCommandInteractionEvent) =
         Mono.justOrEmpty(event.interaction.member)
             .filterWhen { this.rolesService.hasRole(it, this.rolesProperties.admin) }
@@ -67,23 +50,10 @@ class StatsCommand (
 
     private fun createStatsEmbed(event: ApplicationCommandInteractionEvent): Mono<Void> {
         val replaces = this.appService.replaces.invoke()
-
-        val uptime = replaces[UPTIME_REPLACE_PLACEHOLDER].toString()
-        val memoryInfo = String.format(MEMORY_INFO_MESSAGE,
-            replaces[USED_MEMORY_REPLACE_PLACEHOLDER],
-            replaces[AVAILABLE_MEMORY_REPLACE_PLACEHOLDER],
-            replaces[MAXIMUM_MEMORY_REPLACE_PLACEHOLDER]
-        )
-
-        val embed = EmbedCreateSpec.builder()
-            .title(EMBED_TITLE)
-            .color(this.messagesService.getColorFromString(this.discordConfiguration.messagesColor))
-            .addField(EMBED_UPTIME_FIELD, uptime, false)
-            .addField(EMBED_MEMORY_FIELD, memoryInfo, false)
-            .build()
+        val message = this.messagesService.embedFrom(this.messagesProperties.stats, replaces) ?: return Mono.empty()
 
         return event.reply(InteractionApplicationCommandCallbackSpec.builder()
-            .addEmbed(embed)
+            .addEmbed(message)
             .build()
             .withEphemeral(true))
     }

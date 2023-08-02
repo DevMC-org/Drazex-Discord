@@ -23,8 +23,7 @@ package me.xezard.devmc.drazex.discord.service.scheduler
 import discord4j.common.util.Snowflake
 import discord4j.rest.entity.RestChannel
 import me.xezard.devmc.drazex.discord.DrazexBot
-import me.xezard.devmc.drazex.discord.config.channels.properties.DevelopmentRequestChannelsProperties
-import me.xezard.devmc.drazex.discord.config.channels.properties.TeamRequestChannelsProperties
+import me.xezard.devmc.drazex.discord.config.discord.channels.ChannelsProperties
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Flux
@@ -38,15 +37,16 @@ import java.util.concurrent.TimeUnit
 @Component
 class RequestsScheduler (
     private val bot: DrazexBot,
-    private val developmentRequestChannelsProperties: DevelopmentRequestChannelsProperties,
-    private val channelsProperties: TeamRequestChannelsProperties
+    private val channelsProperties: ChannelsProperties
 ) {
     companion object {
         private val FORMATTER = DateTimeFormatter.ISO_INSTANT
     }
 
-    private val channelIds = this.developmentRequestChannelsProperties.development +
-            this.channelsProperties.search + this.channelsProperties.recruitment
+    private val channelIds =
+        this.channelsProperties.requests.development +
+        this.channelsProperties.requests.team.search +
+        this.channelsProperties.requests.team.recruitment
 
     @Scheduled(fixedDelay = 1, timeUnit = TimeUnit.HOURS)
     fun deleteOutdatedMessages() {

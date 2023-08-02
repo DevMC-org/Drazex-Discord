@@ -24,7 +24,7 @@ import me.xezard.devmc.drazex.discord.domain.model.post.DiscordPostMapper
 import me.xezard.devmc.drazex.discord.domain.model.web.requests.ArticleRequest
 import me.xezard.devmc.drazex.discord.domain.model.web.requests.ResourceRequest
 import me.xezard.devmc.drazex.discord.domain.model.web.requests.ResourceVersionRequest
-import me.xezard.devmc.drazex.discord.service.NewsService
+import me.xezard.devmc.drazex.discord.service.news.NewsService
 import org.springframework.messaging.handler.annotation.MessageMapping
 import org.springframework.stereotype.Controller
 

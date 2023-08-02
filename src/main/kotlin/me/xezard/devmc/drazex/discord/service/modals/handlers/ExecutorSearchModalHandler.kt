@@ -21,9 +21,9 @@
 package me.xezard.devmc.drazex.discord.service.modals.handlers
 
 import discord4j.core.event.domain.interaction.ModalSubmitInteractionEvent
-import me.xezard.devmc.drazex.discord.config.DiscordConfiguration
-import me.xezard.devmc.drazex.discord.config.channels.properties.DevelopmentRequestChannelsProperties
-import me.xezard.devmc.drazex.discord.config.modals.ModalsConfiguration
+import me.xezard.devmc.drazex.discord.config.discord.channels.ChannelsProperties
+import me.xezard.devmc.drazex.discord.config.discord.messages.MessagesProperties
+import me.xezard.devmc.drazex.discord.config.discord.modals.ModalsProperties
 import me.xezard.devmc.drazex.discord.service.messages.MessagesService
 import me.xezard.devmc.drazex.discord.service.modals.ModalsService
 import org.springframework.stereotype.Component
@@ -32,19 +32,19 @@ import org.springframework.stereotype.Component
 class ExecutorSearchModalHandler (
     modalsService: ModalsService,
     messagesService: MessagesService,
-    discordConfiguration: DiscordConfiguration,
-    modalsConfiguration: ModalsConfiguration,
-    private val channelsProperties: DevelopmentRequestChannelsProperties
+    messagesProperties: MessagesProperties,
+    modalsProperties: ModalsProperties,
+    private val channelsProperties: ChannelsProperties
 ): RequestModalHandler(
     modalsService,
     messagesService,
-    discordConfiguration,
-    modalsConfiguration.modals["executor-search"]!!
+    messagesProperties,
+    modalsProperties.executorSearch
 ) {
     companion object {
         private const val EMBED_TITLE = "Запрос:"
     }
 
     override fun handle(event: ModalSubmitInteractionEvent) =
-        this.handle(event, this.channelsProperties.development, EMBED_TITLE)
+        this.handle(event, this.channelsProperties.requests.development, EMBED_TITLE)
 }

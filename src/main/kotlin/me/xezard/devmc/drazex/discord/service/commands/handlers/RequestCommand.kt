@@ -21,7 +21,7 @@
 package me.xezard.devmc.drazex.discord.service.commands.handlers
 
 import discord4j.core.event.domain.interaction.ApplicationCommandInteractionEvent
-import me.xezard.devmc.drazex.discord.config.commands.CommandsConfiguration
+import me.xezard.devmc.drazex.discord.config.discord.commands.CommandsProperties
 import me.xezard.devmc.drazex.discord.domain.model.request.RequestType
 import me.xezard.devmc.drazex.discord.service.commands.AbstractCommandHandler
 import me.xezard.devmc.drazex.discord.service.commands.CommandsService
@@ -37,18 +37,20 @@ class RequestCommand (
     private val executorSearchModalHandler: ExecutorSearchModalHandler,
     private val teamSearchModalHandler: TeamSearchModalHandler,
     private val teamRecruitmentModalHandler: TeamRecruitmentModalHandler,
-    commandsConfiguration: CommandsConfiguration
-): AbstractCommandHandler(commandsService, commandsConfiguration.commands["request"]!!) {
+    commandsProperties: CommandsProperties
+): AbstractCommandHandler(commandsService, commandsProperties.request) {
     companion object {
         private const val SERVICE_TYPE_OPTION_NAME = "type"
     }
 
     // <request type, modal handler>
-    private val requestTypesData = mapOf(
-        RequestType.EXECUTOR_SEARCH to this.executorSearchModalHandler,
-        RequestType.TEAM_RECRUITMENT to this.teamRecruitmentModalHandler,
-        RequestType.TEAM_SEARCH to this.teamSearchModalHandler
-    )
+    private val requestTypesData by lazy {
+        mapOf(
+            RequestType.EXECUTOR_SEARCH to this.executorSearchModalHandler,
+            RequestType.TEAM_RECRUITMENT to this.teamRecruitmentModalHandler,
+            RequestType.TEAM_SEARCH to this.teamSearchModalHandler
+        )
+    }
 
     // TODO: add a limit on the number of requests created per user?
     override fun handle(event: ApplicationCommandInteractionEvent) =

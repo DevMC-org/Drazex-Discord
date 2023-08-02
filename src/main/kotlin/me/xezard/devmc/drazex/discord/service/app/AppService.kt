@@ -38,12 +38,12 @@ class AppService (
         val RUNTIME: Runtime = Runtime.getRuntime()
     }
 
-    val replaces: () -> Map<String, Any> = {
+    val replaces: () -> Map<String, String> = {
         mapOf(
             UPTIME_REPLACE_PLACEHOLDER to this.getUptime(),
-            USED_MEMORY_REPLACE_PLACEHOLDER to this.getUsedMemory().toMegabytes(),
-            AVAILABLE_MEMORY_REPLACE_PLACEHOLDER to this.getAvailableMemory().toMegabytes(),
-            MAXIMUM_MEMORY_REPLACE_PLACEHOLDER to this.getMaximumMemory().toMegabytes(),
+            USED_MEMORY_REPLACE_PLACEHOLDER to this.getUsedMemory().toMegabytes().toString(),
+            AVAILABLE_MEMORY_REPLACE_PLACEHOLDER to this.getAvailableMemory().toMegabytes().toString(),
+            MAXIMUM_MEMORY_REPLACE_PLACEHOLDER to this.getMaximumMemory().toMegabytes().toString(),
         )
     }
 

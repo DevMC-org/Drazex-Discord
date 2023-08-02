@@ -23,13 +23,13 @@ package me.xezard.devmc.drazex.discord.service.modals
 import discord4j.core.`object`.component.ActionRow
 import discord4j.core.`object`.component.TextInput
 import discord4j.core.spec.InteractionPresentModalSpec
-import me.xezard.devmc.drazex.discord.config.modals.properties.ModalInputProperties
-import me.xezard.devmc.drazex.discord.config.modals.properties.ModalProperties
+import me.xezard.devmc.drazex.discord.config.discord.modals.properties.DiscordModalInputProperties
+import me.xezard.devmc.drazex.discord.config.discord.modals.properties.DiscordModalProperties
 import org.springframework.stereotype.Service
 
 @Service
 class ModalsService {
-    fun createModal(properties: ModalProperties): InteractionPresentModalSpec {
+    fun createModal(properties: DiscordModalProperties): InteractionPresentModalSpec {
         val id = properties.id
         val actions = this.createActionRows(properties.inputs, id)
 
@@ -40,22 +40,14 @@ class ModalsService {
             .build()
     }
 
-    fun createActionRows(inputs: Map<String, ModalInputProperties>, id: String) =
+    fun createActionRows(inputs: Map<String, DiscordModalInputProperties>, id: String) =
         inputs.map { (name, config) ->
-            val input = if (config.limits != null) {
-                val lengthLimits = config.limits!!.length!!
-                TextInput.small(
-                    "$id-$name",
-                    config.description,
-                    lengthLimits.minimum,
-                    lengthLimits.maximum
-                ).required()
-            } else {
-                TextInput.small(
-                    "$id-$name",
-                    config.description
-                ).required()
-            }
+            val input = TextInput.small(
+                "$id-$name",
+                config.description,
+                config.limits?.length?.minimum ?: 0,
+                config.limits?.length?.maximum ?: Int.MAX_VALUE
+            ).required()
 
             config.placeholder?.let { input.placeholder(it) }
 

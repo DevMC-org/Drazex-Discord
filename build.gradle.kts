@@ -33,10 +33,10 @@ java {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-webflux:3.0.5")
-    implementation("org.springframework.boot:spring-boot-starter-rsocket:3.0.5")
+    implementation("org.springframework.boot:spring-boot-starter-webflux:3.1.2")
+    implementation("org.springframework.boot:spring-boot-starter-rsocket:3.1.2")
 
-    implementation("com.discord4j:discord4j-core:3.2.4")
+    implementation("com.discord4j:discord4j-core:3.3.0-M2")
 
     implementation("io.rsocket:rsocket-core:1.1.3")
     implementation("io.rsocket:rsocket-transport-netty:1.1.3")
@@ -73,7 +73,6 @@ tasks {
         // Set the release flag. This configures what version bytecode the compiler will emit, as well as what JDK APIs are usable.
         // See https://openjdk.java.net/jeps/247 for more information.
         options.release.set(18)
-        options.compilerArgs.add("--enable-preview")
     }
 
     javadoc {

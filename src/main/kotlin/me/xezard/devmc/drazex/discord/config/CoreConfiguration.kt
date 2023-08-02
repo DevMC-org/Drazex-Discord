@@ -20,9 +20,23 @@
  */
 package me.xezard.devmc.drazex.discord.config
 
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan
+import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.PropertySource
 import org.springframework.scheduling.annotation.EnableScheduling
 
 @Configuration
 @EnableScheduling
+@ConfigurationPropertiesScan
+@EnableConfigurationProperties
+@PropertySource(
+    value = ["classpath:channels.yml",
+             "classpath:commands.yml",
+             "classpath:discord.yml",
+             "classpath:messages.yml",
+             "classpath:modals.yml",
+             "classpath:roles.yml"],
+    factory = YamlPropertySourceFactory::class
+)
 class CoreConfiguration

@@ -28,9 +28,9 @@ import discord4j.discordjson.json.ApplicationCommandOptionChoiceData
 import discord4j.discordjson.json.ApplicationCommandOptionData
 import discord4j.discordjson.json.ApplicationCommandRequest
 import discord4j.rest.util.Permission
-import me.xezard.devmc.drazex.discord.config.commands.properties.CommandProperties
-import me.xezard.devmc.drazex.discord.config.commands.properties.option.CommandOptionChoiceProperties
-import me.xezard.devmc.drazex.discord.config.commands.properties.option.CommandOptionProperties
+import me.xezard.devmc.drazex.discord.config.discord.commands.CommandProperties
+import me.xezard.devmc.drazex.discord.config.discord.commands.option.CommandOptionChoiceProperties
+import me.xezard.devmc.drazex.discord.config.discord.commands.option.CommandOptionProperties
 import org.springframework.stereotype.Service
 
 @Service

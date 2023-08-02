@@ -21,7 +21,7 @@
 package me.xezard.devmc.drazex.discord.service.commands
 
 import discord4j.discordjson.json.ApplicationCommandRequest
-import me.xezard.devmc.drazex.discord.config.commands.properties.CommandProperties
+import me.xezard.devmc.drazex.discord.config.discord.commands.CommandProperties
 
 abstract class AbstractCommandHandler (
     private val commandsService: CommandsService,

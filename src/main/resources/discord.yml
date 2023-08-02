@@ -1,10 +1,2 @@
 token: ""
 baseUrl: ""
-
-messages:
-  color: ""
-  requests:
-    color: ""
-
-thumbnail:
-  url: ""

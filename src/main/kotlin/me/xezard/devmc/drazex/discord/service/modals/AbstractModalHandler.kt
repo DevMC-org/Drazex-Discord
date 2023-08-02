@@ -20,11 +20,11 @@
  */
 package me.xezard.devmc.drazex.discord.service.modals
 
-import me.xezard.devmc.drazex.discord.config.modals.properties.ModalProperties
+import me.xezard.devmc.drazex.discord.config.discord.modals.properties.DiscordModalProperties
 
 abstract class AbstractModalHandler (
     private val modalsService: ModalsService,
-    private val properties: ModalProperties
+    private val properties: DiscordModalProperties
 ) : ModalHandler {
     override val id
         get() = this.properties.id

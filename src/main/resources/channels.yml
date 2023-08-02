@@ -1,16 +1,15 @@
-ids:
-  news:
-    consumer: ""
-    publishers:
-      - ""
-  showcase:
+news:
+  consumer: ""
+  publishers:
     - ""
+showcase:
+  - ""
 
-  requests:
-    development:
+requests:
+  development:
+    - ""
+  team:
+    search:
       - ""
-    team:
-      search:
-        - ""
-      recruitment:
-        - ""
+    recruitment:
+      - ""

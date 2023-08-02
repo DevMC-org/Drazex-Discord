@@ -25,7 +25,7 @@ import discord4j.core.event.domain.interaction.ApplicationCommandInteractionEven
 import discord4j.core.`object`.entity.channel.GuildChannel
 import discord4j.core.spec.InteractionApplicationCommandCallbackSpec
 import discord4j.discordjson.json.MessageEditRequest
-import me.xezard.devmc.drazex.discord.config.commands.CommandsConfiguration
+import me.xezard.devmc.drazex.discord.config.discord.commands.CommandsProperties
 import me.xezard.devmc.drazex.discord.service.commands.AbstractCommandHandler
 import me.xezard.devmc.drazex.discord.service.commands.CommandsService
 import me.xezard.devmc.drazex.discord.service.messages.MessagesService
@@ -36,8 +36,8 @@ import reactor.core.publisher.Mono
 class EmbedCommand (
     private val commandsService: CommandsService,
     private val messagesService: MessagesService,
-    commandsConfiguration: CommandsConfiguration
-): AbstractCommandHandler(commandsService, commandsConfiguration.commands["embed"]!!) {
+    commandsProperties: CommandsProperties
+): AbstractCommandHandler(commandsService, commandsProperties.embed) {
     companion object {
         private const val CHANNEL_OPTION_NAME = "channel"
         private const val MESSAGE_ID_OPTION_NAME = "message-id"
@@ -50,14 +50,13 @@ class EmbedCommand (
     // '/embed {json} {channel id}' -> send an embed message to specified channel
     // '/embed {json} {channel id} {message id}' -> edit an existing message
     override fun handle(event: ApplicationCommandInteractionEvent): Mono<Void> {
-        val interaction = event.interaction
         val json = this.commandsService.extractValue(event, JSON_OPTION_NAME)
-        val embed = json?.let { this.messagesService.jsonToEmbed(it) } ?: return Mono.empty()
+        val embed = json?.let { this.messagesService.embedFrom(it) } ?: return Mono.empty()
         val channelId = this.commandsService.extractValue(event, CHANNEL_OPTION_NAME)
         val messageId = this.commandsService.extractValue(event, MESSAGE_ID_OPTION_NAME)
         val targetChannel = channelId?.let { id -> event.interaction.guild.flatMap {
             it.getChannelById(Snowflake.of(id))
-        }} ?: interaction.channel.cast(GuildChannel::class.java)
+        }} ?: event.interaction.channel.cast(GuildChannel::class.java)
         val targetMessage = messageId?.let { id -> targetChannel.map {
             it.restChannel.getRestMessage(Snowflake.of(id))
         }} ?: Mono.empty()

@@ -1,24 +1,59 @@
-new:
-  resource: |
-    **Опубликован новый ресурс:**
-    __**[{title}]({url})**__ - {description}
-    
-    {url}
+stats:
+  title: "Статистика"
+  color: "#21f704"
+  fields:
+    - name: "Аптайм"
+      value: "{uptime}"
+    - name: "Память"
+      value: |
+        Используется: {used_memory} МБ
+        Доступная: {available_memory} МБ
+        Всего: {maximum_memory} МБ
 
-  resource-version: |
-    **Опубликовано обновление для ресурса:**
-    __**[{title}]({url})**__ {version}
-    {description}
-    
-    {url}
-    
-    Поддержка:
-    🞄 Платформы: {platforms} 
-    🞄 Версии: {versions}
+news:
+  color: "#21f704"
+  footer:
+    text: "• Лента новостей сообщества"
 
-  article: |
-    **Опубликована новая статья:**
-    __**[{title}]({url})**__
-    {description}
+request:
+  color: "#ff9900"
+
+reposts:
+  resource:
+    title: "DevMC"
+    color: "#21f704"
+    url: "https://devmc.org/"
+    thumbnail: "https://devmc.org/seo/android-chrome-512x512.png"
+    description: |
+      **Опубликован новый ресурс:**
+      __**[{title}]({url})**__ - {description}
+      
+      {url}
+
+  resource-version:
+    title: "DevMC"
+    color: "#21f704"
+    url: "https://devmc.org/"
+    thumbnail: "https://devmc.org/seo/android-chrome-512x512.png"
+    description: |
+      **Опубликовано обновление для ресурса:**
+      __**[{title}]({url})**__ {version}
+      {description}
+      
+      {url}
     
-    {url}
+      Поддержка:
+      🞄 Платформы: {platforms} 
+      🞄 Версии: {versions}
+
+  article:
+    title: "DevMC"
+    color: "#21f704"
+    url: "https://devmc.org/"
+    thumbnail: "https://devmc.org/seo/android-chrome-512x512.png"
+    description: |
+      **Опубликована новая статья:**
+      __**[{title}]({url})**__
+      {description}
+      
+      {url}
