@@ -72,7 +72,7 @@ abstract class RequestModalHandler (
         this.getInputsMapping(this.discordModalProperties).forEach { (field, inputId) ->
             this.modalsService.getInputValue(inputs, inputId)?.let {
                 if (field == "Тип услуги:") {
-                    embed.withTitle("$title: $it")
+                    embed = embed.withTitle("$title: $it")
                 } else {
                     fields.add(EmbedCreateFields.Field.of(field, it, false))
                 }
