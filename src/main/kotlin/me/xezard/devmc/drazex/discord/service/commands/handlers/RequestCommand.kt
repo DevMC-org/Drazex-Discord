@@ -44,18 +44,16 @@ class RequestCommand (
     }
 
     // <request type, modal handler>
-    private val requestTypesData by lazy {
-        mapOf(
-            RequestType.EXECUTOR_SEARCH to this.executorSearchModalHandler,
-            RequestType.TEAM_RECRUITMENT to this.teamRecruitmentModalHandler,
-            RequestType.TEAM_SEARCH to this.teamSearchModalHandler
-        )
-    }
+    private val requestTypesData = mapOf(
+        RequestType.EXECUTOR_SEARCH to this.executorSearchModalHandler,
+        RequestType.TEAM_RECRUITMENT to this.teamRecruitmentModalHandler,
+        RequestType.TEAM_SEARCH to this.teamSearchModalHandler
+    )
 
     // TODO: add a limit on the number of requests created per user?
     override fun handle(event: ApplicationCommandInteractionEvent) =
         Mono.justOrEmpty(this.commandsService.extractValue(event, SERVICE_TYPE_OPTION_NAME))
-            .flatMap { Mono.justOrEmpty(RequestType.findByProperty(it)) }
+            .flatMap { Mono.justOrEmpty(RequestType.valueOf(it)) }
             .flatMap { Mono.justOrEmpty(this.requestTypesData[it]?.create()) }
             .flatMap { event.presentModal(it) }
 }
