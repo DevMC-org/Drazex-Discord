@@ -22,7 +22,7 @@ package me.xezard.devmc.drazex.discord.core.config.discord.messages
 
 import me.xezard.devmc.drazex.discord.core.config.discord.messages.properties.discord.DiscordEmbedMessageProperties
 
-class RepostsMessagesProperties (
+data class RepostsMessagesProperties (
     val resource: DiscordEmbedMessageProperties,
     val resourceVersion: DiscordEmbedMessageProperties,
     val article: DiscordEmbedMessageProperties

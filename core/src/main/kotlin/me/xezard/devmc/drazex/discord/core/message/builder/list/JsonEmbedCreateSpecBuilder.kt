@@ -21,7 +21,7 @@
 package me.xezard.devmc.drazex.discord.core.message.builder.list
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import me.xezard.devmc.drazex.discord.core.message.MessageService
+import me.xezard.devmc.drazex.discord.core.message.service.MessageService
 import me.xezard.devmc.drazex.discord.core.message.builder.AbstractEmbedCreateSpecBuilder
 import me.xezard.devmc.drazex.discord.core.message.builder.fields.DiscordEmbedAuthor
 import me.xezard.devmc.drazex.discord.core.message.builder.fields.DiscordEmbedField

@@ -26,7 +26,7 @@ import me.xezard.devmc.drazex.discord.core.DrazexBot
 import me.xezard.devmc.drazex.discord.core.config.discord.DiscordProperties
 import me.xezard.devmc.drazex.discord.core.config.discord.channels.ChannelsProperties
 import me.xezard.devmc.drazex.discord.core.config.discord.messages.MessagesProperties
-import me.xezard.devmc.drazex.discord.core.message.MessageService
+import me.xezard.devmc.drazex.discord.core.message.service.MessageService
 import me.xezard.devmc.drazex.discord.core.model.post.DiscordPost
 import me.xezard.devmc.drazex.discord.core.model.post.DiscordPost.Companion.URL_REPLACE_PLACEHOLDER
 import me.xezard.devmc.drazex.discord.core.model.post.DiscordPostType

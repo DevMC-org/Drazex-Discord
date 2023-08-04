@@ -24,7 +24,7 @@ import discord4j.core.event.domain.interaction.ModalSubmitInteractionEvent
 import me.xezard.devmc.drazex.discord.core.config.discord.channels.ChannelsProperties
 import me.xezard.devmc.drazex.discord.core.config.discord.messages.MessagesProperties
 import me.xezard.devmc.drazex.discord.core.config.discord.modals.ModalsProperties
-import me.xezard.devmc.drazex.discord.core.message.MessageService
+import me.xezard.devmc.drazex.discord.core.message.service.MessageService
 import me.xezard.devmc.drazex.discord.core.modals.ModalsService
 import org.springframework.stereotype.Component
 

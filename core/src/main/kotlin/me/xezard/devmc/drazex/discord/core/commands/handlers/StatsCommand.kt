@@ -23,13 +23,13 @@ package me.xezard.devmc.drazex.discord.core.commands.handlers
 import discord4j.core.event.domain.interaction.ApplicationCommandInteractionEvent
 import discord4j.core.spec.InteractionApplicationCommandCallbackSpec
 import me.xezard.devmc.drazex.discord.core.app.AppService
+import me.xezard.devmc.drazex.discord.core.app.DiscordService
 import me.xezard.devmc.drazex.discord.core.commands.AbstractCommandHandler
 import me.xezard.devmc.drazex.discord.core.commands.CommandsService
 import me.xezard.devmc.drazex.discord.core.config.discord.commands.CommandsProperties
 import me.xezard.devmc.drazex.discord.core.config.discord.messages.MessagesProperties
 import me.xezard.devmc.drazex.discord.core.config.discord.roles.RolesProperties
-import me.xezard.devmc.drazex.discord.core.message.MessageService
-import me.xezard.devmc.drazex.discord.core.roles.RolesService
+import me.xezard.devmc.drazex.discord.core.message.service.MessageService
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 
@@ -38,14 +38,14 @@ class StatsCommand (
     commandsService: CommandsService,
     private val appService: AppService,
     private val messageService: MessageService,
-    private val rolesService: RolesService,
+    private val discordService: DiscordService,
     commandsProperties: CommandsProperties,
     private val messagesProperties: MessagesProperties,
     private val rolesProperties: RolesProperties,
 ): AbstractCommandHandler(commandsService, commandsProperties.stats) {
     override fun handle(event: ApplicationCommandInteractionEvent): Mono<Void> =
         Mono.justOrEmpty(event.interaction.member)
-            .filterWhen { this.rolesService.hasRole(it, this.rolesProperties.admin) }
+            .filterWhen { this.discordService.hasRole(it, this.rolesProperties.admin) }
             .flatMap { this.createStatsEmbed(event) }
 
     private fun createStatsEmbed(event: ApplicationCommandInteractionEvent): Mono<Void> {

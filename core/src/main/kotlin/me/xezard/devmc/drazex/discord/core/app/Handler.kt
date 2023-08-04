@@ -20,26 +20,8 @@
  */
 package me.xezard.devmc.drazex.discord.core.app
 
-import discord4j.core.`object`.entity.Member
-import discord4j.core.`object`.entity.Message
-import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 
-@Service
-class DiscordService {
-    companion object {
-        val DISCORD_EMOJI_PATTERN = Regex("<:\\w+:\\d+>")
-
-        private const val DISCORD_DOMAIN = "discordapp.com"
-        const val DISCORD_AVATAR_URL = "https://cdn.$DISCORD_DOMAIN/avatars/{user_id}/{avatar}.png"
-        const val DISCORD_CHANNEL_URL = "https://$DISCORD_DOMAIN/channels/{id}"
-        const val DISCORD_USER_URL = "https://$DISCORD_DOMAIN/users/{id}"
-        const val CHANNEL_NAME_PATTERN = " #\\w+"
-    }
-
-    fun hasRole(member: Member, roleId: String): Mono<Boolean> =
-        member.roles.any { it.id.asString() == roleId }
-
-    fun authorIsBot(message: Message): Boolean =
-        message.author.map { it.isBot }.orElse(false)
+interface Handler<T> {
+    fun handle(value: T): Mono<Void>
 }

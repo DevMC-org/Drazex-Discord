@@ -21,12 +21,19 @@
 package me.xezard.devmc.drazex.discord.core.events
 
 import discord4j.core.event.domain.Event
+import me.xezard.devmc.drazex.discord.core.app.Handler
+import reactor.core.publisher.Mono
 import java.lang.reflect.ParameterizedType
 
-abstract class AbstractEventHandler<out T : Event> : EventHandler<T> {
+abstract class AbstractEventHandler<out T : Event> (
+    private val handler: Handler<T>
+) : EventHandler<T> {
     override val event: Class<out T>
         get() {
             val superClass = javaClass.genericSuperclass as ParameterizedType
             return superClass.actualTypeArguments[0] as Class<T>
         }
+
+    override fun handle(event: @UnsafeVariance T): Mono<Void> =
+        this.handler.handle(event)
 }

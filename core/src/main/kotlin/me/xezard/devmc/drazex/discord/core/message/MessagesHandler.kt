@@ -18,27 +18,24 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package me.xezard.devmc.drazex.discord.core.commands
+package me.xezard.devmc.drazex.discord.core.message
 
-import discord4j.core.DiscordClient
-import discord4j.core.event.domain.interaction.ApplicationCommandInteractionEvent
+import discord4j.core.event.domain.message.MessageCreateEvent
+import discord4j.core.`object`.entity.Message
 import me.xezard.devmc.drazex.discord.core.app.Handler
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 
 @Service
-class CommandsHandler (
-    private val handlers: List<CommandHandler>
-) : Handler<ApplicationCommandInteractionEvent> {
-    fun registerAllHandlers(discordClient: DiscordClient): Mono<Void> =
-        discordClient.applicationId.flatMapMany { appId -> Flux.fromIterable(this.handlers).flatMap {
-            discordClient.applicationService.createGlobalApplicationCommand(appId, it.register())
-        }}.then()
+class MessagesHandler (
+    private val handlers: List<MessageHandler>
+) : Handler<MessageCreateEvent> {
+    override fun handle(value: MessageCreateEvent): Mono<Void> =
+        Flux.fromIterable(this.findHandlersByMessage(value.message))
+            .flatMap { it.handle(value) }
+            .then()
 
-    override fun handle(value: ApplicationCommandInteractionEvent): Mono<Void> =
-        this.findHandlerByCommandName(value.commandName)?.handle(value) ?: Mono.empty()
-
-    fun findHandlerByCommandName(name: String) =
-        this.handlers.find { it.name == name }
+    fun findHandlersByMessage(message: Message) =
+        this.handlers.filter { it.handled(message) }
 }

@@ -31,7 +31,7 @@ import me.xezard.devmc.drazex.discord.core.app.DiscordService.Companion.DISCORD_
 import me.xezard.devmc.drazex.discord.core.buttons.handlers.RequestDeleteButtonHandler
 import me.xezard.devmc.drazex.discord.core.config.discord.messages.MessagesProperties
 import me.xezard.devmc.drazex.discord.core.config.discord.modals.properties.DiscordModalProperties
-import me.xezard.devmc.drazex.discord.core.message.MessageService
+import me.xezard.devmc.drazex.discord.core.message.service.MessageService
 import me.xezard.devmc.drazex.discord.core.modals.AbstractModalHandler
 import me.xezard.devmc.drazex.discord.core.modals.ModalsService
 import reactor.core.publisher.Flux

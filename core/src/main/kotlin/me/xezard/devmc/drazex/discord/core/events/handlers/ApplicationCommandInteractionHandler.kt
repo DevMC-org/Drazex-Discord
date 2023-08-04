@@ -27,8 +27,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class ApplicationCommandInteractionHandler (
-    private val commandsHandler: CommandsHandler
-): AbstractEventHandler<ApplicationCommandInteractionEvent>() {
-    override fun handle(event: ApplicationCommandInteractionEvent) =
-        this.commandsHandler.handle(event)
-}
+    commandsHandler: CommandsHandler
+) : AbstractEventHandler<ApplicationCommandInteractionEvent>(
+    commandsHandler
+)

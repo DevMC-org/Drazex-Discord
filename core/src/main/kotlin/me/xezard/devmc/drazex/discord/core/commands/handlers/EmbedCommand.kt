@@ -28,7 +28,7 @@ import discord4j.discordjson.json.MessageEditRequest
 import me.xezard.devmc.drazex.discord.core.commands.AbstractCommandHandler
 import me.xezard.devmc.drazex.discord.core.commands.CommandsService
 import me.xezard.devmc.drazex.discord.core.config.discord.commands.CommandsProperties
-import me.xezard.devmc.drazex.discord.core.message.MessageService
+import me.xezard.devmc.drazex.discord.core.message.service.MessageService
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 

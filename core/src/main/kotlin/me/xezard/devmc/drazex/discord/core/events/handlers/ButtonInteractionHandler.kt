@@ -27,8 +27,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class ButtonInteractionHandler (
-    private val buttonsHandler: ButtonsHandler
-): AbstractEventHandler<ButtonInteractionEvent>() {
-    override fun handle(event: ButtonInteractionEvent) =
-        this.buttonsHandler.handle(event)
-}
+    buttonsHandler: ButtonsHandler
+) : AbstractEventHandler<ButtonInteractionEvent>(
+    buttonsHandler
+)

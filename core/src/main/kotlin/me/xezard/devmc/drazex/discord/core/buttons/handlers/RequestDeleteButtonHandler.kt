@@ -22,15 +22,15 @@ package me.xezard.devmc.drazex.discord.core.buttons.handlers
 
 import discord4j.core.event.domain.interaction.ButtonInteractionEvent
 import discord4j.core.`object`.entity.Message
-import me.xezard.devmc.drazex.discord.core.config.discord.roles.RolesProperties
+import me.xezard.devmc.drazex.discord.core.app.DiscordService
 import me.xezard.devmc.drazex.discord.core.buttons.ButtonHandler
-import me.xezard.devmc.drazex.discord.core.roles.RolesService
+import me.xezard.devmc.drazex.discord.core.config.discord.roles.RolesProperties
 import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 
 @Component
 class RequestDeleteButtonHandler (
-    private val rolesService: RolesService,
+    private val discordService: DiscordService,
     private val rolesProperties: RolesProperties
 ): ButtonHandler {
     companion object {
@@ -44,7 +44,7 @@ class RequestDeleteButtonHandler (
         val member = event.interaction.member.orElse(null) ?: return Mono.empty()
         val userId = event.interaction.user.id
         val isUserButton = Mono.just(userId.asString() == buttonId)
-        val hasPermission = this.rolesService.hasRole(member, this.rolesProperties.admin)
+        val hasPermission = this.discordService.hasRole(member, this.rolesProperties.admin)
         val hasAccess = Mono.zip(hasPermission, isUserButton) { permission, owner -> permission || owner }
 
         return hasAccess.flatMap {

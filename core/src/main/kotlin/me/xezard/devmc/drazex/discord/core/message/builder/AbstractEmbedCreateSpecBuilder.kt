@@ -22,7 +22,7 @@ package me.xezard.devmc.drazex.discord.core.message.builder
 
 import discord4j.core.spec.EmbedCreateFields
 import discord4j.core.spec.EmbedCreateSpec
-import me.xezard.devmc.drazex.discord.core.message.MessageService
+import me.xezard.devmc.drazex.discord.core.message.service.MessageService
 import me.xezard.devmc.drazex.discord.core.message.builder.fields.DiscordEmbedAuthor
 import me.xezard.devmc.drazex.discord.core.message.builder.fields.DiscordEmbedField
 import me.xezard.devmc.drazex.discord.core.message.builder.fields.DiscordEmbedFooter

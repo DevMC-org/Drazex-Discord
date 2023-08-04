@@ -18,14 +18,24 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package me.xezard.devmc.drazex.discord.core.roles
+package me.xezard.devmc.drazex.discord.core.message.handlers
 
-import discord4j.core.`object`.entity.Member
-import org.springframework.stereotype.Service
+import discord4j.core.event.domain.message.MessageCreateEvent
+import discord4j.core.`object`.entity.Message
+import me.xezard.devmc.drazex.discord.core.app.DiscordService
+import me.xezard.devmc.drazex.discord.core.channels.ChannelsHandler
+import me.xezard.devmc.drazex.discord.core.message.MessageHandler
+import org.springframework.stereotype.Component
 import reactor.core.publisher.Mono
 
-@Service
-class RolesService {
-    fun hasRole(member: Member, roleId: String): Mono<Boolean> =
-        member.roles.any { it.id.asString() == roleId }
+@Component
+class ChannelMessageHandler (
+    private val discordService: DiscordService,
+    private val channelsHandler: ChannelsHandler
+) : MessageHandler {
+    override fun handle(event: MessageCreateEvent): Mono<Void> =
+        this.channelsHandler.handle(event.message)
+
+    override fun handled(message: Message) =
+        !this.discordService.authorIsBot(message)
 }

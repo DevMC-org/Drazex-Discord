@@ -18,16 +18,15 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package me.xezard.devmc.drazex.discord.core.events.handlers
+package me.xezard.devmc.drazex.discord.core.message.service
 
-import discord4j.core.event.domain.message.MessageCreateEvent
-import me.xezard.devmc.drazex.discord.core.events.AbstractEventHandler
-import me.xezard.devmc.drazex.discord.core.message.MessagesHandler
-import org.springframework.stereotype.Component
+import discord4j.core.spec.EmbedCreateSpec
+import discord4j.rest.util.Color
 
-@Component
-class MessageCreateHandler (
-    messagesHandler: MessagesHandler
-) : AbstractEventHandler<MessageCreateEvent>(
-    messagesHandler
-)
+interface MessageService {
+    fun embedFrom(value: Any, replaces: Map<String, String>? = null): EmbedCreateSpec?
+
+    fun replace(value: String, replaces: Map<String, String>?): String
+
+    fun getColorFromString(colorString: String?): Color
+}

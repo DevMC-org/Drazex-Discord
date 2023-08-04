@@ -21,7 +21,7 @@
 package me.xezard.devmc.drazex.discord.core.message.builder.list
 
 import me.xezard.devmc.drazex.discord.core.config.discord.messages.properties.discord.DiscordEmbedMessageProperties
-import me.xezard.devmc.drazex.discord.core.message.MessageService
+import me.xezard.devmc.drazex.discord.core.message.service.MessageService
 import me.xezard.devmc.drazex.discord.core.message.builder.AbstractEmbedCreateSpecBuilder
 import me.xezard.devmc.drazex.discord.core.message.builder.fields.DiscordEmbedAuthor
 import me.xezard.devmc.drazex.discord.core.message.builder.fields.DiscordEmbedField

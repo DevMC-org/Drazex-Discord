@@ -21,15 +21,16 @@
 package me.xezard.devmc.drazex.discord.core.modals
 
 import discord4j.core.event.domain.interaction.ModalSubmitInteractionEvent
+import me.xezard.devmc.drazex.discord.core.app.Handler
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Mono
 
 @Service
 class ModalsHandler (
     private val handlers: List<ModalHandler>
-) {
-    fun handle(event: ModalSubmitInteractionEvent): Mono<Void> =
-        this.findModalById(event.customId)?.handle(event) ?: Mono.empty()
+) : Handler<ModalSubmitInteractionEvent> {
+    override fun handle(value: ModalSubmitInteractionEvent): Mono<Void> =
+        this.findModalById(value.customId)?.handle(value) ?: Mono.empty()
 
     fun findModalById(id: String) =
         this.handlers.find { it.id == id }

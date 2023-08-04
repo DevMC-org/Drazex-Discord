@@ -18,7 +18,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package me.xezard.devmc.drazex.discord.core.message
+package me.xezard.devmc.drazex.discord.core.message.service
 
 import discord4j.core.spec.EmbedCreateSpec
 import discord4j.rest.util.Color

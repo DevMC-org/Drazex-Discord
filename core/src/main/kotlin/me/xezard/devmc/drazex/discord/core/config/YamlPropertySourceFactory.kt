@@ -28,7 +28,10 @@ import org.springframework.core.io.support.PropertySourceFactory
 import org.springframework.lang.Nullable
 
 class YamlPropertySourceFactory : PropertySourceFactory {
-    override fun createPropertySource(@Nullable name: String?, encodedResource: EncodedResource): PropertySource<*> {
+    override fun createPropertySource(
+        @Nullable name: String?,
+        encodedResource: EncodedResource
+    ): PropertySource<*> {
         val factory = YamlPropertiesFactoryBean()
         factory.setResources(encodedResource.resource)
         return PropertiesPropertySource(encodedResource.resource.filename!!, factory.getObject()!!)
