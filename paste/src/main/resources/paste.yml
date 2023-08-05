@@ -1,0 +1,3 @@
+service-urls:
+  api: "https://api.paste.gg/v1/pastes"
+  file: "https://paste.gg/p/anonymous/"

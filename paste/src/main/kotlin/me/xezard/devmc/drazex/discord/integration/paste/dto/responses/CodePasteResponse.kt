@@ -18,22 +18,9 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package me.xezard.devmc.drazex.discord.core.config
+package me.xezard.devmc.drazex.discord.integration.paste.dto.responses
 
-import org.springframework.beans.factory.config.YamlPropertiesFactoryBean
-import org.springframework.core.env.PropertiesPropertySource
-import org.springframework.core.env.PropertySource
-import org.springframework.core.io.support.EncodedResource
-import org.springframework.core.io.support.PropertySourceFactory
-import org.springframework.lang.Nullable
-
-class YamlPropertySourceFactory : PropertySourceFactory {
-    override fun createPropertySource(
-        @Nullable name: String?,
-        encodedResource: EncodedResource
-    ): PropertySource<*> {
-        val factory = YamlPropertiesFactoryBean()
-        factory.setResources(encodedResource.resource)
-        return PropertiesPropertySource(encodedResource.resource.filename!!, factory.getObject()!!)
-    }
-}
+data class CodePasteResponse(
+    val status: CodePasteResponseStatus,
+    val result: CodePasteResponseResult
+)

@@ -18,16 +18,8 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package me.xezard.devmc.drazex.discord.core.config.discord.messages
+package me.xezard.devmc.drazex.discord.integration.paste.dto.requests
 
-import me.xezard.devmc.drazex.discord.core.config.discord.messages.properties.discord.DiscordEmbedMessageProperties
-import org.springframework.boot.context.properties.ConfigurationProperties
-
-@ConfigurationProperties
-data class MessagesProperties (
-    val stats: DiscordEmbedMessageProperties,
-    val news: DiscordEmbedMessageProperties,
-    val request: DiscordEmbedMessageProperties,
-    val paste: DiscordEmbedMessageProperties,
-    val reposts: RepostsMessagesProperties
+data class CodePasteRequest (
+    val files: List<CodePasteFileRequest>
 )

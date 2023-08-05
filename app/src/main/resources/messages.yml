@@ -18,6 +18,15 @@ news:
 request:
   color: "#ff9900"
 
+paste:
+  color: "#21f704"
+  description: |
+    Для большего удобства участников в комьюнити все приложенные в 
+    сообщении текстовые файлы были автоматически загружены на сервис: 
+    {url}
+  footer:
+    text: "• Автоматически отправлено Drazex"
+
 reposts:
   resource:
     title: "DevMC"

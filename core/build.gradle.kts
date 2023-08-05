@@ -6,6 +6,9 @@ plugins {
 }
 
 dependencies {
+    implementation(project(":common"))
+    implementation(project(":paste"))
+
     implementation("com.discord4j:discord4j-core:3.3.0-M2")
 
     api("io.projectreactor:reactor-core:3.5.4")

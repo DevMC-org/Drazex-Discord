@@ -18,27 +18,15 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package me.xezard.devmc.drazex.discord.core.config
+package me.xezard.devmc.drazex.discord.integration.paste.config
 
 import me.xezard.devmc.drazex.discord.common.config.YamlPropertySourceFactory
-import me.xezard.devmc.drazex.discord.integration.paste.config.PasteConfiguration
-import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Import
 import org.springframework.context.annotation.PropertySource
-import org.springframework.scheduling.annotation.EnableScheduling
 
 @Configuration
-@EnableScheduling
-@Import(PasteConfiguration::class)
-@ComponentScan("me.xezard.devmc.drazex")
 @PropertySource(
-    value = ["classpath:channels.yml",
-             "classpath:commands.yml",
-             "classpath:discord.yml",
-             "classpath:messages.yml",
-             "classpath:modals.yml",
-             "classpath:roles.yml"],
+    value = ["classpath:paste.yml"],
     factory = YamlPropertySourceFactory::class
 )
-class CoreConfiguration
+class PasteConfiguration

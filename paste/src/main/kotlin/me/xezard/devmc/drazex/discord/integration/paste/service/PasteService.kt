@@ -18,16 +18,17 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package me.xezard.devmc.drazex.discord.core.config.discord.messages
+package me.xezard.devmc.drazex.discord.integration.paste.service
 
-import me.xezard.devmc.drazex.discord.core.config.discord.messages.properties.discord.DiscordEmbedMessageProperties
-import org.springframework.boot.context.properties.ConfigurationProperties
+import org.springframework.core.io.buffer.DataBuffer
+import reactor.core.publisher.Flux
 
-@ConfigurationProperties
-data class MessagesProperties (
-    val stats: DiscordEmbedMessageProperties,
-    val news: DiscordEmbedMessageProperties,
-    val request: DiscordEmbedMessageProperties,
-    val paste: DiscordEmbedMessageProperties,
-    val reposts: RepostsMessagesProperties
-)
+interface PasteService {
+    /**
+     * Uploads arbitrary content in text format to the text content display service.
+     *
+     * @param content The list of DataBuffer objects containing the content to be uploaded.
+     * @return A Mono<String> object representing the asynchronous upload result.
+     */
+    fun upload(content: List<DataBuffer>): Flux<String>
+}

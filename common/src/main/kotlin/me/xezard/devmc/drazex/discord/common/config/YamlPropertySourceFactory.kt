@@ -18,16 +18,22 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package me.xezard.devmc.drazex.discord.core.config.discord.messages
+package me.xezard.devmc.drazex.discord.common.config
 
-import me.xezard.devmc.drazex.discord.core.config.discord.messages.properties.discord.DiscordEmbedMessageProperties
-import org.springframework.boot.context.properties.ConfigurationProperties
+import jakarta.annotation.Nullable
+import org.springframework.beans.factory.config.YamlPropertiesFactoryBean
+import org.springframework.core.env.PropertiesPropertySource
+import org.springframework.core.env.PropertySource
+import org.springframework.core.io.support.EncodedResource
+import org.springframework.core.io.support.PropertySourceFactory
 
-@ConfigurationProperties
-data class MessagesProperties (
-    val stats: DiscordEmbedMessageProperties,
-    val news: DiscordEmbedMessageProperties,
-    val request: DiscordEmbedMessageProperties,
-    val paste: DiscordEmbedMessageProperties,
-    val reposts: RepostsMessagesProperties
-)
+class YamlPropertySourceFactory : PropertySourceFactory {
+    override fun createPropertySource(
+        @Nullable name: String?,
+        encodedResource: EncodedResource
+    ): PropertySource<*> {
+        val factory = YamlPropertiesFactoryBean()
+        factory.setResources(encodedResource.resource)
+        return PropertiesPropertySource(encodedResource.resource.filename!!, factory.getObject()!!)
+    }
+}
