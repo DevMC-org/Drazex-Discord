@@ -100,6 +100,6 @@ abstract class RequestModalHandler (
         return messages.then(reply)
     }
 
-    private fun getInputsMapping(properties: me.xezard.devmc.drazex.discord.core.config.discord.modals.properties.DiscordModalProperties) =
+    private fun getInputsMapping(properties: DiscordModalProperties) =
         properties.inputs.map { (name, data) -> data.description to "${properties.id}-$name" }.toMap()
 }
