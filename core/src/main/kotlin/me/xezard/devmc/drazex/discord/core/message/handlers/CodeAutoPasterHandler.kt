@@ -62,7 +62,7 @@ class CodeAutoPasterHandler (
         val message = Flux.fromIterable(attachments)
             .flatMap { this.retrieveFile(it.url) }
             .collectList()
-            .flatMapMany { this.pasteService.upload(it) }
+            .flatMap { this.pasteService.upload(it) }
             .onErrorResume { Mono.empty() }
             .map { this.messageService.embedFrom(this.messagesProperties.paste, mapOf(
                 URL_REPLACE_PLACEHOLDER to it

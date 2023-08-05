@@ -46,20 +46,19 @@ class PasteServiceImpl (
 
     private val webClient = WebClient.create()
 
-    override fun upload(content: List<DataBuffer>): Flux<String> {
-        return Flux.fromIterable(content)
+    override fun upload(content: List<DataBuffer>): Mono<String> =
+        Flux.fromIterable(content)
             .map { this.createFileRequest(it) }
             .collectList()
             .map { CodePasteRequest(it) }
             .flatMap { this.send(it) }
-            .flatMapMany {
+            .flatMap {
                 when (it.status) {
                     CodePasteResponseStatus.SUCCESS ->
                         Mono.just("${this.pasteProperties.serviceUrls.file}${it.result.id}")
                     CodePasteResponseStatus.ERROR -> Mono.error(PasteException())
                 }
             }
-    }
 
     private fun send(request: CodePasteRequest) =
         this.webClient.post()

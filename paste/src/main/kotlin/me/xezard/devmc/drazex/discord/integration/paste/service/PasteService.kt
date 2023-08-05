@@ -21,14 +21,15 @@
 package me.xezard.devmc.drazex.discord.integration.paste.service
 
 import org.springframework.core.io.buffer.DataBuffer
-import reactor.core.publisher.Flux
+import reactor.core.publisher.Mono
 
 interface PasteService {
     /**
      * Uploads arbitrary content in text format to the text content display service.
      *
      * @param content The list of DataBuffer objects containing the content to be uploaded.
-     * @return A Mono<String> object representing the asynchronous upload result.
+     * @return A Mono<String> object representing the asynchronous upload result,
+     * which contains a link to the uploaded file content.
      */
-    fun upload(content: List<DataBuffer>): Flux<String>
+    fun upload(content: List<DataBuffer>): Mono<String>
 }
