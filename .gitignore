@@ -1,7 +1,6 @@
 production.env
 .gradle
 gradle
-settings.gradle.kts
 gradlew.bat
 gradlew
 gradle.properties
