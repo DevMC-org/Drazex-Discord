@@ -38,13 +38,12 @@ import java.io.InputStreamReader
 
 @Service
 class PasteServiceImpl (
-    private val pasteProperties: PasteProperties
+    private val pasteProperties: PasteProperties,
+    private val webClient: WebClient
 ) : PasteService {
     companion object {
         private const val PASTE_CONTENT_FORMAT = "text"
     }
-
-    private val webClient = WebClient.create()
 
     override fun upload(content: List<DataBuffer>): Mono<String> =
         Flux.fromIterable(content)
