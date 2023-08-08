@@ -20,7 +20,7 @@
  */
 package me.xezard.devmc.drazex.discord.integration.paste.dto.requests
 
-data class CodePasteFileContent(
+data class CodePasteFileContent (
     val format: String,
     val value: String
 )

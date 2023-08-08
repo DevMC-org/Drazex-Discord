@@ -29,8 +29,8 @@ import me.xezard.devmc.drazex.discord.integration.paste.dto.responses.CodePasteR
 import me.xezard.devmc.drazex.discord.integration.paste.dto.responses.CodePasteResponseStatus
 import me.xezard.devmc.drazex.discord.integration.paste.exception.PasteException
 import org.springframework.core.io.buffer.DataBuffer
+import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
-import org.springframework.web.reactive.function.BodyInserters
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
@@ -62,7 +62,8 @@ class PasteServiceImpl (
     private fun send(request: CodePasteRequest) =
         this.webClient.post()
             .uri(this.pasteProperties.serviceUrls.api)
-            .body(BodyInserters.fromValue(request))
+            .contentType(MediaType.APPLICATION_JSON)
+            .bodyValue(request)
             .retrieve()
             .bodyToMono(CodePasteResponse::class.java)
 

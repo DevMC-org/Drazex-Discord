@@ -8,6 +8,9 @@ spring:
       transport: tcp
       port: 6503
 
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+
 logging:
   level:
     root: INFO

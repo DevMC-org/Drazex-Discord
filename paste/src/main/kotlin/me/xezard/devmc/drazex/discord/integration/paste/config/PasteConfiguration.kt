@@ -23,14 +23,10 @@ package me.xezard.devmc.drazex.discord.integration.paste.config
 import me.xezard.devmc.drazex.discord.common.config.YamlPropertySourceFactory
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.PropertySource
-import org.springframework.web.reactive.function.client.WebClient
 
 @Configuration
 @PropertySource(
     value = ["classpath:paste.yml"],
     factory = YamlPropertySourceFactory::class
 )
-class PasteConfiguration {
-    fun webClient(): WebClient =
-        WebClient.create()
-}
+class PasteConfiguration

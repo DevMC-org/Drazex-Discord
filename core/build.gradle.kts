@@ -7,6 +7,7 @@ plugins {
 
 dependencies {
     implementation(project(":common"))
+    implementation(project(":ai"))
     implementation(project(":paste"))
 
     implementation("com.discord4j:discord4j-core:3.3.0-M2")

@@ -20,6 +20,6 @@
  */
 package me.xezard.devmc.drazex.discord.integration.paste.dto.responses
 
-data class CodePasteResponseResult(
+data class CodePasteResponseResult (
     val id: String
 )

@@ -18,9 +18,25 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package me.xezard.devmc.drazex.discord.integration.paste.dto.responses
+package me.xezard.devmc.drazex.discord.common.config
 
-data class CodePasteResponse (
-    val status: CodePasteResponseStatus,
-    val result: CodePasteResponseResult
-)
+import com.fasterxml.jackson.databind.ObjectMapper
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
+import org.springframework.http.codec.json.Jackson2JsonDecoder
+import org.springframework.web.reactive.function.client.ExchangeStrategies
+import org.springframework.web.reactive.function.client.WebClient
+
+@Configuration
+class WebClientConfiguration {
+    @Bean
+    fun webClient(mapper: ObjectMapper): WebClient {
+        val strategies = ExchangeStrategies.builder()
+            .codecs { it.defaultCodecs().jackson2JsonDecoder(Jackson2JsonDecoder(mapper)) }
+            .build()
+
+        return WebClient.builder()
+            .exchangeStrategies(strategies)
+            .build()
+    }
+}

@@ -18,9 +18,8 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package me.xezard.devmc.drazex.discord.integration.paste.dto.responses
+package me.xezard.devmc.drazex.discord.ai.config
 
-data class CodePasteResponse (
-    val status: CodePasteResponseStatus,
-    val result: CodePasteResponseResult
+data class AiServiceData (
+    val api: String
 )

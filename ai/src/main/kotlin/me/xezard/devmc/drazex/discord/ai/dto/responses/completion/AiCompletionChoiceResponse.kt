@@ -18,9 +18,13 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package me.xezard.devmc.drazex.discord.integration.paste.dto.responses
+package me.xezard.devmc.drazex.discord.ai.dto.responses.completion
 
-data class CodePasteResponse (
-    val status: CodePasteResponseStatus,
-    val result: CodePasteResponseResult
+import me.xezard.devmc.drazex.discord.ai.dto.AiCompletionFinishReasonType
+import me.xezard.devmc.drazex.discord.ai.dto.AiMessageDto
+
+data class AiCompletionChoiceResponse (
+    val message: AiMessageDto,
+    val finishReason: AiCompletionFinishReasonType,
+    val index: Long
 )

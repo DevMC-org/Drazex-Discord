@@ -1,0 +1,4 @@
+ai:
+  token: ""
+  service-urls:
+    api: "https://chimeragpt.adventblocks.cc/api/v1"

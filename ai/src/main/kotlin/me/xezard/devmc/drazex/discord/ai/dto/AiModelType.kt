@@ -18,9 +18,26 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package me.xezard.devmc.drazex.discord.integration.paste.dto.responses
+package me.xezard.devmc.drazex.discord.ai.dto
 
-data class CodePasteResponse (
-    val status: CodePasteResponseStatus,
-    val result: CodePasteResponseResult
-)
+import com.fasterxml.jackson.annotation.JsonProperty
+
+enum class AiModelType {
+    @JsonProperty("gpt-4")
+    GPT_4,
+
+    @JsonProperty("gpt-4-0314")
+    GPT_4_0314,
+
+    @JsonProperty("gpt-4-32k")
+    GPT_4_32K,
+
+    @JsonProperty("gpt-3.5-turbo")
+    GPT_3_5_TURBO,
+
+    @JsonProperty("gpt-3.5-turbo-0301")
+    GPT_3_5_TURBO_0301,
+
+    @JsonProperty("gpt-3.5-turbo-16k")
+    GPT_3_5_TURBO_16K
+}

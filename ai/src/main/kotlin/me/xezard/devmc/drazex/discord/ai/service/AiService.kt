@@ -18,9 +18,19 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
-package me.xezard.devmc.drazex.discord.integration.paste.dto.responses
+package me.xezard.devmc.drazex.discord.ai.service
 
-data class CodePasteResponse (
-    val status: CodePasteResponseStatus,
-    val result: CodePasteResponseResult
-)
+import me.xezard.devmc.drazex.discord.ai.dto.AiModelType
+import reactor.core.publisher.Mono
+
+interface AiService {
+    /**
+     * Sends a text request to the AI network
+     * and returns the text response from it.
+     *
+     * @param model the AI model to be used for the request
+     * @param text the text to be sent as a request to the AI
+     * @return mono object representing the asynchronous text response from the AI network
+     */
+    fun request(model: AiModelType, text: String): Mono<String>
+}
