@@ -19,7 +19,8 @@ and other functionality related to the functioning of the community
 - **Discord4J**
 - **RSocket**
 
-RSocket is used to exchange messages between the bot and DevMC services 
+RSocket is used to exchange messages between the bot and DevMC services.⁣  
+ChimeraGPT is used as a free API layer before the API of the Open AI artificial intelligence service.
 
 ## Bugs and Feedback
 
