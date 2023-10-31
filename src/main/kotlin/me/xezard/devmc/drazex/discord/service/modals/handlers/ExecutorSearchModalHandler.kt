@@ -31,6 +31,7 @@ import discord4j.discordjson.json.MessageCreateRequest
 import me.xezard.devmc.drazex.discord.config.DiscordConfiguration
 import me.xezard.devmc.drazex.discord.config.properties.DevelopmentRequestChannelsProperties
 import me.xezard.devmc.drazex.discord.service.app.DiscordService.Companion.DISCORD_USER_URL
+import me.xezard.devmc.drazex.discord.service.buttons.handlers.RequestDeleteButtonHandler.Companion.BUTTON_ID
 import me.xezard.devmc.drazex.discord.service.messages.MessagesService
 import me.xezard.devmc.drazex.discord.service.modals.IModalHandler
 import me.xezard.devmc.drazex.discord.service.modals.ModalsService
@@ -88,7 +89,7 @@ class ExecutorSearchModalHandler (
                 .build()
                 .asRequest()
 
-        val deleteButton = Button.secondary(id, "❌")
+        val deleteButton = Button.secondary(BUTTON_ID + id, "❌")
         val actionRow = ActionRow.of(deleteButton)
 
         val message = MessageCreateRequest.builder()
