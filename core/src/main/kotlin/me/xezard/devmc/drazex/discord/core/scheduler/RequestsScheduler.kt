@@ -59,7 +59,7 @@ class RequestsScheduler (
     private fun deleteOldMessages(channel: RestChannel) =
         channel.getMessagesBefore(Snowflake.of(Instant.now()))
             .filter { this.isOutdated(it.timestamp()) }
-            .flatMap { channel.getRestMessage(Snowflake.of(it.id().asString())).delete(null) }
+            .flatMap { channel.getRestMessage(Snowflake.of(it.id())).delete(null) }
 
     private fun isOutdated(timestamp: String): Boolean {
         val monthAgo = LocalDateTime.now().minusMonths(1)

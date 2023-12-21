@@ -24,6 +24,7 @@ import discord4j.common.util.Snowflake
 import discord4j.core.`object`.entity.Message
 import discord4j.core.spec.EmbedCreateFields
 import discord4j.discordjson.json.MessageCreateRequest
+import discord4j.rest.entity.RestMessage
 import me.xezard.devmc.drazex.discord.core.app.DiscordService.Companion.CHANNEL_NAME_PATTERN
 import me.xezard.devmc.drazex.discord.core.app.DiscordService.Companion.DISCORD_AVATAR_URL
 import me.xezard.devmc.drazex.discord.core.app.DiscordService.Companion.DISCORD_CHANNEL_URL
@@ -80,7 +81,9 @@ class NewsChannelHandler (
         messageRequest.addAllEmbeds(message.embeds.map { it.data })
 
         return message.guild.flatMap { it.getChannelById(consumerId) }
-                .flatMap { it.restChannel.createMessage(messageRequest.build()) }
+                .flatMap { it.restChannel.createMessage(messageRequest.build())
+                .map { data -> it.restChannel.getRestMessage(Snowflake.of(data.id())) }}
+                .flatMap(RestMessage::publish)
                 .then()
     }
 }
